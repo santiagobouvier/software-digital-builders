@@ -24,8 +24,6 @@ import {
   MessageSquare,
   MessageSquareText,
   Users,
-  UserCheck,
-  AlertTriangle,
   Loader2,
   Wifi,
   WifiOff,
@@ -121,19 +119,16 @@ const BotDetail = () => {
   const totals = useMemo(() => {
     return events.reduce(
       (acc, event) => ({
-        msg_in: acc.msg_in + event.msg_in_count,
         msg_out: acc.msg_out + event.msg_out_count,
         handoff: acc.handoff + event.handoff_count,
-        lead: acc.lead + event.lead_count,
-        error: acc.error + event.error_count,
       }),
-      { msg_in: 0, msg_out: 0, handoff: 0, lead: 0, error: 0 }
+      { msg_out: 0, handoff: 0 }
     );
   }, [events]);
 
   const chartData = useMemo(() => {
     const { start, end } = getDateRange();
-    const days: { date: string; label: string; msg_in: number; msg_out: number; handoff: number }[] = [];
+    const days: { date: string; label: string; msg_out: number; handoff: number }[] = [];
     
     const current = new Date(start);
     while (current <= end) {
@@ -142,7 +137,6 @@ const BotDetail = () => {
       days.push({
         date: dateStr,
         label: format(current, "dd MMM", { locale: es }),
-        msg_in: event?.msg_in_count || 0,
         msg_out: event?.msg_out_count || 0,
         handoff: event?.handoff_count || 0,
       });
@@ -153,13 +147,9 @@ const BotDetail = () => {
   }, [events, dateRange]);
 
   const chartConfig = {
-    msg_in: {
-      label: "Recibidos",
-      color: "hsl(var(--primary))",
-    },
     msg_out: {
-      label: "Enviados",
-      color: "hsl(var(--success))",
+      label: "Respuestas del bot",
+      color: "hsl(var(--primary))",
     },
     handoff: {
       label: "Derivaciones",
@@ -268,36 +258,18 @@ const BotDetail = () => {
         ) : (
           <>
             {/* KPIs */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-              <KPICard
-                title="Mensajes recibidos"
-                value={totals.msg_in}
-                icon={MessageSquare}
-                color="cyan"
-              />
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 max-w-2xl">
               <KPICard
                 title="Respuestas del bot"
                 value={totals.msg_out}
                 icon={MessageSquareText}
-                color="green"
+                color="cyan"
               />
               <KPICard
                 title="Derivaciones"
                 value={totals.handoff}
                 icon={Users}
                 color="yellow"
-              />
-              <KPICard
-                title="Leads"
-                value={totals.lead}
-                icon={UserCheck}
-                color="cyan"
-              />
-              <KPICard
-                title="Errores"
-                value={totals.error}
-                icon={AlertTriangle}
-                color="red"
               />
             </div>
 
@@ -310,13 +282,9 @@ const BotDetail = () => {
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
                   <AreaChart data={chartData}>
                     <defs>
-                      <linearGradient id="fillMsgIn" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient id="fillMsgOut" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
                         <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                      </linearGradient>
-                      <linearGradient id="fillMsgOut" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--success))" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(var(--success))" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="fillHandoff" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--warning))" stopOpacity={0.3} />
@@ -339,17 +307,9 @@ const BotDetail = () => {
                     <ChartTooltip content={<ChartTooltipContent />} />
                     <Area
                       type="monotone"
-                      dataKey="msg_in"
-                      name="Recibidos"
-                      stroke="hsl(var(--primary))"
-                      fill="url(#fillMsgIn)"
-                      strokeWidth={2}
-                    />
-                    <Area
-                      type="monotone"
                       dataKey="msg_out"
-                      name="Enviados"
-                      stroke="hsl(var(--success))"
+                      name="Respuestas del bot"
+                      stroke="hsl(var(--primary))"
                       fill="url(#fillMsgOut)"
                       strokeWidth={2}
                     />
