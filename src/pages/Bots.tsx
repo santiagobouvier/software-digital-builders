@@ -41,7 +41,12 @@ import {
   Eye,
   EyeOff,
   Code,
+  BarChart3,
+  Wifi,
+  WifiOff,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 
@@ -55,6 +60,7 @@ interface Bot {
 }
 
 const Bots = () => {
+  const navigate = useNavigate();
   const [bots, setBots] = useState<Bot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -260,71 +266,109 @@ const Bots = () => {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Nombre</TableHead>
+                    <TableHead>Conexión</TableHead>
                     <TableHead>Estado</TableHead>
                     <TableHead>Última actividad</TableHead>
+                    <TableHead>Métricas</TableHead>
                     {isOwner && <TableHead>Acciones</TableHead>}
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bots.map((bot) => (
-                    <TableRow key={bot.id}>
-                      <TableCell className="font-medium">{bot.name}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={bot.status} />
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {bot.last_event_at
-                          ? format(new Date(bot.last_event_at), "dd MMM yyyy, HH:mm", { locale: es })
-                          : "Sin actividad"}
-                      </TableCell>
-                      {isOwner && (
+                  {bots.map((bot) => {
+                    const isConnected = bot.last_event_at !== null;
+                    return (
+                      <TableRow key={bot.id}>
+                        <TableCell className="font-medium">{bot.name}</TableCell>
                         <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => copyToClipboard(bot.id, "BOT_ID")}
-                              >
-                                <Copy className="h-4 w-4 mr-2" />
-                                Copiar BOT_ID
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => copyToClipboard(bot.token, "TOKEN")}
-                              >
-                                <Copy className="h-4 w-4 mr-2" />
-                                Copiar TOKEN
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => setShowPayloadModal(bot.id)}
-                              >
-                                <Code className="h-4 w-4 mr-2" />
-                                Ver ejemplo de payload
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => toggleBotStatus(bot)}
-                              >
-                                {bot.status === "active" ? (
-                                  <>
-                                    <Pause className="h-4 w-4 mr-2" />
-                                    Pausar bot
-                                  </>
-                                ) : (
-                                  <>
-                                    <Play className="h-4 w-4 mr-2" />
-                                    Activar bot
-                                  </>
-                                )}
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <Badge
+                            variant={isConnected ? "default" : "secondary"}
+                            className={
+                              isConnected
+                                ? "bg-success/20 text-success border-success/30"
+                                : "bg-muted text-muted-foreground"
+                            }
+                          >
+                            {isConnected ? (
+                              <>
+                                <Wifi className="h-3 w-3 mr-1" />
+                                Conectado
+                              </>
+                            ) : (
+                              <>
+                                <WifiOff className="h-3 w-3 mr-1" />
+                                No conectado
+                              </>
+                            )}
+                          </Badge>
                         </TableCell>
-                      )}
-                    </TableRow>
-                  ))}
+                        <TableCell>
+                          <StatusBadge status={bot.status} />
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {bot.last_event_at
+                            ? format(new Date(bot.last_event_at), "dd MMM yyyy, HH:mm", { locale: es })
+                            : "Sin actividad"}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => navigate(`/bots/${bot.id}`)}
+                            className="gap-2"
+                          >
+                            <BarChart3 className="h-4 w-4" />
+                            Ver métricas
+                          </Button>
+                        </TableCell>
+                        {isOwner && (
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreHorizontal className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() => copyToClipboard(bot.id, "BOT_ID")}
+                                >
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Copiar BOT_ID
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => copyToClipboard(bot.token, "TOKEN")}
+                                >
+                                  <Copy className="h-4 w-4 mr-2" />
+                                  Copiar TOKEN
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => setShowPayloadModal(bot.id)}
+                                >
+                                  <Code className="h-4 w-4 mr-2" />
+                                  Ver ejemplo de payload
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => toggleBotStatus(bot)}
+                                >
+                                  {bot.status === "active" ? (
+                                    <>
+                                      <Pause className="h-4 w-4 mr-2" />
+                                      Pausar bot
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Play className="h-4 w-4 mr-2" />
+                                      Activar bot
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             )}
