@@ -5,11 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  MessageSquare,
-  Send,
-  UserPlus,
-  AlertTriangle,
-  PhoneForwarded,
+  MessageSquareText,
+  Users,
   Activity,
 } from "lucide-react";
 import {
@@ -28,22 +25,16 @@ type DateFilter = "today" | "7days" | "30days";
 
 interface DailyStats {
   date: string;
-  msg_in: number;
   msg_out: number;
   handoff: number;
-  lead: number;
-  error: number;
 }
 
 const Dashboard = () => {
   const [dateFilter, setDateFilter] = useState<DateFilter>("7days");
   const [stats, setStats] = useState<DailyStats[]>([]);
   const [totals, setTotals] = useState({
-    msg_in: 0,
     msg_out: 0,
     handoff: 0,
-    lead: 0,
-    error: 0,
   });
   const [lastActivity, setLastActivity] = useState<Date | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
@@ -112,18 +103,12 @@ const Dashboard = () => {
         if (!grouped[event.date]) {
           grouped[event.date] = {
             date: event.date,
-            msg_in: 0,
             msg_out: 0,
             handoff: 0,
-            lead: 0,
-            error: 0,
           };
         }
-        grouped[event.date].msg_in += event.msg_in_count || 0;
         grouped[event.date].msg_out += event.msg_out_count || 0;
         grouped[event.date].handoff += event.handoff_count || 0;
-        grouped[event.date].lead += event.lead_count || 0;
-        grouped[event.date].error += event.error_count || 0;
       });
 
       const statsArray = Object.values(grouped);
@@ -132,13 +117,10 @@ const Dashboard = () => {
       // Calculate totals
       const newTotals = statsArray.reduce(
         (acc, day) => ({
-          msg_in: acc.msg_in + day.msg_in,
           msg_out: acc.msg_out + day.msg_out,
           handoff: acc.handoff + day.handoff,
-          lead: acc.lead + day.lead,
-          error: acc.error + day.error,
         }),
-        { msg_in: 0, msg_out: 0, handoff: 0, lead: 0, error: 0 }
+        { msg_out: 0, handoff: 0 }
       );
       setTotals(newTotals);
     }
@@ -160,8 +142,8 @@ const Dashboard = () => {
 
   const chartData = stats.map((s) => ({
     name: format(new Date(s.date), "dd MMM", { locale: es }),
-    Recibidos: s.msg_in,
-    Enviados: s.msg_out,
+    Respuestas: s.msg_out,
+    Derivaciones: s.handoff,
   }));
 
   return (
@@ -192,36 +174,18 @@ const Dashboard = () => {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-2 max-w-2xl">
           <KPICard
-            title="Mensajes recibidos"
-            value={totals.msg_in}
-            icon={MessageSquare}
-            color="cyan"
-          />
-          <KPICard
-            title="Mensajes enviados"
+            title="Respuestas del bot"
             value={totals.msg_out}
-            icon={Send}
+            icon={MessageSquareText}
             color="cyan"
           />
           <KPICard
             title="Derivaciones"
             value={totals.handoff}
-            icon={PhoneForwarded}
+            icon={Users}
             color="yellow"
-          />
-          <KPICard
-            title="Leads"
-            value={totals.lead}
-            icon={UserPlus}
-            color="green"
-          />
-          <KPICard
-            title="Errores"
-            value={totals.error}
-            icon={AlertTriangle}
-            color="red"
           />
         </div>
 
@@ -253,17 +217,17 @@ const Dashboard = () => {
                       />
                       <Line
                         type="monotone"
-                        dataKey="Recibidos"
-                        stroke="hsl(187 100% 50%)"
+                        dataKey="Respuestas"
+                        stroke="hsl(var(--primary))"
                         strokeWidth={2}
-                        dot={{ fill: "hsl(187 100% 50%)" }}
+                        dot={{ fill: "hsl(var(--primary))" }}
                       />
                       <Line
                         type="monotone"
-                        dataKey="Enviados"
-                        stroke="hsl(200 100% 60%)"
+                        dataKey="Derivaciones"
+                        stroke="hsl(var(--warning))"
                         strokeWidth={2}
-                        dot={{ fill: "hsl(200 100% 60%)" }}
+                        dot={{ fill: "hsl(var(--warning))" }}
                       />
                     </LineChart>
                   </ResponsiveContainer>
