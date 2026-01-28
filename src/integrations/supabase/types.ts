@@ -350,13 +350,78 @@ export type Database = {
         }
         Relationships: []
       }
+      user_bot_access: {
+        Row: {
+          bot_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          bot_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          bot_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_bot_access_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_user_role: {
+        Args: { _user_id: string }
+        Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       user_belongs_to_company: {
         Args: { _company_id: string; _user_id: string }
+        Returns: boolean
+      }
+      user_has_bot_access: {
+        Args: { _bot_id: string; _user_id: string }
         Returns: boolean
       }
       user_is_company_owner: {
@@ -365,6 +430,7 @@ export type Database = {
       }
     }
     Enums: {
+      app_role: "professional" | "client"
       billing_event_type: "charge" | "refund" | "adjustment"
       bot_status: "active" | "paused"
       company_role: "owner" | "viewer"
@@ -496,6 +562,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["professional", "client"],
       billing_event_type: ["charge", "refund", "adjustment"],
       bot_status: ["active", "paused"],
       company_role: ["owner", "viewer"],
