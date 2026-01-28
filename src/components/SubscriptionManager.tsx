@@ -12,10 +12,18 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
 import { toast } from "@/hooks/use-toast";
-import { DollarSign, CreditCard, Calendar, Loader2, ArrowRight, Pencil } from "lucide-react";
+import { DollarSign, CreditCard, Calendar, Loader2, ArrowRight, Pencil, CalendarIcon } from "lucide-react";
 import { format, addMonths, addYears, differenceInDays } from "date-fns";
 import { es } from "date-fns/locale";
+import { cn } from "@/lib/utils";
 
 interface Subscription {
   id: string;
@@ -59,6 +67,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const [customPrice, setCustomPrice] = useState<number | null>(null);
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
   const CUSTOM_PLAN_ID = "custom";
 
@@ -93,6 +102,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
       setSubscription(sub);
       setSelectedPlanId(sub.plan_id);
       setBillingCycle(sub.plan);
+      setStartDate(new Date(sub.started_at));
     } else if (plansResult.data && plansResult.data.length > 0) {
       // Pre-select Pro plan by default
       const proPlan = plansResult.data.find((p: any) => p.slug === "pro");
@@ -128,10 +138,10 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
     const monthlyPrice = isCustom ? customPrice! : selectedPlan!.monthly_price;
     const annualPrice = isCustom ? Math.round(customPrice! * 12) : selectedPlan!.annual_price;
 
-    const now = new Date();
+    // Calculate next billing based on selected start date
     const nextBilling = billingCycle === "monthly" 
-      ? addMonths(now, 1) 
-      : addYears(now, 1);
+      ? addMonths(startDate, 1) 
+      : addYears(startDate, 1);
 
     if (subscription) {
       // Update existing subscription
@@ -142,6 +152,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
           plan: billingCycle,
           monthly_price: monthlyPrice,
           annual_price: annualPrice,
+          started_at: startDate.toISOString(),
           next_billing_at: nextBilling.toISOString(),
           currency: "UYU",
         })
@@ -174,7 +185,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
           plan: billingCycle,
           monthly_price: monthlyPrice,
           annual_price: annualPrice,
-          started_at: now.toISOString(),
+          started_at: startDate.toISOString(),
           next_billing_at: nextBilling.toISOString(),
           is_active: true,
           currency: "UYU",
@@ -271,6 +282,41 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
               customPrice={customPrice}
               onCustomPriceChange={setCustomPrice}
             />
+            
+            {/* Date Picker for start date */}
+            <div className="space-y-2">
+              <Label>Fecha de inicio / primer pago</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal",
+                      !startDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {startDate ? format(startDate, "PPP", { locale: es }) : "Seleccionar fecha"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarComponent
+                    mode="single"
+                    selected={startDate}
+                    onSelect={(date) => date && setStartDate(date)}
+                    initialFocus
+                    className="p-3 pointer-events-auto"
+                  />
+                </PopoverContent>
+              </Popover>
+              <p className="text-xs text-muted-foreground">
+                Renovación: {format(
+                  billingCycle === "monthly" ? addMonths(startDate, 1) : addYears(startDate, 1),
+                  "PPP",
+                  { locale: es }
+                )}
+              </p>
+            </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancelar
@@ -412,6 +458,41 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
             customPrice={customPrice}
             onCustomPriceChange={setCustomPrice}
           />
+          
+          {/* Date Picker for start date */}
+          <div className="space-y-2">
+            <Label>Fecha de inicio / primer pago</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !startDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {startDate ? format(startDate, "PPP", { locale: es }) : "Seleccionar fecha"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <CalendarComponent
+                  mode="single"
+                  selected={startDate}
+                  onSelect={(date) => date && setStartDate(date)}
+                  initialFocus
+                  className="p-3 pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+            <p className="text-xs text-muted-foreground">
+              Renovación: {format(
+                billingCycle === "monthly" ? addMonths(startDate, 1) : addYears(startDate, 1),
+                "PPP",
+                { locale: es }
+              )}
+            </p>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancelar
