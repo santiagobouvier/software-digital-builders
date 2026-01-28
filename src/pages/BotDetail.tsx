@@ -4,6 +4,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { KPICard } from "@/components/KPICard";
+import { BotFinances } from "@/components/BotFinances";
 import { supabase } from "@/integrations/supabase/client";
 import {
   ChartContainer,
@@ -59,6 +60,7 @@ const BotDetail = () => {
   const [bot, setBot] = useState<Bot | null>(null);
   const [events, setEvents] = useState<EventDaily[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isOwner, setIsOwner] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange>("7days");
 
   useEffect(() => {
@@ -86,6 +88,9 @@ const BotDetail = () => {
   const loadBotAndEvents = async () => {
     setIsLoading(true);
     
+    // Get current user
+    const { data: { user } } = await supabase.auth.getUser();
+    
     // Load bot details
     const { data: botData, error: botError } = await supabase
       .from("bots")
@@ -99,6 +104,18 @@ const BotDetail = () => {
     }
 
     setBot(botData as Bot);
+
+    // Check if user is owner of this company
+    if (user) {
+      const { data: roleData } = await supabase
+        .from("company_users")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("company_id", botData.company_id)
+        .maybeSingle();
+      
+      setIsOwner(roleData?.role === "owner");
+    }
 
     // Load events for the date range
     const { start, end } = getDateRange();
@@ -329,6 +346,9 @@ const BotDetail = () => {
                 </ChartContainer>
               </CardContent>
             </Card>
+
+            {/* Finances Section */}
+            <BotFinances botId={bot.id} isOwner={isOwner} />
           </>
         )}
       </div>
