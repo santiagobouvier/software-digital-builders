@@ -14,6 +14,121 @@ export type Database = {
   }
   public: {
     Tables: {
+      bot_billing_events: {
+        Row: {
+          amount: number
+          bot_id: string
+          company_id: string
+          created_at: string
+          description: string | null
+          event_date: string
+          event_type: Database["public"]["Enums"]["billing_event_type"]
+          id: string
+          subscription_id: string
+        }
+        Insert: {
+          amount: number
+          bot_id: string
+          company_id: string
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_type?: Database["public"]["Enums"]["billing_event_type"]
+          id?: string
+          subscription_id: string
+        }
+        Update: {
+          amount?: number
+          bot_id?: string
+          company_id?: string
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_type?: Database["public"]["Enums"]["billing_event_type"]
+          id?: string
+          subscription_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_billing_events_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: false
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_billing_events_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_billing_events_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "bot_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bot_subscriptions: {
+        Row: {
+          annual_price: number
+          bot_id: string
+          company_id: string
+          created_at: string
+          id: string
+          is_active: boolean
+          monthly_price: number
+          next_billing_at: string
+          plan: Database["public"]["Enums"]["subscription_plan"]
+          started_at: string
+          updated_at: string
+        }
+        Insert: {
+          annual_price?: number
+          bot_id: string
+          company_id: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          monthly_price?: number
+          next_billing_at: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          started_at?: string
+          updated_at?: string
+        }
+        Update: {
+          annual_price?: number
+          bot_id?: string
+          company_id?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          monthly_price?: number
+          next_billing_at?: string
+          plan?: Database["public"]["Enums"]["subscription_plan"]
+          started_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_subscriptions_bot_id_fkey"
+            columns: ["bot_id"]
+            isOneToOne: true
+            referencedRelation: "bots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_subscriptions_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bots: {
         Row: {
           company_id: string
@@ -195,8 +310,10 @@ export type Database = {
       }
     }
     Enums: {
+      billing_event_type: "charge" | "refund" | "adjustment"
       bot_status: "active" | "paused"
       company_role: "owner" | "viewer"
+      subscription_plan: "monthly" | "annual"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -324,8 +441,10 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      billing_event_type: ["charge", "refund", "adjustment"],
       bot_status: ["active", "paused"],
       company_role: ["owner", "viewer"],
+      subscription_plan: ["monthly", "annual"],
     },
   },
 } as const
