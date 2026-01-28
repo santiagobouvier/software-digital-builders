@@ -32,6 +32,7 @@ import { format, subDays, parseISO } from "date-fns";
 import { es } from "date-fns/locale";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Bot {
   id: string;
@@ -177,7 +178,7 @@ const BotDetail = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col gap-4">
           <Button
@@ -189,55 +190,58 @@ const BotDetail = () => {
             Volver a bots
           </Button>
           
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h1 className="text-3xl font-bold tracking-tight">{bot.name}</h1>
-                <Badge
-                  variant={isConnected ? "default" : "secondary"}
-                  className={
-                    isConnected
-                      ? "bg-success/20 text-success border-success/30"
-                      : "bg-muted text-muted-foreground"
-                  }
-                >
-                  {isConnected ? (
-                    <>
-                      <Wifi className="h-3 w-3 mr-1" />
-                      Conectado
-                    </>
-                  ) : (
-                    <>
-                      <WifiOff className="h-3 w-3 mr-1" />
-                      No conectado
-                    </>
-                  )}
-                </Badge>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+              <div className="space-y-1 min-w-0">
+                <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                  <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{bot.name}</h1>
+                  <Badge
+                    variant={isConnected ? "default" : "secondary"}
+                    className={cn(
+                      "flex-shrink-0",
+                      isConnected
+                        ? "bg-success/20 text-success border-success/30"
+                        : "bg-muted text-muted-foreground"
+                    )}
+                  >
+                    {isConnected ? (
+                      <>
+                        <Wifi className="h-3 w-3 mr-1" />
+                        <span className="hidden xs:inline">Conectado</span>
+                      </>
+                    ) : (
+                      <>
+                        <WifiOff className="h-3 w-3 mr-1" />
+                        <span className="hidden xs:inline">No conectado</span>
+                      </>
+                    )}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {bot.last_event_at
+                    ? `Última actividad: ${format(new Date(bot.last_event_at), "dd MMM yyyy, HH:mm", { locale: es })}`
+                    : "Sin actividad registrada"}
+                </p>
               </div>
-              <p className="text-muted-foreground">
-                {bot.last_event_at
-                  ? `Última actividad: ${format(new Date(bot.last_event_at), "dd MMM yyyy, HH:mm", { locale: es })}`
-                  : "Sin actividad registrada"}
-              </p>
-            </div>
 
-            {/* Date range filter */}
-            <ToggleGroup
-              type="single"
-              value={dateRange}
-              onValueChange={(value) => value && setDateRange(value as DateRange)}
-              className="bg-muted/50 p-1 rounded-lg"
-            >
-              <ToggleGroupItem value="today" className="px-4">
-                Hoy
-              </ToggleGroupItem>
-              <ToggleGroupItem value="7days" className="px-4">
-                7 días
-              </ToggleGroupItem>
-              <ToggleGroupItem value="30days" className="px-4">
-                30 días
-              </ToggleGroupItem>
-            </ToggleGroup>
+              {/* Date range filter */}
+              <ToggleGroup
+                type="single"
+                value={dateRange}
+                onValueChange={(value) => value && setDateRange(value as DateRange)}
+                className="bg-muted/50 p-1 rounded-lg flex-shrink-0"
+              >
+                <ToggleGroupItem value="today" className="px-2 sm:px-4 text-xs sm:text-sm">
+                  Hoy
+                </ToggleGroupItem>
+                <ToggleGroupItem value="7days" className="px-2 sm:px-4 text-xs sm:text-sm">
+                  7 días
+                </ToggleGroupItem>
+                <ToggleGroupItem value="30days" className="px-2 sm:px-4 text-xs sm:text-sm">
+                  30 días
+                </ToggleGroupItem>
+              </ToggleGroup>
+            </div>
           </div>
         </div>
 
@@ -258,7 +262,7 @@ const BotDetail = () => {
         ) : (
           <>
             {/* KPIs */}
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2 max-w-2xl">
+            <div className="grid gap-3 sm:gap-4 grid-cols-2 max-w-md">
               <KPICard
                 title="Respuestas del bot"
                 value={totals.msg_out}
@@ -275,11 +279,11 @@ const BotDetail = () => {
 
             {/* Chart */}
             <Card variant="elevated">
-              <CardHeader>
-                <CardTitle>Actividad por día</CardTitle>
+              <CardHeader className="pb-2 sm:pb-4">
+                <CardTitle className="text-base sm:text-lg">Actividad por día</CardTitle>
               </CardHeader>
-              <CardContent>
-                <ChartContainer config={chartConfig} className="h-[300px] w-full">
+              <CardContent className="px-2 sm:px-6">
+                <ChartContainer config={chartConfig} className="h-[220px] sm:h-[280px] w-full">
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="fillMsgOut" x1="0" y1="0" x2="0" y2="1">

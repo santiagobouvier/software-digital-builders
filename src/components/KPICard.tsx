@@ -37,11 +37,11 @@ export const KPICard = ({
 
   return (
     <Card variant="elevated" className="overflow-hidden">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-muted-foreground">{title}</p>
-            <p className="text-3xl font-bold tracking-tight text-foreground">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-1 sm:space-y-2 min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+            <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               {typeof value === "number" ? value.toLocaleString() : value}
             </p>
             {trend && (
@@ -56,9 +56,9 @@ export const KPICard = ({
             )}
           </div>
           <div
-            className={`p-3 rounded-xl ${bgColorClasses[color]} ${colorClasses[color]}`}
+            className={`p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0 ${bgColorClasses[color]} ${colorClasses[color]}`}
           >
-            <Icon className="h-6 w-6" />
+            <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
           </div>
         </div>
       </CardContent>

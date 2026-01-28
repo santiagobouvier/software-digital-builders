@@ -119,20 +119,20 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen max-h-screen flex flex-col bg-background overflow-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <Link to="/dashboard" className="flex items-center">
+      <header className="sticky top-0 z-50 flex-shrink-0 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-6">
+          <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+            <Link to="/dashboard" className="flex-shrink-0">
               <Logo size="sm" />
             </Link>
 
             {/* Company Selector */}
             {companies.length > 1 && (
               <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
-                <SelectTrigger className="w-[200px] bg-secondary border-border">
-                  <SelectValue placeholder="Seleccionar empresa" />
+                <SelectTrigger className="w-[140px] sm:w-[200px] bg-secondary border-border text-sm">
+                  <SelectValue placeholder="Empresa" />
                 </SelectTrigger>
                 <SelectContent>
                   {companies.map((company) => (
@@ -149,11 +149,11 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               {navItems.map((item) => (
                 <Link key={item.path} to={item.path}>
                   <Button
-                    variant={location.pathname === item.path ? "secondary" : "ghost"}
+                    variant={location.pathname === item.path || location.pathname.startsWith(item.path + "/") ? "secondary" : "ghost"}
                     size="sm"
                     className={cn(
                       "gap-2",
-                      location.pathname === item.path && "bg-secondary"
+                      (location.pathname === item.path || location.pathname.startsWith(item.path + "/")) && "bg-secondary"
                     )}
                   >
                     <item.icon className="h-4 w-4" />
@@ -164,22 +164,22 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </nav>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2">
-                  <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium">
+                <Button variant="ghost" size="sm" className="gap-1 sm:gap-2 px-2 sm:px-3">
+                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
                     {user.email?.[0].toUpperCase()}
                   </div>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground hidden sm:block" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>
                   <div className="flex flex-col">
                     <span className="font-medium">{user.user_metadata?.name || "Usuario"}</span>
-                    <span className="text-xs text-muted-foreground">{user.email}</span>
+                    <span className="text-xs text-muted-foreground truncate">{user.email}</span>
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -194,17 +194,17 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="md:hidden h-9 w-9"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
-              {isMobileMenuOpen ? <X /> : <Menu />}
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <nav className="md:hidden border-t border-border p-4 space-y-2 bg-background">
+          <nav className="md:hidden border-t border-border p-3 space-y-1 bg-background">
             {navItems.map((item) => (
               <Link
                 key={item.path}
@@ -212,8 +212,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 <Button
-                  variant={location.pathname === item.path ? "secondary" : "ghost"}
+                  variant={location.pathname === item.path || location.pathname.startsWith(item.path + "/") ? "secondary" : "ghost"}
                   className="w-full justify-start gap-2"
+                  size="sm"
                 >
                   <item.icon className="h-4 w-4" />
                   {item.label}
@@ -225,8 +226,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </header>
 
       {/* Main Content */}
-      <main className="container px-4 py-8">
-        {children}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div className="px-3 sm:px-6 py-4 sm:py-6 max-w-7xl mx-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
