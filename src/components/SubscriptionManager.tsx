@@ -26,7 +26,7 @@ interface Subscription {
   started_at: string;
   next_billing_at: string;
   is_active: boolean;
-  currency: string;
+  currency?: string;
 }
 
 interface Plan {
@@ -35,7 +35,7 @@ interface Plan {
   slug: string;
   monthly_price: number;
   annual_price: number;
-  currency: string;
+  currency?: string;
 }
 
 const getCurrencySymbol = (currency: string) => {
@@ -121,6 +121,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
           monthly_price: selectedPlan.monthly_price,
           annual_price: selectedPlan.annual_price,
           next_billing_at: nextBilling.toISOString(),
+          currency: selectedPlan.currency || "USD",
         })
         .eq("id", subscription.id);
 
@@ -152,6 +153,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
           started_at: now.toISOString(),
           next_billing_at: nextBilling.toISOString(),
           is_active: true,
+          currency: selectedPlan.currency || "USD",
         });
 
       if (error) {

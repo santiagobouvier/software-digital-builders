@@ -78,6 +78,7 @@ export type Database = {
           bot_id: string
           company_id: string
           created_at: string
+          currency: string
           id: string
           is_active: boolean
           monthly_price: number
@@ -92,6 +93,7 @@ export type Database = {
           bot_id: string
           company_id: string
           created_at?: string
+          currency?: string
           id?: string
           is_active?: boolean
           monthly_price?: number
@@ -106,6 +108,7 @@ export type Database = {
           bot_id?: string
           company_id?: string
           created_at?: string
+          currency?: string
           id?: string
           is_active?: boolean
           monthly_price?: number

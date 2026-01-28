@@ -16,10 +16,10 @@ interface Plan {
   monthly_price: number;
   annual_price: number;
   description: string | null;
-  currency: string;
+  currency?: string;
 }
 
-const getCurrencySymbol = (currency: string) => {
+const getCurrencySymbol = (currency?: string) => {
   return currency === "UYU" ? "$U" : "$";
 };
 
