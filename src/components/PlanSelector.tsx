@@ -16,7 +16,12 @@ interface Plan {
   monthly_price: number;
   annual_price: number;
   description: string | null;
+  currency: string;
 }
+
+const getCurrencySymbol = (currency: string) => {
+  return currency === "UYU" ? "$U" : "$";
+};
 
 interface PlanSelectorProps {
   selectedPlanId: string | null;
@@ -159,7 +164,7 @@ export const PlanSelector = ({
                   </div>
                   <div className="text-right flex-shrink-0">
                     <div className="text-xl font-bold">
-                      ${getMonthlyEquivalent(plan).toFixed(0)}
+                      {getCurrencySymbol(plan.currency)}{getMonthlyEquivalent(plan).toFixed(0)}
                       <span className="text-sm font-normal text-muted-foreground">/mes</span>
                     </div>
                     {selectedBillingCycle === "annual" && (
@@ -167,6 +172,9 @@ export const PlanSelector = ({
                         Ahorras {getSavingsPercent(plan)}%
                       </p>
                     )}
+                    <p className="text-xs text-muted-foreground">
+                      {plan.currency}
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -176,13 +184,14 @@ export const PlanSelector = ({
       </RadioGroup>
 
       {/* Total */}
-      {selectedPlanId && (
+      {selectedPlanId && plans.find(p => p.id === selectedPlanId) && (
         <div className="p-3 bg-muted/30 rounded-lg flex justify-between items-center">
           <span className="text-sm text-muted-foreground">
             Total a pagar {selectedBillingCycle === "annual" ? "anualmente" : "mensualmente"}
           </span>
           <span className="font-semibold text-lg">
-            ${getPrice(plans.find(p => p.id === selectedPlanId)!).toFixed(0)} USD
+            {getCurrencySymbol(plans.find(p => p.id === selectedPlanId)!.currency)}
+            {getPrice(plans.find(p => p.id === selectedPlanId)!).toFixed(0)} {plans.find(p => p.id === selectedPlanId)!.currency}
           </span>
         </div>
       )}
