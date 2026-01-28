@@ -22,11 +22,13 @@ import {
   LayoutDashboard,
   Bot,
   Users,
+  UserCog,
   LogOut,
   ChevronDown,
   Menu,
   X,
 } from "lucide-react";
+import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
 
 interface Company {
@@ -42,6 +44,7 @@ interface DashboardLayoutProps {
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { isProfessional } = useUserRole();
   const [user, setUser] = useState<any>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
@@ -114,6 +117,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/bots", label: "Bots", icon: Bot },
     ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
+    ...(isProfessional ? [{ path: "/users", label: "Usuarios", icon: UserCog }] : []),
   ];
 
   if (!user) return null;

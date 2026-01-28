@@ -10,6 +10,8 @@ import Dashboard from "./pages/Dashboard";
 import Bots from "./pages/Bots";
 import BotDetail from "./pages/BotDetail";
 import Team from "./pages/Team";
+import Users from "./pages/Users";
+import Stats from "./pages/Stats";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -87,6 +89,22 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Team />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute>
+                <Users />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/stats"
+            element={
+              <ProtectedRoute>
+                <Stats />
               </ProtectedRoute>
             }
           />
