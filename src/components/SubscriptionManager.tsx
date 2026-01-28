@@ -267,13 +267,14 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
         </Card>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogContent className="max-w-md">
-            <DialogHeader>
+          <DialogContent className="max-w-md max-h-[90vh] flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>Activar suscripción</DialogTitle>
               <DialogDescription>
                 Elegí un plan para este bot.
               </DialogDescription>
             </DialogHeader>
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
             <PlanSelector
               selectedPlanId={selectedPlanId}
               selectedBillingCycle={billingCycle}
@@ -317,7 +318,8 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
                 )}
               </p>
             </div>
-            <DialogFooter>
+            </div>
+            <DialogFooter className="flex-shrink-0 pt-4 border-t border-border">
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
                 Cancelar
               </Button>
@@ -443,13 +445,14 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
 
       {/* Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
+        <DialogContent className="max-w-md max-h-[90vh] flex flex-col">
+          <DialogHeader className="flex-shrink-0">
             <DialogTitle>Cambiar plan</DialogTitle>
             <DialogDescription>
               Elegí un nuevo plan o ciclo de facturación.
             </DialogDescription>
           </DialogHeader>
+          <div className="flex-1 overflow-y-auto space-y-4 pr-2">
           <PlanSelector
             selectedPlanId={selectedPlanId}
             selectedBillingCycle={billingCycle}
@@ -493,7 +496,8 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
               )}
             </p>
           </div>
-          <DialogFooter>
+          </div>
+          <DialogFooter className="flex-shrink-0 pt-4 border-t border-border">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               Cancelar
             </Button>
