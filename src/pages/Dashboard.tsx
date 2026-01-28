@@ -21,6 +21,10 @@ import {
 } from "recharts";
 import { format, subDays } from "date-fns";
 import { es } from "date-fns/locale";
+import { useUserRole } from "@/hooks/useUserRole";
+import { EmptyDashboard } from "@/components/dashboard/EmptyDashboard";
+import { ProfessionalWidgets } from "@/components/dashboard/ProfessionalWidgets";
+import { ClientWidgets } from "@/components/dashboard/ClientWidgets";
 
 type DateFilter = "today" | "7days" | "30days";
 
@@ -31,6 +35,7 @@ interface DailyStats {
 }
 
 const Dashboard = () => {
+  const { isProfessional, isClient, userId, isLoading: roleLoading } = useUserRole();
   const [dateFilter, setDateFilter] = useState<DateFilter>("7days");
   const [stats, setStats] = useState<DailyStats[]>([]);
   const [totals, setTotals] = useState({
@@ -40,6 +45,9 @@ const Dashboard = () => {
   const [lastActivity, setLastActivity] = useState<Date | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
+  const [hasData, setHasData] = useState(true);
+  const [hasBots, setHasBots] = useState(false);
+  const [hasUsers, setHasUsers] = useState(false);
 
   useEffect(() => {
     const loadCompany = async () => {
@@ -61,6 +69,24 @@ const Dashboard = () => {
         
         setCompanyId(company.id);
         setCompanyName(company.name);
+
+        // Check if there are bots
+        const { data: botsData } = await supabase
+          .from("bots")
+          .select("id")
+          .eq("company_id", company.id)
+          .limit(1);
+        setHasBots(botsData && botsData.length > 0);
+
+        // Check if there are client users
+        const { data: usersData } = await supabase
+          .from("user_roles")
+          .select("user_id")
+          .eq("role", "client")
+          .limit(1);
+        setHasUsers(usersData && usersData.length > 0);
+      } else {
+        setHasData(false);
       }
     };
 
@@ -146,6 +172,32 @@ const Dashboard = () => {
     Respuestas: s.msg_out,
     Derivaciones: s.handoff,
   }));
+
+  // Show onboarding/empty state if no company or no bots
+  const showEmptyState = !companyId || (!hasBots && isProfessional) || (isClient && !hasBots);
+
+  if (roleLoading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-pulse text-muted-foreground">Cargando...</div>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  if (showEmptyState) {
+    return (
+      <DashboardLayout>
+        <EmptyDashboard
+          isProfessional={isProfessional}
+          hasCompany={!!companyId}
+          hasBots={hasBots}
+          hasUsers={hasUsers}
+        />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -247,6 +299,14 @@ const Dashboard = () => {
           {/* Finances Summary */}
           <FinancesSummary companyId={companyId} />
         </div>
+
+        {/* Role-specific Widgets */}
+        {isProfessional && userId && (
+          <ProfessionalWidgets userId={userId} />
+        )}
+        {isClient && userId && (
+          <ClientWidgets userId={userId} />
+        )}
 
         {/* System Status */}
         <Card variant="elevated">
