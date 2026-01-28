@@ -26,6 +26,7 @@ interface Subscription {
   started_at: string;
   next_billing_at: string;
   is_active: boolean;
+  currency: string;
 }
 
 interface Plan {
@@ -34,7 +35,12 @@ interface Plan {
   slug: string;
   monthly_price: number;
   annual_price: number;
+  currency: string;
 }
+
+const getCurrencySymbol = (currency: string) => {
+  return currency === "UYU" ? "$U" : "$";
+};
 
 interface SubscriptionManagerProps {
   botId: string;
@@ -298,9 +304,9 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
               Ingreso mensual recurrente
             </p>
             <p className="text-3xl sm:text-4xl font-bold text-foreground">
-              ${getMonthlyRate().toFixed(0)}
+              {getCurrencySymbol(subscription.currency || "USD")}{getMonthlyRate().toFixed(0)}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">USD / mes</p>
+            <p className="text-xs text-muted-foreground mt-1">{subscription.currency || "USD"} / mes</p>
           </div>
 
           {/* Stats Grid */}

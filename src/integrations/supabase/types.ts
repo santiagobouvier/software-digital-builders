@@ -309,6 +309,7 @@ export type Database = {
         Row: {
           annual_price: number
           created_at: string
+          currency: string
           description: string | null
           features: Json | null
           id: string
@@ -321,6 +322,7 @@ export type Database = {
         Insert: {
           annual_price?: number
           created_at?: string
+          currency?: string
           description?: string | null
           features?: Json | null
           id?: string
@@ -333,6 +335,7 @@ export type Database = {
         Update: {
           annual_price?: number
           created_at?: string
+          currency?: string
           description?: string | null
           features?: Json | null
           id?: string
