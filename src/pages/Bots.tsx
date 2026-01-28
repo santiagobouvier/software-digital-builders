@@ -191,21 +191,22 @@ const Bots = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Bots</h1>
-            <p className="text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">Bots</h1>
+            <p className="text-sm text-muted-foreground">
               Conectá BuilderBot enviando eventos a /api/track.
             </p>
           </div>
           {isOwner && (
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
               <DialogTrigger asChild>
-                <Button className="gap-2">
+                <Button className="gap-2 flex-shrink-0" size="sm">
                   <Plus className="h-4 w-4" />
-                  Crear bot
+                  <span className="hidden sm:inline">Crear bot</span>
+                  <span className="sm:hidden">Crear</span>
                 </Button>
               </DialogTrigger>
               <DialogContent>

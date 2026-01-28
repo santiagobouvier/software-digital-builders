@@ -148,22 +148,23 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">{companyName}</h1>
-            <p className="text-muted-foreground">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
+            <p className="text-sm text-muted-foreground">
               Panel de métricas y control
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-shrink-0">
             {(["today", "7days", "30days"] as DateFilter[]).map((filter) => (
               <Button
                 key={filter}
                 variant={dateFilter === filter ? "default" : "outline"}
                 size="sm"
                 onClick={() => setDateFilter(filter)}
+                className="text-xs sm:text-sm px-2 sm:px-3"
               >
                 {filter === "today" && "Hoy"}
                 {filter === "7days" && "7 días"}
@@ -174,7 +175,7 @@ const Dashboard = () => {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid gap-4 md:grid-cols-2 max-w-2xl">
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 max-w-md">
           <KPICard
             title="Respuestas del bot"
             value={totals.msg_out}
@@ -190,14 +191,14 @@ const Dashboard = () => {
         </div>
 
         {/* Chart & System Status */}
-        <div className="grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
           {/* Chart */}
           <Card variant="elevated" className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-lg">Actividad de mensajes</CardTitle>
+            <CardHeader className="pb-2 sm:pb-4">
+              <CardTitle className="text-base sm:text-lg">Actividad de mensajes</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="h-[300px]">
+            <CardContent className="px-2 sm:px-6">
+              <div className="h-[220px] sm:h-[280px]">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={chartData}>
@@ -205,14 +206,16 @@ const Dashboard = () => {
                       <XAxis
                         dataKey="name"
                         stroke="hsl(215 15% 55%)"
-                        fontSize={12}
+                        fontSize={10}
+                        tickMargin={8}
                       />
-                      <YAxis stroke="hsl(215 15% 55%)" fontSize={12} />
+                      <YAxis stroke="hsl(215 15% 55%)" fontSize={10} width={30} />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(240 6% 7%)",
                           border: "1px solid hsl(240 5% 18%)",
                           borderRadius: "8px",
+                          fontSize: "12px",
                         }}
                       />
                       <Line
@@ -242,20 +245,20 @@ const Dashboard = () => {
 
           {/* System Status */}
           <Card variant="elevated">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
+            <CardHeader className="pb-2 sm:pb-4">
+              <CardTitle className="text-base sm:text-lg flex items-center gap-2">
+                <Activity className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
                 Estado del sistema
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3 sm:space-y-4">
               <div className="flex items-center gap-3">
-                <div className="h-3 w-3 rounded-full bg-success animate-pulse" />
+                <div className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-success animate-pulse" />
                 <span className="text-sm">Sistema operativo</span>
               </div>
-              <div className="pt-4 border-t border-border">
-                <p className="text-sm text-muted-foreground">Última actividad</p>
-                <p className="text-lg font-medium">
+              <div className="pt-3 sm:pt-4 border-t border-border">
+                <p className="text-xs sm:text-sm text-muted-foreground">Última actividad</p>
+                <p className="text-base sm:text-lg font-medium">
                   {lastActivity
                     ? format(lastActivity, "dd MMM yyyy, HH:mm", { locale: es })
                     : "Sin actividad"}
