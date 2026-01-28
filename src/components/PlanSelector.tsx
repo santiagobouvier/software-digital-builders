@@ -99,7 +99,8 @@ export const PlanSelector = ({
 
   const getCustomAnnualPrice = () => {
     const monthly = parseFloat(localCustomPrice) || 0;
-    return Math.round(monthly * 10); // 2 meses gratis = 17% descuento
+    // Plan personalizado: se ingresa el monto manualmente, sin descuento anual
+    return Math.round(monthly * 12);
   };
 
   const isCustomSelected = selectedPlanId === CUSTOM_PLAN_ID;
@@ -129,9 +130,11 @@ export const PlanSelector = ({
           </ToggleGroupItem>
           <ToggleGroupItem value="annual" className="px-4 text-sm gap-1.5">
             Anual
-            <Badge variant="secondary" className="bg-success/20 text-success text-xs">
-              -17%
-            </Badge>
+            {!isCustomSelected && (
+              <Badge variant="secondary" className="bg-success/20 text-success text-xs">
+                -17%
+              </Badge>
+            )}
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
