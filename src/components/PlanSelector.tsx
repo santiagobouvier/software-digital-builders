@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Loader2, Check, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Loader2, Check, Sparkles, Edit3 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Plan {
@@ -19,31 +19,42 @@ interface Plan {
   currency?: string;
 }
 
-const getCurrencySymbol = (currency?: string) => {
-  return currency === "UYU" ? "$U" : "$";
-};
-
 interface PlanSelectorProps {
   selectedPlanId: string | null;
   selectedBillingCycle: "monthly" | "annual";
   onPlanChange: (planId: string) => void;
   onBillingCycleChange: (cycle: "monthly" | "annual") => void;
+  customPrice?: number | null;
+  onCustomPriceChange?: (price: number | null) => void;
   disabled?: boolean;
 }
+
+const CUSTOM_PLAN_ID = "custom";
 
 export const PlanSelector = ({
   selectedPlanId,
   selectedBillingCycle,
   onPlanChange,
   onBillingCycleChange,
+  customPrice,
+  onCustomPriceChange,
   disabled = false,
 }: PlanSelectorProps) => {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [localCustomPrice, setLocalCustomPrice] = useState<string>(
+    customPrice ? customPrice.toString() : ""
+  );
 
   useEffect(() => {
     loadPlans();
   }, []);
+
+  useEffect(() => {
+    if (customPrice) {
+      setLocalCustomPrice(customPrice.toString());
+    }
+  }, [customPrice]);
 
   const loadPlans = async () => {
     const { data } = await supabase
@@ -75,6 +86,24 @@ export const PlanSelector = ({
     const savings = monthlyTotal - plan.annual_price;
     return Math.round((savings / monthlyTotal) * 100);
   };
+
+  const handleCustomPriceChange = (value: string) => {
+    setLocalCustomPrice(value);
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue > 0) {
+      onCustomPriceChange?.(numValue);
+    } else {
+      onCustomPriceChange?.(null);
+    }
+  };
+
+  const getCustomAnnualPrice = () => {
+    const monthly = parseFloat(localCustomPrice) || 0;
+    return Math.round(monthly * 10); // 2 meses gratis = 17% descuento
+  };
+
+  const isCustomSelected = selectedPlanId === CUSTOM_PLAN_ID;
+  const selectedPlan = plans.find(p => p.id === selectedPlanId);
 
   if (isLoading) {
     return (
@@ -116,7 +145,7 @@ export const PlanSelector = ({
       >
         {plans.map((plan) => {
           const isSelected = selectedPlanId === plan.id;
-          const isPro = plan.slug === "pro";
+          const isPro = plan.slug === "pro-uyu";
           
           return (
             <Label
@@ -164,7 +193,7 @@ export const PlanSelector = ({
                   </div>
                   <div className="text-right flex-shrink-0">
                     <div className="text-xl font-bold">
-                      {getCurrencySymbol(plan.currency)}{getMonthlyEquivalent(plan).toFixed(0)}
+                      $U {getMonthlyEquivalent(plan).toLocaleString("es-UY")}
                       <span className="text-sm font-normal text-muted-foreground">/mes</span>
                     </div>
                     {selectedBillingCycle === "annual" && (
@@ -172,26 +201,83 @@ export const PlanSelector = ({
                         Ahorras {getSavingsPercent(plan)}%
                       </p>
                     )}
-                    <p className="text-xs text-muted-foreground">
-                      {plan.currency}
-                    </p>
                   </div>
                 </CardContent>
               </Card>
             </Label>
           );
         })}
+
+        {/* Custom Plan Option */}
+        <Label
+          htmlFor={CUSTOM_PLAN_ID}
+          className={cn(
+            "cursor-pointer",
+            disabled && "cursor-not-allowed opacity-60"
+          )}
+        >
+          <Card
+            className={cn(
+              "relative transition-all",
+              isCustomSelected
+                ? "border-primary bg-primary/5 ring-1 ring-primary"
+                : "border-border hover:border-muted-foreground/50 border-dashed"
+            )}
+          >
+            <CardContent className="p-4 flex items-center gap-4">
+              <RadioGroupItem
+                value={CUSTOM_PLAN_ID}
+                id={CUSTOM_PLAN_ID}
+                className="flex-shrink-0"
+                disabled={disabled}
+              />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <Edit3 className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-semibold">Personalizado</span>
+                  {isCustomSelected && (
+                    <Check className="h-4 w-4 text-primary" />
+                  )}
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Definí un precio a medida
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">$U</span>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={localCustomPrice}
+                  onChange={(e) => handleCustomPriceChange(e.target.value)}
+                  onClick={() => onPlanChange(CUSTOM_PLAN_ID)}
+                  className="w-24 text-right"
+                  disabled={disabled}
+                />
+                <span className="text-sm text-muted-foreground">/mes</span>
+              </div>
+            </CardContent>
+          </Card>
+        </Label>
       </RadioGroup>
 
       {/* Total */}
-      {selectedPlanId && plans.find(p => p.id === selectedPlanId) && (
+      {selectedPlanId && (
         <div className="p-3 bg-muted/30 rounded-lg flex justify-between items-center">
           <span className="text-sm text-muted-foreground">
             Total a pagar {selectedBillingCycle === "annual" ? "anualmente" : "mensualmente"}
           </span>
           <span className="font-semibold text-lg">
-            {getCurrencySymbol(plans.find(p => p.id === selectedPlanId)!.currency)}
-            {getPrice(plans.find(p => p.id === selectedPlanId)!).toFixed(0)} {plans.find(p => p.id === selectedPlanId)!.currency}
+            {isCustomSelected ? (
+              <>
+                $U {selectedBillingCycle === "annual" 
+                  ? getCustomAnnualPrice().toLocaleString("es-UY")
+                  : (parseFloat(localCustomPrice) || 0).toLocaleString("es-UY")
+                }
+              </>
+            ) : selectedPlan ? (
+              <>$U {getPrice(selectedPlan).toLocaleString("es-UY")}</>
+            ) : null}
           </span>
         </div>
       )}

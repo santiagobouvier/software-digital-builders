@@ -58,6 +58,9 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
   // Form state
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [customPrice, setCustomPrice] = useState<number | null>(null);
+
+  const CUSTOM_PLAN_ID = "custom";
 
   useEffect(() => {
     loadData();
@@ -102,9 +105,28 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
   const handleSaveSubscription = async () => {
     if (!selectedPlanId) return;
     
+    const isCustom = selectedPlanId === CUSTOM_PLAN_ID;
+    
+    // Validate custom price
+    if (isCustom && (!customPrice || customPrice <= 0)) {
+      toast({
+        title: "Error",
+        description: "Ingresá un precio válido para el plan personalizado.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsSaving(true);
-    const selectedPlan = plans.find(p => p.id === selectedPlanId);
-    if (!selectedPlan) return;
+    const selectedPlan = isCustom ? null : plans.find(p => p.id === selectedPlanId);
+    
+    if (!isCustom && !selectedPlan) {
+      setIsSaving(false);
+      return;
+    }
+
+    const monthlyPrice = isCustom ? customPrice! : selectedPlan!.monthly_price;
+    const annualPrice = isCustom ? Math.round(customPrice! * 10) : selectedPlan!.annual_price;
 
     const now = new Date();
     const nextBilling = billingCycle === "monthly" 
@@ -116,12 +138,12 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
       const { error } = await supabase
         .from("bot_subscriptions")
         .update({
-          plan_id: selectedPlanId,
+          plan_id: isCustom ? null : selectedPlanId,
           plan: billingCycle,
-          monthly_price: selectedPlan.monthly_price,
-          annual_price: selectedPlan.annual_price,
+          monthly_price: monthlyPrice,
+          annual_price: annualPrice,
           next_billing_at: nextBilling.toISOString(),
-          currency: selectedPlan.currency || "USD",
+          currency: "UYU",
         })
         .eq("id", subscription.id);
 
@@ -134,7 +156,9 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
       } else {
         toast({
           title: "Suscripción actualizada",
-          description: `Plan cambiado a ${selectedPlan.name} (${billingCycle === "annual" ? "anual" : "mensual"}).`,
+          description: isCustom 
+            ? `Plan personalizado ($U ${monthlyPrice.toLocaleString("es-UY")}/mes) activado.`
+            : `Plan cambiado a ${selectedPlan!.name} (${billingCycle === "annual" ? "anual" : "mensual"}).`,
         });
         loadData();
         setIsDialogOpen(false);
@@ -146,14 +170,14 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
         .insert({
           bot_id: botId,
           company_id: companyId,
-          plan_id: selectedPlanId,
+          plan_id: isCustom ? null : selectedPlanId,
           plan: billingCycle,
-          monthly_price: selectedPlan.monthly_price,
-          annual_price: selectedPlan.annual_price,
+          monthly_price: monthlyPrice,
+          annual_price: annualPrice,
           started_at: now.toISOString(),
           next_billing_at: nextBilling.toISOString(),
           is_active: true,
-          currency: selectedPlan.currency || "USD",
+          currency: "UYU",
         });
 
       if (error) {
@@ -165,7 +189,9 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
       } else {
         toast({
           title: "Suscripción activada",
-          description: `Plan ${selectedPlan.name} activado correctamente.`,
+          description: isCustom 
+            ? `Plan personalizado ($U ${monthlyPrice.toLocaleString("es-UY")}/mes) activado.`
+            : `Plan ${selectedPlan!.name} activado correctamente.`,
         });
         loadData();
         setIsDialogOpen(false);
@@ -176,7 +202,8 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
   };
 
   const getCurrentPlanName = () => {
-    if (!subscription || !subscription.plan_id) return null;
+    if (!subscription) return null;
+    if (!subscription.plan_id) return "Personalizado";
     return plans.find(p => p.id === subscription.plan_id)?.name || null;
   };
 
@@ -241,6 +268,8 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
               selectedBillingCycle={billingCycle}
               onPlanChange={setSelectedPlanId}
               onBillingCycleChange={setBillingCycle}
+              customPrice={customPrice}
+              onCustomPriceChange={setCustomPrice}
             />
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
@@ -380,6 +409,8 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
             selectedBillingCycle={billingCycle}
             onPlanChange={setSelectedPlanId}
             onBillingCycleChange={setBillingCycle}
+            customPrice={customPrice}
+            onCustomPriceChange={setCustomPrice}
           />
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
