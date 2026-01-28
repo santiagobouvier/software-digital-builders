@@ -83,6 +83,7 @@ export type Database = {
           monthly_price: number
           next_billing_at: string
           plan: Database["public"]["Enums"]["subscription_plan"]
+          plan_id: string | null
           started_at: string
           updated_at: string
         }
@@ -96,6 +97,7 @@ export type Database = {
           monthly_price?: number
           next_billing_at: string
           plan?: Database["public"]["Enums"]["subscription_plan"]
+          plan_id?: string | null
           started_at?: string
           updated_at?: string
         }
@@ -109,6 +111,7 @@ export type Database = {
           monthly_price?: number
           next_billing_at?: string
           plan?: Database["public"]["Enums"]["subscription_plan"]
+          plan_id?: string | null
           started_at?: string
           updated_at?: string
         }
@@ -125,6 +128,13 @@ export type Database = {
             columns: ["company_id"]
             isOneToOne: false
             referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
             referencedColumns: ["id"]
           },
         ]
@@ -292,6 +302,45 @@ export type Database = {
           id?: string
           name?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      subscription_plans: {
+        Row: {
+          annual_price: number
+          created_at: string
+          description: string | null
+          features: Json | null
+          id: string
+          is_active: boolean
+          monthly_price: number
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          annual_price?: number
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_price?: number
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          annual_price?: number
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          is_active?: boolean
+          monthly_price?: number
+          name?: string
+          slug?: string
+          sort_order?: number
         }
         Relationships: []
       }

@@ -4,7 +4,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { KPICard } from "@/components/KPICard";
-import { BotFinances } from "@/components/BotFinances";
+import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { supabase } from "@/integrations/supabase/client";
 import {
   ChartContainer,
@@ -347,8 +347,8 @@ const BotDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Finances Section */}
-            <BotFinances botId={bot.id} isOwner={isOwner} />
+            {/* Subscription & Finances Section */}
+            <SubscriptionManager botId={bot.id} companyId={bot.company_id} isOwner={isOwner} />
           </>
         )}
       </div>
