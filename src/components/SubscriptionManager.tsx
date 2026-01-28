@@ -126,7 +126,7 @@ export const SubscriptionManager = ({ botId, companyId, isOwner }: SubscriptionM
     }
 
     const monthlyPrice = isCustom ? customPrice! : selectedPlan!.monthly_price;
-    const annualPrice = isCustom ? Math.round(customPrice! * 10) : selectedPlan!.annual_price;
+    const annualPrice = isCustom ? Math.round(customPrice! * 12) : selectedPlan!.annual_price;
 
     const now = new Date();
     const nextBilling = billingCycle === "monthly" 
