@@ -7,7 +7,7 @@ export const HeroSection = () => {
   return (
     <section
       id="inicio"
-      className="min-h-screen flex items-center justify-center pt-32 sm:pt-28 lg:pt-24 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center pt-32 sm:pt-36 lg:pt-40 relative overflow-hidden"
     >
       {/* Subtle grid background */}
       <div 
