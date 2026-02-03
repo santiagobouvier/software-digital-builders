@@ -30,8 +30,19 @@ const problems = [
 
 export const ProblemsSection = () => {
   return (
-    <section className="py-20 sm:py-32 bg-background">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 sm:py-32 bg-background relative overflow-hidden">
+      {/* Subtle horizontal lines */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-[20%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+        <div className="absolute top-[80%] left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/30 to-transparent" />
+      </div>
+
+      {/* Corner accent */}
+      <div className="absolute top-12 right-8 hidden sm:block">
+        <div className="w-16 h-16 border-r border-t border-border/30 rounded-tr-2xl" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Problemas que resolvemos
@@ -46,11 +57,11 @@ export const ProblemsSection = () => {
             <Card
               key={problem.title}
               variant="interactive"
-              className="group"
+              className="group bg-card/50 backdrop-blur-sm"
             >
               <CardContent className="p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-destructive/10 flex items-center justify-center border border-destructive/20">
                     <problem.icon className="h-5 w-5 text-destructive" />
                   </div>
                   <div>
