@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,7 +8,7 @@ import { GridBackground } from "@/components/GridBackground";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, ArrowLeft } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -54,6 +54,17 @@ const Login = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
       <GridBackground />
+      
+      {/* Back button */}
+      <Link 
+        to="/" 
+        className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors group"
+      >
+        <div className="p-2 rounded-lg border border-border/50 bg-background/50 backdrop-blur-sm group-hover:border-primary/50 group-hover:bg-primary/5 transition-all">
+          <ArrowLeft className="h-4 w-4" />
+        </div>
+        <span className="text-sm hidden sm:inline">Volver al inicio</span>
+      </Link>
       
       {/* Radial gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
