@@ -9,6 +9,7 @@ import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
 import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
 import { Starfield } from "@/components/landing/Starfield";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
 
 const Landing = () => {
   return (
@@ -28,6 +29,7 @@ const Landing = () => {
         <ContactSection />
       </main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 };
