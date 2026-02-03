@@ -8,7 +8,7 @@ export const HeroSection = () => {
   return (
     <section
       id="inicio"
-      className="min-h-screen flex items-center justify-center pt-20 sm:pt-16 relative overflow-hidden"
+      className="min-h-screen flex items-center justify-center pt-24 sm:pt-20 relative overflow-hidden"
     >
       {/* Animated grid background */}
       <div className="absolute inset-0">
@@ -98,7 +98,7 @@ export const HeroSection = () => {
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="absolute top-20 left-4 sm:left-8"
+        className="absolute top-24 left-4 sm:left-8"
       >
         <div className="w-8 h-8 border-l border-t border-primary/20 rounded-tl-lg" />
       </motion.div>
@@ -106,7 +106,7 @@ export const HeroSection = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.8 }}
-        className="absolute top-20 right-4 sm:right-8"
+        className="absolute top-24 right-4 sm:right-8"
       >
         <div className="w-8 h-8 border-r border-t border-primary/20 rounded-tr-lg" />
       </motion.div>
@@ -117,23 +117,8 @@ export const HeroSection = () => {
       {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Badge with better spacing */}
-          <motion.div 
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="mb-8 sm:mb-10"
-          >
-            <Badge
-              variant="outline"
-              className="px-4 py-2 text-xs font-medium border-primary/40 text-primary bg-primary/5 backdrop-blur-sm"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-primary mr-2 animate-pulse" />
-              Plataforma SaaS de Automatización
-            </Badge>
-          </motion.div>
 
-          {/* Title */}
+          {/* Title - sin badge arriba */}
           <motion.h1 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -144,14 +129,14 @@ export const HeroSection = () => {
             <motion.span 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
               className="text-primary relative inline-block"
             >
               bots
               <motion.span 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
                 className="absolute -inset-1 bg-primary/20 blur-lg -z-10" 
               />
             </motion.span>{" "}
@@ -162,7 +147,7 @@ export const HeroSection = () => {
           <motion.p 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
             className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
           >
             Control total de métricas, usuarios, suscripciones y facturación para automatizaciones de WhatsApp y Telegram.
@@ -172,7 +157,7 @@ export const HeroSection = () => {
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
@@ -196,7 +181,7 @@ export const HeroSection = () => {
           <motion.div 
             initial={{ opacity: 0, y: 60, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
+            transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
             className="mt-16 sm:mt-20 relative"
           >
             {/* Glow behind preview */}
@@ -228,7 +213,7 @@ export const HeroSection = () => {
                       key={kpi.label}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 1.2 + i * 0.1 }}
+                      transition={{ duration: 0.4, delay: 0.9 + i * 0.1 }}
                       className="bg-secondary/50 rounded-lg p-2.5 sm:p-4 border border-border/30"
                     >
                       <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">
@@ -248,7 +233,7 @@ export const HeroSection = () => {
                       key={i}
                       initial={{ height: 0 }}
                       animate={{ height: `${h}%` }}
-                      transition={{ duration: 0.6, delay: 1.5 + i * 0.05, ease: "easeOut" }}
+                      transition={{ duration: 0.6, delay: 1.1 + i * 0.05, ease: "easeOut" }}
                       className="flex-1 bg-gradient-to-t from-primary/60 to-primary/30 rounded-t"
                     />
                   ))}
