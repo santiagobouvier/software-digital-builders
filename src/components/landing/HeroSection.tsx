@@ -8,47 +8,61 @@ export const HeroSection = () => {
       id="inicio"
       className="min-h-screen flex items-center justify-center pt-24 sm:pt-20 relative overflow-hidden"
     >
-      {/* Static grid background */}
+      {/* Subtle grid background */}
       <div 
-        className="absolute inset-0 opacity-15"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(hsl(187 100% 50% / 0.3) 1px, transparent 1px),
-            linear-gradient(90deg, hsl(187 100% 50% / 0.3) 1px, transparent 1px)
+            linear-gradient(hsl(187 100% 50% / 0.2) 1px, transparent 1px),
+            linear-gradient(90deg, hsl(187 100% 50% / 0.2) 1px, transparent 1px)
           `,
-          backgroundSize: '60px 60px',
+          backgroundSize: '80px 80px',
         }}
       />
 
-      {/* Static glows - no animation, just CSS */}
+      {/* Main glow - floating effect */}
       <div 
-        className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] opacity-80"
+        className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] sm:w-[700px] sm:h-[700px] opacity-60 animate-float-slow"
         style={{
-          background: 'radial-gradient(circle, hsl(187 100% 50% / 0.2) 0%, hsl(187 100% 50% / 0.05) 40%, transparent 70%)',
+          background: 'radial-gradient(circle, hsl(187 100% 50% / 0.15) 0%, hsl(187 100% 50% / 0.03) 40%, transparent 70%)',
         }}
       />
 
+      {/* Floating orbs - space feel */}
       <div 
-        className="absolute -top-32 -left-32 w-[400px] h-[400px] opacity-30"
+        className="absolute top-[15%] left-[10%] w-[200px] h-[200px] opacity-20 animate-float-slow"
         style={{
-          background: 'radial-gradient(circle, hsl(200 100% 60% / 0.4) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, hsl(260 80% 60% / 0.5) 0%, transparent 60%)',
+          animationDelay: '0s',
         }}
       />
-
       <div 
-        className="absolute -top-20 -right-20 w-[300px] h-[300px] opacity-25"
+        className="absolute top-[60%] right-[5%] w-[150px] h-[150px] opacity-15 animate-float-reverse"
         style={{
-          background: 'radial-gradient(circle, hsl(187 100% 50% / 0.4) 0%, transparent 60%)',
+          background: 'radial-gradient(circle, hsl(187 100% 50% / 0.6) 0%, transparent 60%)',
+          animationDelay: '2s',
+        }}
+      />
+      <div 
+        className="absolute bottom-[20%] left-[5%] w-[120px] h-[120px] opacity-10 animate-float"
+        style={{
+          background: 'radial-gradient(circle, hsl(200 100% 60% / 0.5) 0%, transparent 60%)',
+          animationDelay: '1s',
         }}
       />
 
-      {/* Static decorative elements */}
-      <div className="absolute top-1/3 left-[10%] w-2 h-2 rounded-full bg-primary/50 animate-pulse" />
-      <div className="absolute top-1/2 right-[15%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '1s' }} />
+      {/* Floating small particles */}
+      <div className="absolute top-[25%] left-[20%] w-1.5 h-1.5 rounded-full bg-primary/60 animate-float-slow" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute top-[40%] right-[25%] w-2 h-2 rounded-full bg-primary/40 animate-float-reverse" style={{ animationDelay: '1.5s' }} />
+      <div className="absolute bottom-[30%] left-[35%] w-1 h-1 rounded-full bg-white/50 animate-float" style={{ animationDelay: '2.5s' }} />
+      <div className="absolute top-[50%] left-[8%] w-1 h-1 rounded-full bg-primary/50 animate-float-slow" style={{ animationDelay: '3s' }} />
+      <div className="absolute top-[35%] right-[12%] w-1.5 h-1.5 rounded-full bg-white/30 animate-float-reverse" style={{ animationDelay: '0.8s' }} />
 
-      <div className="absolute top-[30%] left-0 w-32 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <div className="absolute top-[60%] right-0 w-40 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      {/* Decorative lines */}
+      <div className="absolute top-[30%] left-0 w-32 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent animate-float-slow" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-[60%] right-0 w-40 h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent animate-float-reverse" />
 
+      {/* Corner accents */}
       <div className="absolute top-24 left-4 sm:left-8">
         <div className="w-8 h-8 border-l border-t border-primary/20 rounded-tl-lg" />
       </div>
@@ -59,13 +73,13 @@ export const HeroSection = () => {
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
 
-      {/* Content with CSS animations */}
+      {/* Content */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight animate-fade-in">
             Soluciones{" "}
-            <span className="text-primary relative inline-block">
+            <span className="text-primary relative inline-block animate-float-slow" style={{ animationDuration: '5s' }}>
               tecnológicas
               <span className="absolute -inset-1 bg-primary/20 rounded-lg -z-10" />
             </span>{" "}
@@ -90,8 +104,8 @@ export const HeroSection = () => {
             </Button>
           </div>
 
-          {/* Dashboard Preview */}
-          <div className="mt-16 sm:mt-20 relative animate-fade-in" style={{ animationDelay: '0.3s' }}>
+          {/* Dashboard Preview - floating effect */}
+          <div className="mt-16 sm:mt-20 relative animate-fade-in animate-float-slow" style={{ animationDelay: '0.3s', animationDuration: '10s' }}>
             <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-3xl" />
             
             <div className="relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-1.5 sm:p-2 shadow-2xl">

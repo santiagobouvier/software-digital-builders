@@ -7,12 +7,16 @@ import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
 import { ClientsSection } from "@/components/landing/ClientsSection";
 import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
+import { Starfield } from "@/components/landing/Starfield";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground relative">
+      {/* Space starfield background */}
+      <Starfield />
+      
       <LandingNavbar />
-      <main>
+      <main className="relative z-10">
         <HeroSection />
         <PlatformSection />
         <ServicesSection />
