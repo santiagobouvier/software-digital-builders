@@ -9,9 +9,8 @@ export const AboutSection = () => {
     offset: ["start end", "end start"],
   });
 
-  const logoY = useTransform(scrollYProgress, [0, 1], [50, -50]);
-  const logoRotate = useTransform(scrollYProgress, [0, 1], [-5, 5]);
-  const logoScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.8, 1, 0.9]);
+  const logoY = useTransform(scrollYProgress, [0, 1], [30, -30]);
+  const logoScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.9, 1, 0.95]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -69,7 +68,7 @@ export const AboutSection = () => {
             {/* Floating Logo */}
             <motion.div
               className="relative flex items-center justify-center order-1 lg:order-1"
-              style={{ y: logoY, rotate: logoRotate, scale: logoScale }}
+              style={{ y: logoY, scale: logoScale }}
             >
               {/* Glow behind logo */}
               <motion.div
