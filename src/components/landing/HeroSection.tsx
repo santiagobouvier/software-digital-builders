@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { motion } from "framer-motion";
 
 export const HeroSection = () => {
   return (
@@ -11,8 +12,11 @@ export const HeroSection = () => {
     >
       {/* Animated grid background */}
       <div className="absolute inset-0">
-        <div 
-          className="absolute inset-0 opacity-[0.15]"
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.15 }}
+          transition={{ duration: 2 }}
+          className="absolute inset-0"
           style={{
             backgroundImage: `
               linear-gradient(hsl(187 100% 50% / 0.3) 1px, transparent 1px),
@@ -21,21 +25,13 @@ export const HeroSection = () => {
             backgroundSize: '60px 60px',
           }}
         />
-        {/* Perspective grid lines */}
-        <div 
-          className="absolute inset-0 opacity-[0.08]"
-          style={{
-            backgroundImage: `
-              linear-gradient(180deg, transparent 0%, hsl(187 100% 50% / 0.2) 50%, transparent 100%)
-            `,
-            backgroundSize: '100% 4px',
-            backgroundPosition: 'center',
-          }}
-        />
       </div>
 
-      {/* Main central glow */}
-      <div 
+      {/* Main central glow - animated */}
+      <motion.div 
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 1.5, ease: "easeOut" }}
         className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[500px] h-[500px] sm:w-[700px] sm:h-[700px]"
         style={{
           background: 'radial-gradient(circle, hsl(187 100% 50% / 0.25) 0%, hsl(187 100% 50% / 0.08) 35%, transparent 65%)',
@@ -44,8 +40,11 @@ export const HeroSection = () => {
       />
 
       {/* Top left accent glow */}
-      <div 
-        className="absolute -top-32 -left-32 w-[400px] h-[400px] opacity-40"
+      <motion.div 
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 0.4 }}
+        transition={{ duration: 1.2, delay: 0.3 }}
+        className="absolute -top-32 -left-32 w-[400px] h-[400px]"
         style={{
           background: 'radial-gradient(circle, hsl(200 100% 60% / 0.3) 0%, transparent 60%)',
           filter: 'blur(80px)',
@@ -53,8 +52,11 @@ export const HeroSection = () => {
       />
 
       {/* Top right accent glow */}
-      <div 
-        className="absolute -top-20 -right-20 w-[300px] h-[300px] opacity-30"
+      <motion.div 
+        initial={{ x: 100, opacity: 0 }}
+        animate={{ x: 0, opacity: 0.3 }}
+        transition={{ duration: 1.2, delay: 0.5 }}
+        className="absolute -top-20 -right-20 w-[300px] h-[300px]"
         style={{
           background: 'radial-gradient(circle, hsl(187 100% 50% / 0.4) 0%, transparent 60%)',
           filter: 'blur(60px)',
@@ -62,32 +64,52 @@ export const HeroSection = () => {
       />
 
       {/* Animated floating orbs */}
-      <div 
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.5 }}
         className="absolute top-1/3 left-[10%] w-2 h-2 rounded-full bg-primary/50 animate-pulse"
         style={{ animationDuration: '3s' }}
       />
-      <div 
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1.8 }}
         className="absolute top-1/2 right-[15%] w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse"
         style={{ animationDuration: '4s', animationDelay: '1s' }}
       />
-      <div 
-        className="absolute top-[40%] left-[20%] w-1 h-1 rounded-full bg-primary/30 animate-pulse"
-        style={{ animationDuration: '5s', animationDelay: '2s' }}
+
+      {/* Decorative lines - animated */}
+      <motion.div 
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.8, delay: 1 }}
+        className="absolute top-[30%] left-0 w-32 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent origin-left" 
+      />
+      <motion.div 
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: 1 }}
+        transition={{ duration: 0.8, delay: 1.2 }}
+        className="absolute top-[60%] right-0 w-40 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent origin-right" 
       />
 
-      {/* Decorative lines */}
-      <div className="absolute top-[30%] left-0 w-32 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-      <div className="absolute top-[60%] right-0 w-40 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-      <div className="absolute top-[45%] left-[5%] w-px h-20 bg-gradient-to-b from-transparent via-primary/20 to-transparent hidden sm:block" />
-      <div className="absolute top-[35%] right-[8%] w-px h-16 bg-gradient-to-b from-transparent via-primary/15 to-transparent hidden sm:block" />
-
-      {/* Corner accents */}
-      <div className="absolute top-20 left-4 sm:left-8">
+      {/* Corner accents - animated */}
+      <motion.div 
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="absolute top-20 left-4 sm:left-8"
+      >
         <div className="w-8 h-8 border-l border-t border-primary/20 rounded-tl-lg" />
-      </div>
-      <div className="absolute top-20 right-4 sm:right-8">
+      </motion.div>
+      <motion.div 
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="absolute top-20 right-4 sm:right-8"
+      >
         <div className="w-8 h-8 border-r border-t border-primary/20 rounded-tr-lg" />
-      </div>
+      </motion.div>
 
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
@@ -96,7 +118,12 @@ export const HeroSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Badge with better spacing */}
-          <div className="mb-8 sm:mb-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="mb-8 sm:mb-10"
+          >
             <Badge
               variant="outline"
               className="px-4 py-2 text-xs font-medium border-primary/40 text-primary bg-primary/5 backdrop-blur-sm"
@@ -104,40 +131,74 @@ export const HeroSection = () => {
               <span className="w-1.5 h-1.5 rounded-full bg-primary mr-2 animate-pulse" />
               Plataforma SaaS de Automatización
             </Badge>
-          </div>
+          </motion.div>
 
           {/* Title */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight">
+          <motion.h1 
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
+            className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight"
+          >
             Gestiona y monetiza tus{" "}
-            <span className="text-primary relative">
+            <motion.span 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="text-primary relative inline-block"
+            >
               bots
-              <span className="absolute -inset-1 bg-primary/20 blur-lg -z-10" />
-            </span>{" "}
+              <motion.span 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="absolute -inset-1 bg-primary/20 blur-lg -z-10" 
+              />
+            </motion.span>{" "}
             desde una sola plataforma
-          </h1>
+          </motion.h1>
 
           {/* Subtitle */}
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
+          <motion.p 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
+          >
             Control total de métricas, usuarios, suscripciones y facturación para automatizaciones de WhatsApp y Telegram.
-          </p>
+          </motion.p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button asChild size="lg" className="min-w-[180px] h-12 text-base font-semibold shadow-glow">
-              <Link to="/login">
-                Entrar al sistema
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="min-w-[180px] h-12 text-base border-border/60 hover:border-primary/50 hover:bg-primary/5">
-              <a href="mailto:contacto@digitalbuilders.net">
-                Solicitar demo
-              </a>
-            </Button>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+          >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <Button asChild size="lg" className="min-w-[180px] h-12 text-base font-semibold shadow-glow">
+                <Link to="/login">
+                  Entrar al sistema
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
+              <Button asChild variant="outline" size="lg" className="min-w-[180px] h-12 text-base border-border/60 hover:border-primary/50 hover:bg-primary/5">
+                <a href="mailto:contacto@digitalbuilders.net">
+                  Solicitar demo
+                </a>
+              </Button>
+            </motion.div>
+          </motion.div>
 
           {/* Dashboard Preview */}
-          <div className="mt-16 sm:mt-20 relative">
+          <motion.div 
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.9, ease: "easeOut" }}
+            className="mt-16 sm:mt-20 relative"
+          >
             {/* Glow behind preview */}
             <div className="absolute -inset-8 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-3xl blur-2xl" />
             
@@ -158,13 +219,16 @@ export const HeroSection = () => {
                 {/* Mock KPI Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
                   {[
-                    { label: "Mensajes", value: "12.4K", color: "primary" },
-                    { label: "Leads", value: "847", color: "success" },
-                    { label: "Handoffs", value: "156", color: "warning" },
-                    { label: "MRR", value: "$2.4K", color: "primary" },
-                  ].map((kpi) => (
-                    <div
+                    { label: "Mensajes", value: "12.4K" },
+                    { label: "Leads", value: "847" },
+                    { label: "Handoffs", value: "156" },
+                    { label: "MRR", value: "$2.4K" },
+                  ].map((kpi, i) => (
+                    <motion.div
                       key={kpi.label}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 1.2 + i * 0.1 }}
                       className="bg-secondary/50 rounded-lg p-2.5 sm:p-4 border border-border/30"
                     >
                       <div className="text-[10px] sm:text-xs text-muted-foreground mb-1">
@@ -173,23 +237,25 @@ export const HeroSection = () => {
                       <div className="text-sm sm:text-xl font-semibold text-foreground">
                         {kpi.value}
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
 
                 {/* Mock Chart Area */}
                 <div className="h-24 sm:h-48 bg-secondary/30 rounded-lg flex items-end justify-around p-2 sm:p-4 gap-0.5 sm:gap-1 border border-border/20">
                   {[40, 65, 45, 80, 55, 70, 60, 85, 75, 90, 70, 95].map((h, i) => (
-                    <div
+                    <motion.div
                       key={i}
-                      className="flex-1 bg-gradient-to-t from-primary/60 to-primary/30 rounded-t transition-all duration-500"
-                      style={{ height: `${h}%` }}
+                      initial={{ height: 0 }}
+                      animate={{ height: `${h}%` }}
+                      transition={{ duration: 0.6, delay: 1.5 + i * 0.05, ease: "easeOut" }}
+                      className="flex-1 bg-gradient-to-t from-primary/60 to-primary/30 rounded-t"
                     />
                   ))}
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
