@@ -1,11 +1,12 @@
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { ProblemsSection } from "@/components/landing/ProblemsSection";
 import { PlatformSection } from "@/components/landing/PlatformSection";
-import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
-import { HowItWorksSection } from "@/components/landing/HowItWorksSection";
+import { ServicesSection } from "@/components/landing/ServicesSection";
 import { SecuritySection } from "@/components/landing/SecuritySection";
-import { CTASection } from "@/components/landing/CTASection";
+import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
+import { AccessSection } from "@/components/landing/AccessSection";
+import { ClientsSection } from "@/components/landing/ClientsSection";
+import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
 
 const Landing = () => {
@@ -14,12 +15,13 @@ const Landing = () => {
       <LandingNavbar />
       <main>
         <HeroSection />
-        <ProblemsSection />
         <PlatformSection />
-        <SelfServiceSection />
-        <HowItWorksSection />
+        <ServicesSection />
         <SecuritySection />
-        <CTASection />
+        <SelfServiceSection />
+        <AccessSection />
+        <ClientsSection />
+        <ContactSection />
       </main>
       <Footer />
     </div>

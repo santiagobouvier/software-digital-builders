@@ -15,8 +15,9 @@ import {
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
   { label: "Plataforma", href: "#plataforma" },
-  { label: "Autogestión", href: "#autogestion" },
+  { label: "Servicios", href: "#servicios" },
   { label: "Seguridad", href: "#seguridad" },
+  { label: "Contacto", href: "#contacto" },
 ];
 
 export const LandingNavbar = () => {
