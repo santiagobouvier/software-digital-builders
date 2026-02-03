@@ -7,6 +7,7 @@ import {
   Code2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 
 const services = [
   {
@@ -48,68 +49,119 @@ const services = [
   },
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 40, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.5, type: "tween" as const },
+  },
+};
+
 export const ServicesSection = () => {
   return (
     <section id="servicios" className="py-20 sm:py-32 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-secondary/5" />
 
-      {/* Static glow */}
-      <div
+      {/* Animated glow */}
+      <motion.div
         className="absolute top-1/2 -right-40 w-[500px] h-[600px] -translate-y-1/2 opacity-15"
         style={{
           background: "radial-gradient(ellipse at center, hsl(187 100% 50% / 0.25) 0%, transparent 60%)",
         }}
+        animate={{ 
+          y: ["-50%", "-45%", "-50%"],
+          opacity: [0.1, 0.2, 0.1],
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
       />
 
       {/* Top line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent" />
+      <motion.div 
+        className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent"
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+      />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
+        <motion.div 
+          className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.5 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Servicios
           </h2>
           <p className="text-muted-foreground">
             Soluciones tecnológicas prácticas para hacer crecer tu negocio.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto">
-          {services.map((service) => (
-            <Card
-              key={service.title}
-              className={`group bg-card/60 backdrop-blur-sm h-full transition-all duration-200 hover:-translate-y-1 ${
-                service.premium
-                  ? "border-primary/40 hover:border-primary/60"
-                  : "border-border/40 hover:border-border/60"
-              }`}
-            >
-              <CardContent className="p-6">
-                {service.premium && (
-                  <span className="inline-block text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-3 border border-primary/20">
-                    Premium
-                  </span>
-                )}
-                <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors duration-200 border ${
-                    service.premium
-                      ? "bg-primary/20 border-primary/30 group-hover:bg-primary/30 group-hover:border-primary/50"
-                      : "bg-primary/10 border-primary/20 group-hover:bg-primary/20 group-hover:border-primary/40"
-                  }`}
-                >
-                  <service.icon className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors duration-200">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {service.description}
-                </p>
-              </CardContent>
-            </Card>
+        <motion.div 
+          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-5xl mx-auto"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.1 }}
+        >
+          {services.map((service, index) => (
+            <motion.div key={service.title} variants={itemVariants}>
+              <Card
+                className={`group bg-card/60 backdrop-blur-sm h-full transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${
+                  service.premium
+                    ? "border-primary/40 hover:border-primary/60 hover:shadow-primary/10"
+                    : "border-border/40 hover:border-primary/40 hover:shadow-primary/5"
+                }`}
+              >
+                <CardContent className="p-6">
+                  {service.premium && (
+                    <motion.span 
+                      className="inline-block text-[10px] font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full mb-3 border border-primary/20"
+                      animate={{ opacity: [0.8, 1, 0.8] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    >
+                      Premium
+                    </motion.span>
+                  )}
+                  <motion.div
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors duration-300 border ${
+                      service.premium
+                        ? "bg-primary/20 border-primary/30 group-hover:bg-primary/30 group-hover:border-primary/50"
+                        : "bg-primary/10 border-primary/20 group-hover:bg-primary/20 group-hover:border-primary/40"
+                    }`}
+                    whileHover={{ scale: 1.1, rotate: -5 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                  >
+                    <service.icon className="h-6 w-6 text-primary" />
+                  </motion.div>
+                  <h3 className="font-semibold mb-2 group-hover:text-primary transition-colors duration-300">
+                    {service.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {service.description}
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
