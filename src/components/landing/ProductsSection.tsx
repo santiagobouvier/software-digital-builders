@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
-import { Globe, Settings, MessageCircle, Instagram, Building2, Code2 } from "lucide-react";
+import { Globe, Settings, Bot, Building2, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const products = [
@@ -16,17 +16,17 @@ const products = [
     description: "Webs con acceso a un sistema para editar y gestionar contenidos de forma independiente.",
   },
   {
-    icon: MessageCircle,
+    icon: Bot,
     title: "Bots para WhatsApp",
     description: "Automatización de atención y consultas por WhatsApp para empresas.",
   },
   {
-    icon: Instagram,
+    icon: Bot,
     title: "Bots para Instagram",
     description: "Respuesta automática y organización de mensajes en Instagram.",
   },
   {
-    icon: Building2,
+    icon: Bot,
     title: "Bots internos para empresas",
     description: "Bots privados para capacitación, soporte interno o uso del equipo.",
   },
