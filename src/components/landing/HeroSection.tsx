@@ -9,11 +9,29 @@ export const HeroSection = () => {
       id="inicio"
       className="min-h-screen flex items-center justify-center pt-16 relative overflow-hidden"
     >
-      {/* Subtle grid background */}
-      <div className="absolute inset-0 grid-background opacity-30" />
+      {/* Main glow effect - centered blob */}
+      <div 
+        className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] sm:w-[800px] sm:h-[800px] rounded-full opacity-30"
+        style={{
+          background: 'radial-gradient(circle, hsl(187 100% 50% / 0.4) 0%, hsl(187 100% 50% / 0.1) 40%, transparent 70%)',
+          filter: 'blur(80px)',
+        }}
+      />
       
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+      {/* Secondary glow - top accent */}
+      <div 
+        className="absolute -top-20 left-1/3 w-[400px] h-[400px] rounded-full opacity-20"
+        style={{
+          background: 'radial-gradient(circle, hsl(200 100% 60% / 0.5) 0%, transparent 60%)',
+          filter: 'blur(60px)',
+        }}
+      />
+
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 grid-background opacity-20" />
+      
+      {/* Bottom fade to background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background" />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
