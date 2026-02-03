@@ -5,7 +5,6 @@ import { PlatformSection } from "@/components/landing/PlatformSection";
 import { ServicesSection } from "@/components/landing/ServicesSection";
 import { SecuritySection } from "@/components/landing/SecuritySection";
 import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
-import { ClientsSection } from "@/components/landing/ClientsSection";
 import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
 import { Starfield } from "@/components/landing/Starfield";
@@ -24,7 +23,6 @@ const Landing = () => {
         <ServicesSection />
         <SecuritySection />
         <SelfServiceSection />
-        <ClientsSection />
         <ContactSection />
       </main>
       <Footer />
