@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GridBackground } from "@/components/GridBackground";
+import { Starfield } from "@/components/landing/Starfield";
 import { Logo } from "@/components/Logo";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -52,8 +52,9 @@ const Login = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden">
-      <GridBackground />
+    <div className="relative min-h-screen flex items-center justify-center p-4 overflow-hidden bg-background">
+      {/* Space starfield background */}
+      <Starfield />
       
       {/* Back button */}
       <Link 
@@ -66,20 +67,17 @@ const Login = () => {
         <span className="text-sm hidden sm:inline">Volver al inicio</span>
       </Link>
       
-      {/* Radial gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background pointer-events-none" />
+      {/* Subtle radial glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_40%,hsl(var(--primary)/0.08),transparent)] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-md space-y-8 animate-fade-in-up">
         {/* Logo */}
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center">
           <Logo size="lg" className="animate-float" />
-          <p className="text-muted-foreground text-center">
-            Panel de métricas y control para tus bots.
-          </p>
         </div>
 
         {/* Login Card */}
-        <Card variant="glass" className="border-border/50 backdrop-blur-xl">
+        <Card variant="glass" className="border-border/50 backdrop-blur-xl bg-card/60">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">
               Iniciar sesión
