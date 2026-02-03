@@ -144,7 +144,7 @@ export const ContactSection = () => {
           >
             {/* WhatsApp */}
             <motion.a
-              href="https://wa.me/5491123456789"
+              href="https://wa.me/598091093977"
               target="_blank"
               rel="noopener noreferrer"
               className="group"
@@ -173,7 +173,7 @@ export const ContactSection = () => {
 
             {/* Email */}
             <motion.a
-              href="mailto:contacto@digitalbuilders.net"
+              href="mailto:info@digitalbuilders.net"
               className="group"
               whileHover={{ y: -3 }}
               transition={{ type: "spring", stiffness: 400, damping: 25 }}
@@ -191,7 +191,7 @@ export const ContactSection = () => {
                       Email
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      contacto@digitalbuilders.net
+                      info@digitalbuilders.net
                     </p>
                   </div>
                 </CardContent>
