@@ -125,7 +125,7 @@ export const LandingNavbar = () => {
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-[100] md:hidden bg-background"
           >
-            {/* Starfield */}
+            {/* Animated Starfield */}
             <div className="absolute inset-0 overflow-hidden">
               {stars.map((star) => (
                 <motion.div
@@ -151,7 +151,7 @@ export const LandingNavbar = () => {
               ))}
             </div>
 
-            {/* Subtle nebula glows */}
+            {/* Subtle animated nebula glows */}
             <motion.div
               className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[350px] h-[350px] opacity-15"
               style={{
@@ -184,26 +184,21 @@ export const LandingNavbar = () => {
               }}
             />
 
-            {/* Close button - floating */}
+            {/* Close button - static */}
             <motion.button
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
               onClick={() => setIsOpen(false)}
               className="absolute top-5 right-5 z-10 p-2"
             >
-              <motion.div
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <X className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
-              </motion.div>
+              <X className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
             </motion.button>
 
-            {/* Content - all floating */}
+            {/* Content */}
             <div className="relative h-full flex flex-col items-center justify-center px-8">
-              {/* Floating Logo */}
+              {/* Floating Logo - keeps floating */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -214,7 +209,6 @@ export const LandingNavbar = () => {
                 <motion.div
                   animate={{ 
                     y: [0, -8, 0],
-                    x: [0, 2, 0],
                   }}
                   transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 >
@@ -222,12 +216,12 @@ export const LandingNavbar = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Navigation Links - All floating independently */}
+              {/* Navigation Links - static, just fade in */}
               <nav className="flex flex-col items-center gap-5">
                 {navLinks.map((link, index) => (
                   <motion.button
                     key={link.href}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     transition={{ 
@@ -235,35 +229,17 @@ export const LandingNavbar = () => {
                       delay: 0.1 + index * 0.06,
                     }}
                     onClick={() => scrollToSection(link.href)}
-                    className="group relative"
+                    className="group"
                   >
-                    <motion.div
-                      animate={{ 
-                        y: [0, -5 - (index % 3) * 2, 0],
-                        x: [0, (index % 2 === 0 ? 2 : -2), 0],
-                      }}
-                      transition={{
-                        duration: 5 + index * 0.7,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.4,
-                      }}
-                    >
-                      <span className="text-xl text-muted-foreground/80 hover:text-foreground transition-colors duration-300">
-                        {link.label}
-                      </span>
-                      <motion.div 
-                        className="absolute -bottom-1 left-0 right-0 h-px bg-primary/40"
-                        initial={{ scaleX: 0 }}
-                        whileHover={{ scaleX: 1 }}
-                        transition={{ duration: 0.3 }}
-                      />
-                    </motion.div>
+                    <span className="text-xl text-muted-foreground/80 hover:text-foreground transition-colors duration-300">
+                      {link.label}
+                    </span>
+                    <div className="h-px w-0 bg-primary/50 group-hover:w-full transition-all duration-300 mt-1" />
                   </motion.button>
                 ))}
               </nav>
 
-              {/* CTA Button - floating */}
+              {/* CTA Button - static, just fade in */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -271,19 +247,12 @@ export const LandingNavbar = () => {
                 transition={{ duration: 0.5, delay: 0.45 }}
                 className="mt-12"
               >
-                <motion.div
-                  animate={{ 
-                    y: [0, -6, 0],
-                  }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                >
-                  <Button asChild size="lg" className="h-12 px-8 text-base">
-                    <Link to="/login" onClick={() => setIsOpen(false)}>
-                      <Sparkles className="h-4 w-4 mr-2" />
-                      Entrar
-                    </Link>
-                  </Button>
-                </motion.div>
+                <Button asChild size="lg" className="h-12 px-8 text-base">
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Entrar
+                  </Link>
+                </Button>
               </motion.div>
             </div>
           </motion.div>
