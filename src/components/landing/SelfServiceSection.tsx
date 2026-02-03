@@ -2,14 +2,12 @@ import { Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [
-  "Crear y pausar bots sin intervención técnica",
-  "Gestionar usuarios y asignar roles",
-  "Dar acceso a clientes a bots específicos",
-  "Visualizar métricas en tiempo real",
-  "Controlar suscripciones y vencimientos",
-  "Monitorear estados y errores de cada bot",
-  "Exportar datos de facturación",
-  "Configurar planes y precios por bot",
+  "Actualizá contenido de tu web sin ayuda técnica",
+  "Controlá el estado de tus bots en tiempo real",
+  "Visualizá métricas y reportes de actividad",
+  "Gestioná accesos y usuarios de tu cuenta",
+  "Revisá historial de cambios y actualizaciones",
+  "Solicitá soporte directamente desde el panel",
 ];
 
 const featureVariants = {
@@ -72,7 +70,7 @@ export const SelfServiceSection = () => {
                 transition={{ duration: 0.6 }}
                 className="text-3xl sm:text-4xl font-bold mb-4"
               >
-                Autogestión total
+                Autogestión
               </motion.h2>
               <motion.p 
                 initial={{ opacity: 0, y: 20 }}
@@ -81,8 +79,8 @@ export const SelfServiceSection = () => {
                 transition={{ duration: 0.6, delay: 0.15 }}
                 className="text-muted-foreground mb-8"
               >
-                Control completo sobre tu operación sin depender de soporte técnico. 
-                Administra bots, usuarios y facturación desde un único lugar.
+                Independencia total para gestionar tus proyectos. 
+                Controlá todo desde tu panel, cuando quieras.
               </motion.p>
 
               <div className="grid sm:grid-cols-2 gap-2">

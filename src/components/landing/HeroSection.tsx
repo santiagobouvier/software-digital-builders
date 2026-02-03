@@ -118,21 +118,21 @@ export const HeroSection = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
 
-          {/* Title - sin badge arriba */}
+          {/* Title */}
           <motion.h1 
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
             className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight"
           >
-            Gestiona y monetiza tus{" "}
+            Soluciones{" "}
             <motion.span 
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.4 }}
               className="text-primary relative inline-block"
             >
-              bots
+              tecnológicas
               <motion.span 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -140,7 +140,7 @@ export const HeroSection = () => {
                 className="absolute -inset-1 bg-primary/20 blur-lg -z-10" 
               />
             </motion.span>{" "}
-            desde una sola plataforma
+            para tu negocio
           </motion.h1>
 
           {/* Subtitle */}
@@ -150,7 +150,7 @@ export const HeroSection = () => {
             transition={{ duration: 0.6, delay: 0.3 }}
             className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
           >
-            Control total de métricas, usuarios, suscripciones y facturación para automatizaciones de WhatsApp y Telegram.
+            Páginas web, bots de atención automática y software a medida. Tecnología práctica que funciona.
           </motion.p>
 
           {/* CTAs */}
@@ -170,8 +170,8 @@ export const HeroSection = () => {
             </motion.div>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.98 }}>
               <Button asChild variant="outline" size="lg" className="min-w-[180px] h-12 text-base border-border/60 hover:border-primary/50 hover:bg-primary/5">
-                <a href="mailto:contacto@digitalbuilders.net">
-                  Solicitar demo
+                <a href="#contacto" onClick={(e) => { e.preventDefault(); document.querySelector('#contacto')?.scrollIntoView({ behavior: 'smooth' }); }}>
+                  Contactar
                 </a>
               </Button>
             </motion.div>
@@ -201,13 +201,13 @@ export const HeroSection = () => {
                   </div>
                 </div>
                 
-                {/* Mock KPI Cards */}
+                {/* Mock Service Cards */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
                   {[
-                    { label: "Mensajes", value: "12.4K" },
-                    { label: "Leads", value: "847" },
-                    { label: "Handoffs", value: "156" },
-                    { label: "MRR", value: "$2.4K" },
+                    { label: "Webs", value: "Rápidas" },
+                    { label: "Bots", value: "24/7" },
+                    { label: "Control", value: "Total" },
+                    { label: "Soporte", value: "Activo" },
                   ].map((kpi, i) => (
                     <motion.div
                       key={kpi.label}

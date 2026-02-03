@@ -1,43 +1,36 @@
 import {
-  Building2,
   Shield,
+  Users,
   Lock,
-  Server,
-  TrendingUp,
+  Plug,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 const features = [
   {
-    icon: Building2,
-    title: "Multi-tenant real",
-    description:
-      "Cada empresa opera en un espacio aislado. Los datos de una organización nunca se mezclan con otra.",
-  },
-  {
-    icon: Shield,
+    icon: Users,
     title: "Roles y permisos",
     description:
-      "Control granular de acceso. Profesionales gestionan todo, clientes solo ven sus bots asignados.",
+      "Cada persona accede solo a lo que necesita. Control claro sobre quién ve y gestiona cada proyecto.",
   },
   {
     icon: Lock,
-    title: "Aislamiento de datos",
+    title: "Accesos seguros",
     description:
-      "Row Level Security (RLS) en cada tabla. Las políticas de acceso se aplican a nivel de base de datos.",
+      "Tus datos están protegidos. Solo usuarios autorizados pueden ingresar al sistema.",
   },
   {
-    icon: Server,
-    title: "Infraestructura cloud",
+    icon: Shield,
+    title: "Datos separados",
     description:
-      "Desplegado en infraestructura de nivel enterprise con backups automáticos y alta disponibilidad.",
+      "La información de cada cliente está aislada. Orden y privacidad garantizados.",
   },
   {
-    icon: TrendingUp,
-    title: "Escalabilidad",
+    icon: Plug,
+    title: "Conexiones controladas",
     description:
-      "Arquitectura diseñada para crecer. Soporta miles de bots y millones de eventos sin degradación.",
+      "Las integraciones con otros sistemas se gestionan de forma segura y organizada.",
   },
 ];
 
@@ -124,7 +117,7 @@ export const SecuritySection = () => {
             transition={{ duration: 0.7 }}
             className="text-3xl sm:text-4xl font-bold mb-4"
           >
-            Seguridad y Arquitectura
+            Seguridad y Control
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 15 }}
@@ -133,11 +126,11 @@ export const SecuritySection = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-muted-foreground"
           >
-            Infraestructura enterprise-ready para operaciones críticas de negocio.
+            Confianza y organización en cada acceso.
           </motion.p>
         </motion.div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 max-w-5xl mx-auto">
+        <div className="grid sm:grid-cols-2 gap-4 sm:gap-5 max-w-4xl mx-auto">
           {features.map((feature, index) => (
             <motion.div
               key={feature.title}
@@ -151,7 +144,6 @@ export const SecuritySection = () => {
                 y: -5,
                 transition: { duration: 0.25 }
               }}
-              className={index === 4 ? 'sm:col-span-2 lg:col-span-1' : ''}
             >
               <Card
                 className="bg-card/30 border-border/30 hover:border-border/60 transition-all duration-300 group h-full"
