@@ -111,30 +111,6 @@ export const Preloader = ({ isLoading }: PreloaderProps) => {
               </motion.div>
             </motion.div>
 
-            {/* Loading indicator */}
-            <motion.div
-              className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex gap-1.5"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              {[0, 1, 2].map((i) => (
-                <motion.div
-                  key={i}
-                  className="w-1.5 h-1.5 rounded-full bg-primary/80"
-                  animate={{
-                    y: [0, -6, 0],
-                    opacity: [0.4, 1, 0.4],
-                  }}
-                  transition={{
-                    duration: 0.8,
-                    repeat: Infinity,
-                    delay: i * 0.15,
-                    ease: "easeInOut",
-                  }}
-                />
-              ))}
-            </motion.div>
           </div>
         </motion.div>
       )}
