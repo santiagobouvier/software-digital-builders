@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 export const HeroSection = () => {
   const reduceMotion = useReducedMotion();
+  const { isInstallable, install } = usePWAInstall();
 
   // Faster animations for PC
   const floatTransition = {
@@ -172,7 +174,7 @@ export const HeroSection = () => {
           </motion.p>
 
           <motion.div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
@@ -188,6 +190,17 @@ export const HeroSection = () => {
                 Contactar
               </a>
             </Button>
+            {isInstallable && (
+              <Button 
+                onClick={install} 
+                variant="outline" 
+                size="lg" 
+                className="min-w-[180px] h-12 text-base border-primary/40 bg-primary/5 hover:bg-primary/10 hover:border-primary/60 hover-scale"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Instalar App
+              </Button>
+            )}
           </motion.div>
 
           {/* Dashboard Preview - floating effect (kept on mobile) */}

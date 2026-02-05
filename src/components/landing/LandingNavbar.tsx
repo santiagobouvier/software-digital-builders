@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
@@ -13,6 +14,25 @@ const navLinks = [
   { label: "Seguridad", href: "#seguridad" },
   { label: "Contacto", href: "#contacto" },
 ];
+
+// Install button component for mobile menu
+const InstallButton = ({ onClose }: { onClose: () => void }) => {
+  const { isInstallable, install } = usePWAInstall();
+  
+  if (!isInstallable) return null;
+  
+  return (
+    <Button 
+      onClick={() => { install(); onClose(); }} 
+      variant="outline" 
+      size="lg" 
+      className="h-12 px-8 text-base border-primary/40 bg-primary/5"
+    >
+      <Download className="h-4 w-4 mr-2" />
+      Instalar App
+    </Button>
+  );
+};
 
 export const LandingNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -267,13 +287,13 @@ export const LandingNavbar = () => {
                 ))}
               </nav>
 
-              {/* CTA Button - static, just fade in */}
+              {/* CTA Buttons - static, just fade in */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, delay: 0.45 }}
-                className="mt-12"
+                className="mt-12 flex flex-col items-center gap-3"
               >
                 <Button asChild size="lg" className="h-12 px-8 text-base">
                   <Link to="/login" onClick={() => setIsOpen(false)}>
@@ -281,6 +301,7 @@ export const LandingNavbar = () => {
                     Entrar
                   </Link>
                 </Button>
+                <InstallButton onClose={() => setIsOpen(false)} />
               </motion.div>
             </div>
           </motion.div>
