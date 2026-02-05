@@ -41,15 +41,15 @@ export const Preloader = ({ isLoading }: PreloaderProps) => {
               />
             ))}
 
-            {/* Nebula glow */}
+            {/* Nebula glow - circular */}
             <div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] opacity-20"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-20"
               style={{
                 background: "radial-gradient(circle, hsl(187 100% 50% / 0.3) 0%, transparent 60%)",
               }}
             />
             <div
-              className="absolute top-1/3 left-1/4 w-[300px] h-[300px] opacity-10"
+              className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full opacity-10"
               style={{
                 background: "radial-gradient(circle, hsl(260 80% 60% / 0.5) 0%, transparent 70%)",
               }}
