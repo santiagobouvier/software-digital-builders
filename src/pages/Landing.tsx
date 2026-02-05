@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { AboutSection } from "@/components/landing/AboutSection";
@@ -10,10 +11,24 @@ import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
 import { Starfield } from "@/components/landing/Starfield";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { Preloader } from "@/components/landing/Preloader";
 
 const Landing = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate minimum loading time for smooth experience
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground relative">
+      <Preloader isLoading={isLoading} />
+      
       {/* Space starfield background */}
       <Starfield />
       
