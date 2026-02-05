@@ -142,6 +142,28 @@ export const LandingNavbar = () => {
             transition={{ duration: 0.4 }}
             className="fixed inset-0 z-[100] md:hidden bg-background"
           >
+            {/* Close button at top */}
+            <div className="absolute top-5 right-5 z-10">
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="w-10 h-10 flex items-center justify-center"
+                aria-label="Cerrar menú"
+              >
+                <div className="relative w-5 h-4 flex items-center justify-center">
+                  <motion.span
+                    className="absolute block h-0.5 w-full bg-foreground rounded-full"
+                    initial={{ rotate: 45 }}
+                    animate={{ rotate: 45 }}
+                  />
+                  <motion.span
+                    className="absolute block h-0.5 w-full bg-foreground rounded-full"
+                    initial={{ rotate: -45 }}
+                    animate={{ rotate: -45 }}
+                  />
+                </div>
+              </button>
+            </div>
+
             {/* Animated Starfield */}
             <div className="absolute inset-0 overflow-hidden">
               {stars.map((star) => (
