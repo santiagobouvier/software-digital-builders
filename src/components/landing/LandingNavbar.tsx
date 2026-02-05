@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Sparkles, X } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
@@ -100,14 +100,30 @@ export const LandingNavbar = () => {
               </Button>
             </div>
 
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => setIsOpen(true)}
-              className="md:hidden relative overflow-hidden border border-primary/30 bg-primary/5 hover:bg-primary/10"
+            {/* Minimalist animated hamburger/close button */}
+            <button 
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden relative w-10 h-10 flex items-center justify-center focus:outline-none"
+              aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
             >
-              <Menu className="h-5 w-5 text-primary" />
-            </Button>
+              <div className="relative w-5 h-4 flex flex-col justify-between">
+                <motion.span
+                  className="block h-0.5 w-full bg-foreground rounded-full origin-left"
+                  animate={isOpen ? { rotate: 45, y: 0, x: 2 } : { rotate: 0, y: 0, x: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                />
+                <motion.span
+                  className="block h-0.5 w-full bg-foreground rounded-full"
+                  animate={isOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
+                  transition={{ duration: 0.2, ease: "easeInOut" }}
+                />
+                <motion.span
+                  className="block h-0.5 w-full bg-foreground rounded-full origin-left"
+                  animate={isOpen ? { rotate: -45, y: 0, x: 2 } : { rotate: 0, y: 0, x: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                />
+              </div>
+            </button>
           </div>
         </div>
         
@@ -185,17 +201,6 @@ export const LandingNavbar = () => {
               }}
             />
 
-            {/* Close button - static */}
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={() => setIsOpen(false)}
-              className="absolute top-5 right-5 z-10 p-2"
-            >
-              <X className="h-6 w-6 text-muted-foreground hover:text-foreground transition-colors" />
-            </motion.button>
 
             {/* Content */}
             <div className="relative h-full flex flex-col items-center justify-center px-8">
