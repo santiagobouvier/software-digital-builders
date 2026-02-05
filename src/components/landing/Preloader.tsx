@@ -57,19 +57,19 @@ export const Preloader = ({ isLoading }: PreloaderProps) => {
           </div>
 
           {/* Logo container with floating animation */}
-          <div className="relative">
-            {/* Outer glow ring */}
+          <div className="relative flex items-center justify-center">
+            {/* Circular glow behind logo */}
             <motion.div
-              className="absolute inset-0 -m-8 rounded-full"
+              className="absolute w-40 h-40 rounded-full"
               style={{
-                background: "radial-gradient(circle, hsl(187 100% 50% / 0.15) 0%, transparent 70%)",
+                background: "radial-gradient(circle, hsl(187 100% 50% / 0.25) 0%, hsl(187 100% 50% / 0.1) 40%, transparent 70%)",
               }}
               animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.6, 0.3],
+                scale: [1, 1.15, 1],
+                opacity: [0.6, 1, 0.6],
               }}
               transition={{
-                duration: 2,
+                duration: 2.5,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
@@ -77,7 +77,7 @@ export const Preloader = ({ isLoading }: PreloaderProps) => {
 
             {/* Orbital ring */}
             <motion.div
-              className="absolute inset-0 -m-12"
+              className="absolute w-32 h-32"
               animate={{ rotate: 360 }}
               transition={{
                 duration: 8,
@@ -107,10 +107,9 @@ export const Preloader = ({ isLoading }: PreloaderProps) => {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <Logo size="lg" className="drop-shadow-[0_0_30px_hsl(187_100%_50%/0.4)]" />
+                <Logo size="lg" />
               </motion.div>
             </motion.div>
-
           </div>
         </motion.div>
       )}
