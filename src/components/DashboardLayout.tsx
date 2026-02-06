@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AnimatedSidebarTrigger } from "@/components/AnimatedSidebarTrigger";
+import { Logo } from "@/components/Logo";
 import { useUserRole } from "@/hooks/useUserRole";
 
 interface Company {
@@ -100,9 +101,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         isOwner={isOwner}
       />
       <SidebarInset>
-        {/* Minimal header with animated sidebar trigger */}
-        <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+        {/* Minimal header with animated sidebar trigger and logo */}
+        <header className="sticky top-0 z-40 flex h-12 items-center gap-3 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
           <AnimatedSidebarTrigger className="-ml-1" />
+          <Logo size="sm" iconOnly />
           <div className="flex-1" />
         </header>
 

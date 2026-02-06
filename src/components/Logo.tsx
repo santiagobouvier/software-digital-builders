@@ -14,18 +14,22 @@ export const Logo = ({ className = "", size = "md", iconOnly = false }: LogoProp
   };
 
   const iconSizeClasses = {
-    sm: "h-6 w-6",
-    md: "h-8 w-8",
-    lg: "h-10 w-10",
+    sm: "h-7 w-7",
+    md: "h-9 w-9",
+    lg: "h-11 w-11",
   };
 
   if (iconOnly) {
-    // Show only a circular icon version
+    // Show a circular cropped version of the logo
     return (
       <div
-        className={`${iconSizeClasses[size]} rounded-md bg-primary/20 flex items-center justify-center text-primary font-bold ${className}`}
+        className={`${iconSizeClasses[size]} rounded-lg overflow-hidden flex items-center justify-center bg-sidebar-accent/50 ${className}`}
       >
-        D
+        <img
+          src={logo}
+          alt="Digital Builders"
+          className="h-full w-full object-cover scale-150"
+        />
       </div>
     );
   }
