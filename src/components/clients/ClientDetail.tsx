@@ -229,18 +229,21 @@ export const ClientDetail = ({
                 <p className="text-lg font-bold font-mono text-primary">
                   {formatCurrency(totals.setup, displayCurrency)}
                 </p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{displayCurrency}</p>
               </div>
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Mensual</p>
                 <p className="text-lg font-bold font-mono text-green-500">
                   {formatCurrency(totals.mrr, displayCurrency)}
                 </p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{displayCurrency}</p>
               </div>
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Anual</p>
                 <p className="text-lg font-bold font-mono text-emerald-400">
                   {formatCurrency(totals.mrr * 12, displayCurrency)}
                 </p>
+                <p className="text-[10px] text-muted-foreground mt-0.5">{displayCurrency}</p>
               </div>
             </div>
           </CardContent>
