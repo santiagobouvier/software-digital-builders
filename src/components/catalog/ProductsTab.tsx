@@ -159,7 +159,15 @@ export const ProductsTab = ({ products, isLoading, onRefresh }: ProductsTabProps
                         </Badge>
                       </TableCell>
                       <TableCell>
-                        <Badge variant="secondary">{product.currency}</Badge>
+                        <Badge 
+                          variant="secondary"
+                          className={product.currency === 'USD' 
+                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' 
+                            : 'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                          }
+                        >
+                          {product.currency}
+                        </Badge>
                       </TableCell>
                       <TableCell className="text-right font-mono">
                         <div>{formatCurrency(product.price_one_time, product.currency)}</div>
