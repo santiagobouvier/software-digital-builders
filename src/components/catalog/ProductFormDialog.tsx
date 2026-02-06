@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
-import type { Product, BillingType } from "@/types/catalog";
+import type { Product, BillingType, ProductCategory } from "@/types/catalog";
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -41,6 +41,7 @@ export const ProductFormDialog = ({
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [billingType, setBillingType] = useState<BillingType>("recurring");
+  const [category, setCategory] = useState<ProductCategory>("otro");
   const [priceOneTime, setPriceOneTime] = useState("");
   const [priceMonthly, setPriceMonthly] = useState("");
   const [isActive, setIsActive] = useState(true);
@@ -50,6 +51,7 @@ export const ProductFormDialog = ({
       setName(product.name);
       setDescription(product.description || "");
       setBillingType(product.billing_type);
+      setCategory(product.category || "otro");
       setPriceOneTime(product.price_one_time.toString());
       setPriceMonthly(product.price_monthly.toString());
       setIsActive(product.is_active);
@@ -62,6 +64,7 @@ export const ProductFormDialog = ({
     setName("");
     setDescription("");
     setBillingType("recurring");
+    setCategory("otro");
     setPriceOneTime("0");
     setPriceMonthly("0");
     setIsActive(true);
@@ -88,6 +91,7 @@ export const ProductFormDialog = ({
         name: name.trim(),
         description: description.trim() || null,
         billing_type: billingType,
+        category,
         price_one_time: oneTime,
         price_monthly: monthly,
         is_active: isActive,
@@ -157,6 +161,22 @@ export const ProductFormDialog = ({
               <SelectContent>
                 <SelectItem value="recurring">Recurrente (mensual)</SelectItem>
                 <SelectItem value="one_time">Pago único</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Categoría</Label>
+            <Select value={category} onValueChange={(v) => setCategory(v as ProductCategory)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="bot_whatsapp">Bot WhatsApp</SelectItem>
+                <SelectItem value="bot_interno">Bot Interno</SelectItem>
+                <SelectItem value="web_rapida">Web Rápida</SelectItem>
+                <SelectItem value="web_autogestionable">Web Autogestionable</SelectItem>
+                <SelectItem value="otro">Otro</SelectItem>
               </SelectContent>
             </Select>
           </div>

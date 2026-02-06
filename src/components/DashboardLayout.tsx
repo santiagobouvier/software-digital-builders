@@ -29,6 +29,8 @@ import {
   X,
   Package,
   Building2,
+  MessageCircle,
+  Globe,
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
@@ -121,8 +123,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
     ...(isProfessional ? [
       { path: "/users", label: "Usuarios", icon: UserCog },
-      { path: "/catalogo", label: "Catálogo", icon: Package },
+      { path: "/catalogo", label: "Finanzas", icon: Package },
       { path: "/clientes", label: "Clientes", icon: Building2 },
+      { path: "/bots-clientes", label: "Bots Clientes", icon: MessageCircle },
+      { path: "/webs-clientes", label: "Webs Clientes", icon: Globe },
     ] : []),
   ];
 
