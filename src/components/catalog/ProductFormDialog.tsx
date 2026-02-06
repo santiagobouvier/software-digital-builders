@@ -21,7 +21,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Info } from "lucide-react";
+import { formatCurrency } from "@/lib/pricing";
 import type { Product, BillingType, ProductCategory } from "@/types/catalog";
 
 interface ProductFormDialogProps {
@@ -44,6 +45,7 @@ export const ProductFormDialog = ({
   const [category, setCategory] = useState<ProductCategory>("otro");
   const [priceOneTime, setPriceOneTime] = useState("");
   const [priceMonthly, setPriceMonthly] = useState("");
+  const [currency, setCurrency] = useState("USD");
   const [isActive, setIsActive] = useState(true);
 
   useEffect(() => {
@@ -54,6 +56,7 @@ export const ProductFormDialog = ({
       setCategory(product.category || "otro");
       setPriceOneTime(product.price_one_time.toString());
       setPriceMonthly(product.price_monthly.toString());
+      setCurrency(product.currency || "USD");
       setIsActive(product.is_active);
     } else {
       resetForm();
@@ -67,8 +70,15 @@ export const ProductFormDialog = ({
     setCategory("otro");
     setPriceOneTime("0");
     setPriceMonthly("0");
+    setCurrency("USD");
     setIsActive(true);
   };
+
+  // Calculate equivalents
+  const oneTimeValue = parseFloat(priceOneTime) || 0;
+  const monthlyValue = parseFloat(priceMonthly) || 0;
+  const monthlyEquivalent = oneTimeValue / 12; // For one-time payments
+  const annualTotal = monthlyValue * 12; // For monthly payments
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -94,6 +104,7 @@ export const ProductFormDialog = ({
         category,
         price_one_time: oneTime,
         price_monthly: monthly,
+        currency,
         is_active: isActive,
       };
 
@@ -181,9 +192,23 @@ export const ProductFormDialog = ({
             </Select>
           </div>
 
+          {/* Currency selector */}
+          <div className="space-y-2">
+            <Label>Moneda</Label>
+            <Select value={currency} onValueChange={setCurrency}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD (Dólares)</SelectItem>
+                <SelectItem value="UYU">UYU (Pesos)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="priceOneTime">Setup (USD)</Label>
+              <Label htmlFor="priceOneTime">Setup ({currency})</Label>
               <Input
                 id="priceOneTime"
                 type="number"
@@ -193,9 +218,15 @@ export const ProductFormDialog = ({
                 value={priceOneTime}
                 onChange={(e) => setPriceOneTime(e.target.value)}
               />
+              {oneTimeValue > 0 && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Info className="h-3 w-3" />
+                  ≈ {formatCurrency(monthlyEquivalent, currency)}/mes
+                </p>
+              )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="priceMonthly">Mensual (USD)</Label>
+              <Label htmlFor="priceMonthly">Mensual ({currency})</Label>
               <Input
                 id="priceMonthly"
                 type="number"
@@ -205,6 +236,12 @@ export const ProductFormDialog = ({
                 value={priceMonthly}
                 onChange={(e) => setPriceMonthly(e.target.value)}
               />
+              {monthlyValue > 0 && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Info className="h-3 w-3" />
+                  = {formatCurrency(annualTotal, currency)}/año
+                </p>
+              )}
             </div>
           </div>
 

@@ -137,70 +137,90 @@ export const ProductsTab = ({ products, isLoading, onRefresh }: ProductsTabProps
                 <TableRow>
                   <TableHead>Nombre</TableHead>
                   <TableHead>Tipo</TableHead>
+                  <TableHead>Moneda</TableHead>
                   <TableHead className="text-right">Setup</TableHead>
                   <TableHead className="text-right">Mensual</TableHead>
+                  <TableHead className="text-right">Anual</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="w-[140px]"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {products.map((product) => (
-                  <TableRow key={product.id} className={!product.is_active ? "opacity-50" : ""}>
-                    <TableCell className="font-medium">{product.name}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline">
-                        {product.billing_type === "recurring" ? "Recurrente" : "Único"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(product.price_one_time, product.currency)}
-                    </TableCell>
-                    <TableCell className="text-right font-mono">
-                      {formatCurrency(product.price_monthly, product.currency)}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={product.is_active ? "default" : "secondary"}>
-                        {product.is_active ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleEdit(product)}
-                          className="h-8 w-8"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDuplicate(product)}
-                          className="h-8 w-8"
-                        >
-                          <Copy className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleToggleActive(product)}
-                          className="h-8 w-8"
-                        >
-                          <Power className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setDeleteProduct(product)}
-                          className="h-8 w-8 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {products.map((product) => {
+                  const monthlyEquivalent = product.price_one_time / 12;
+                  const annualTotal = product.price_monthly * 12;
+                  
+                  return (
+                    <TableRow key={product.id} className={!product.is_active ? "opacity-50" : ""}>
+                      <TableCell className="font-medium">{product.name}</TableCell>
+                      <TableCell>
+                        <Badge variant="outline">
+                          {product.billing_type === "recurring" ? "Recurrente" : "Único"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{product.currency}</Badge>
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        <div>{formatCurrency(product.price_one_time, product.currency)}</div>
+                        {product.price_one_time > 0 && (
+                          <div className="text-xs text-muted-foreground">
+                            ≈ {formatCurrency(monthlyEquivalent, product.currency)}/mes
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        {formatCurrency(product.price_monthly, product.currency)}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        {product.price_monthly > 0 && (
+                          <span>{formatCurrency(annualTotal, product.currency)}</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={product.is_active ? "default" : "secondary"}>
+                          {product.is_active ? "Activo" : "Inactivo"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleEdit(product)}
+                            className="h-8 w-8"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleDuplicate(product)}
+                            className="h-8 w-8"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleToggleActive(product)}
+                            className="h-8 w-8"
+                          >
+                            <Power className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setDeleteProduct(product)}
+                            className="h-8 w-8 text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
           )}
