@@ -40,7 +40,19 @@ import {
   BarChart3,
   Wifi,
   WifiOff,
+  Trash2,
+  AlertTriangle,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
@@ -60,6 +72,8 @@ const Bots = () => {
   const [bots, setBots] = useState<Bot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [companyId, setCompanyId] = useState<string>("");
+  const [deletingBot, setDeletingBot] = useState<Bot | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
   const [visibleTokens, setVisibleTokens] = useState<Set<string>>(new Set());
   const [showPayloadModal, setShowPayloadModal] = useState<string | null>(null);
@@ -120,6 +134,35 @@ const Bots = () => {
         title: `Bot ${newStatus === "active" ? "activado" : "pausado"}`,
         description: `El bot "${bot.name}" ahora está ${newStatus === "active" ? "activo" : "pausado"}.`,
       });
+    }
+  };
+
+  const handleDeleteBot = async () => {
+    if (!deletingBot) return;
+    
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from("bots")
+        .delete()
+        .eq("id", deletingBot.id);
+
+      if (error) throw error;
+
+      setBots(bots.filter(b => b.id !== deletingBot.id));
+      toast({
+        title: "Bot eliminado",
+        description: `El bot "${deletingBot.name}" ha sido eliminado permanentemente.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleting(false);
+      setDeletingBot(null);
     }
   };
 
@@ -287,6 +330,13 @@ const Bots = () => {
                                     </>
                                   )}
                                 </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => setDeletingBot(bot)}
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Eliminar bot
+                                </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
                           </TableCell>
@@ -361,6 +411,48 @@ const Bots = () => {
             </CardContent>
           </Card>
         )}
+
+        {/* Delete Confirmation Dialog */}
+        <AlertDialog open={!!deletingBot} onOpenChange={() => setDeletingBot(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-destructive/10 flex items-center justify-center">
+                  <AlertTriangle className="h-5 w-5 text-destructive" />
+                </div>
+                <AlertDialogTitle>¿Eliminar bot permanentemente?</AlertDialogTitle>
+              </div>
+              <AlertDialogDescription className="pt-2">
+                Esta acción <strong>no se puede deshacer</strong>. Se eliminarán permanentemente:
+                <ul className="list-disc list-inside mt-2 space-y-1">
+                  <li>El bot <strong>"{deletingBot?.name}"</strong></li>
+                  <li>Todas las métricas e historial de eventos</li>
+                  <li>Las credenciales (BOT_ID y TOKEN)</li>
+                </ul>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel disabled={isDeleting}>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDeleteBot}
+                disabled={isDeleting}
+                className="bg-destructive hover:bg-destructive/90"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Eliminando...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Sí, eliminar bot
+                  </>
+                )}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* Payload Modal */}
         <Dialog open={!!showPayloadModal} onOpenChange={() => setShowPayloadModal(null)}>
