@@ -56,9 +56,9 @@ export const ClientList = ({
   }
 
   return (
-    <Card variant="elevated">
-      <CardContent className="p-2">
-        <div className="space-y-1 max-h-[600px] overflow-y-auto">
+    <Card variant="elevated" className="h-full flex flex-col overflow-hidden">
+      <CardContent className="p-2 flex-1 min-h-0 overflow-hidden">
+        <div className="space-y-1 h-full overflow-y-auto">
           {clients.map((client) => (
             <div
               key={client.id}
