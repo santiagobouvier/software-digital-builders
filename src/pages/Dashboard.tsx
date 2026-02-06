@@ -11,7 +11,7 @@ import { ProfessionalWidgets } from "@/components/dashboard/ProfessionalWidgets"
 import { ClientWidgets } from "@/components/dashboard/ClientWidgets";
 import { FinancialSummary } from "@/components/dashboard/FinancialSummary";
 import { BotMetricsSummary } from "@/components/dashboard/BotMetricsSummary";
-import { Logo } from "@/components/Logo";
+
 
 const Dashboard = () => {
   const { isProfessional, isClient, userId, isLoading: roleLoading } = useUserRole();
@@ -125,11 +125,6 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Logo - left on all devices */}
-        <div className="flex justify-start">
-          <Logo size="lg" className="h-12 md:h-16 lg:h-20 w-auto" />
-        </div>
-
         {/* Header with welcome message */}
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
