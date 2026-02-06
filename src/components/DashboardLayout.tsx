@@ -1,8 +1,9 @@
 import { useState, useEffect, createContext, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
+import { AnimatedSidebarTrigger } from "@/components/AnimatedSidebarTrigger";
 import { useUserRole } from "@/hooks/useUserRole";
 
 interface Company {
@@ -99,9 +100,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         isOwner={isOwner}
       />
       <SidebarInset>
-        {/* Minimal header with sidebar trigger */}
+        {/* Minimal header with animated sidebar trigger */}
         <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-          <SidebarTrigger className="-ml-1" />
+          <AnimatedSidebarTrigger className="-ml-1" />
           <div className="flex-1" />
         </header>
 
