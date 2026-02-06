@@ -180,6 +180,118 @@ export type Database = {
           },
         ]
       }
+      client_subscriptions: {
+        Row: {
+          client_id: string
+          created_at: string
+          custom_monthly: number
+          custom_notes: string | null
+          custom_one_time: number
+          end_date: string | null
+          id: string
+          is_active: boolean
+          item_type: Database["public"]["Enums"]["subscription_item_type"]
+          pack_id: string | null
+          pricing_mode: Database["public"]["Enums"]["pricing_mode"]
+          product_id: string | null
+          start_date: string
+          updated_at: string
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          custom_monthly?: number
+          custom_notes?: string | null
+          custom_one_time?: number
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          item_type: Database["public"]["Enums"]["subscription_item_type"]
+          pack_id?: string | null
+          pricing_mode?: Database["public"]["Enums"]["pricing_mode"]
+          product_id?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          custom_monthly?: number
+          custom_notes?: string | null
+          custom_one_time?: number
+          end_date?: string | null
+          id?: string
+          is_active?: boolean
+          item_type?: Database["public"]["Enums"]["subscription_item_type"]
+          pack_id?: string | null
+          pricing_mode?: Database["public"]["Enums"]["pricing_mode"]
+          product_id?: string | null
+          start_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_subscriptions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_subscriptions_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_subscriptions_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clients: {
+        Row: {
+          company_name: string
+          contact_name: string | null
+          country: string | null
+          created_at: string
+          email: string | null
+          id: string
+          notes: string | null
+          phone: string | null
+          status: Database["public"]["Enums"]["client_status"]
+          updated_at: string
+        }
+        Insert: {
+          company_name: string
+          contact_name?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: Database["public"]["Enums"]["client_status"]
+          updated_at?: string
+        }
+        Update: {
+          company_name?: string
+          contact_name?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          notes?: string | null
+          phone?: string | null
+          status?: Database["public"]["Enums"]["client_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           created_at: string
@@ -283,6 +395,126 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      pack_items: {
+        Row: {
+          created_at: string
+          id: string
+          pack_id: string
+          product_id: string
+          quantity: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          pack_id: string
+          product_id: string
+          quantity?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          pack_id?: string
+          product_id?: string
+          quantity?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pack_items_pack_id_fkey"
+            columns: ["pack_id"]
+            isOneToOne: false
+            referencedRelation: "packs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pack_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      packs: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          discount_type: Database["public"]["Enums"]["discount_type"]
+          discount_value: number
+          id: string
+          is_active: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          discount_type?: Database["public"]["Enums"]["discount_type"]
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          discount_type?: Database["public"]["Enums"]["discount_type"]
+          discount_value?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          billing_type: Database["public"]["Enums"]["billing_type"]
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          price_monthly: number
+          price_one_time: number
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          billing_type?: Database["public"]["Enums"]["billing_type"]
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          price_monthly?: number
+          price_one_time?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          billing_type?: Database["public"]["Enums"]["billing_type"]
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_monthly?: number
+          price_one_time?: number
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -432,8 +664,13 @@ export type Database = {
     Enums: {
       app_role: "professional" | "client"
       billing_event_type: "charge" | "refund" | "adjustment"
+      billing_type: "one_time" | "recurring"
       bot_status: "active" | "paused"
+      client_status: "lead" | "active" | "paused" | "cancelled"
       company_role: "owner" | "viewer"
+      discount_type: "none" | "percent" | "fixed"
+      pricing_mode: "catalog" | "custom"
+      subscription_item_type: "product" | "pack"
       subscription_plan: "monthly" | "annual"
     }
     CompositeTypes: {
@@ -564,8 +801,13 @@ export const Constants = {
     Enums: {
       app_role: ["professional", "client"],
       billing_event_type: ["charge", "refund", "adjustment"],
+      billing_type: ["one_time", "recurring"],
       bot_status: ["active", "paused"],
+      client_status: ["lead", "active", "paused", "cancelled"],
       company_role: ["owner", "viewer"],
+      discount_type: ["none", "percent", "fixed"],
+      pricing_mode: ["catalog", "custom"],
+      subscription_item_type: ["product", "pack"],
       subscription_plan: ["monthly", "annual"],
     },
   },

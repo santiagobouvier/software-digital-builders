@@ -10,6 +10,8 @@ import {
   TrendingUp, 
   ArrowRight,
   Loader2,
+  Package,
+  UserPlus,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -200,7 +202,20 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-wrap gap-3">
-            <Button onClick={() => navigate("/bots")} size="sm" className="gap-2">
+            <Button onClick={() => navigate("/clientes")} size="sm" className="gap-2">
+              <UserPlus className="h-4 w-4" />
+              Gestionar clientes
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/catalogo")}
+              className="gap-2"
+            >
+              <Package className="h-4 w-4" />
+              Ver catálogo
+            </Button>
+            <Button onClick={() => navigate("/bots")} variant="outline" size="sm" className="gap-2">
               <Bot className="h-4 w-4" />
               Gestionar bots
             </Button>
