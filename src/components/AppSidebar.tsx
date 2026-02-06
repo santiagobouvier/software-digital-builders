@@ -145,17 +145,8 @@ export function AppSidebar({
   return (
     <>
       <Sidebar collapsible="icon">
-        {/* Header with Logo - hidden on mobile */}
-        {!isMobile && (
-          <SidebarHeader className="border-b border-sidebar-border">
-            <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1">
-              <Logo size="sm" iconOnly={isCollapsed} />
-            </Link>
-          </SidebarHeader>
-        )}
-
         <SidebarContent>
-          {/* Large Logo for Mobile - shown above navigation */}
+          {/* Large Logo for Mobile only - shown above navigation */}
           {isMobile && (
             <SidebarGroup className="flex items-center justify-center py-6">
               <Link to="/dashboard">

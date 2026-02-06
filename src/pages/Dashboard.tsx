@@ -11,6 +11,7 @@ import { ProfessionalWidgets } from "@/components/dashboard/ProfessionalWidgets"
 import { ClientWidgets } from "@/components/dashboard/ClientWidgets";
 import { FinancialSummary } from "@/components/dashboard/FinancialSummary";
 import { BotMetricsSummary } from "@/components/dashboard/BotMetricsSummary";
+import { Logo } from "@/components/Logo";
 
 const Dashboard = () => {
   const { isProfessional, isClient, userId, isLoading: roleLoading } = useUserRole();
@@ -109,9 +110,14 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 relative">
+        {/* Large transparent logo as background watermark - desktop only */}
+        <div className="hidden md:flex absolute inset-0 items-start justify-center pointer-events-none overflow-hidden">
+          <Logo size="lg" className="opacity-[0.04] w-auto h-32 lg:h-40 mt-8" />
+        </div>
+
         {/* Header */}
-        <div className="min-w-0">
+        <div className="min-w-0 relative z-10">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
           <p className="text-sm text-muted-foreground">
             Panel de gestión
