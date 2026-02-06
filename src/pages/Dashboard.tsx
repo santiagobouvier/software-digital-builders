@@ -1,52 +1,22 @@
 import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { KPICard } from "@/components/KPICard";
-import { FinancesSummary } from "@/components/FinancesSummary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  MessageSquareText,
-  Users,
-  Activity,
-  BarChart3,
-} from "lucide-react";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-import { format, subDays } from "date-fns";
+import { Activity } from "lucide-react";
+import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { useUserRole } from "@/hooks/useUserRole";
 import { EmptyDashboard } from "@/components/dashboard/EmptyDashboard";
 import { ProfessionalWidgets } from "@/components/dashboard/ProfessionalWidgets";
 import { ClientWidgets } from "@/components/dashboard/ClientWidgets";
-
-type DateFilter = "today" | "7days" | "30days";
-
-interface DailyStats {
-  date: string;
-  msg_out: number;
-  handoff: number;
-}
+import { FinancialSummary } from "@/components/dashboard/FinancialSummary";
+import { BotMetricsSummary } from "@/components/dashboard/BotMetricsSummary";
 
 const Dashboard = () => {
   const { isProfessional, isClient, userId, isLoading: roleLoading } = useUserRole();
-  const [dateFilter, setDateFilter] = useState<DateFilter>("7days");
-  const [stats, setStats] = useState<DailyStats[]>([]);
-  const [totals, setTotals] = useState({
-    msg_out: 0,
-    handoff: 0,
-  });
   const [lastActivity, setLastActivity] = useState<Date | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
-  const [hasData, setHasData] = useState(true);
   const [hasBots, setHasBots] = useState(false);
   const [hasUsers, setHasUsers] = useState(false);
 
@@ -86,8 +56,6 @@ const Dashboard = () => {
           .eq("role", "client")
           .limit(1);
         setHasUsers(usersData && usersData.length > 0);
-      } else {
-        setHasData(false);
       }
     };
 
@@ -96,63 +64,8 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!companyId) return;
-    fetchStats();
     fetchLastActivity();
-  }, [companyId, dateFilter]);
-
-  const getDateRange = () => {
-    const today = new Date();
-    switch (dateFilter) {
-      case "today":
-        return { start: today, end: today };
-      case "7days":
-        return { start: subDays(today, 6), end: today };
-      case "30days":
-        return { start: subDays(today, 29), end: today };
-    }
-  };
-
-  const fetchStats = async () => {
-    const { start, end } = getDateRange();
-
-    const { data, error } = await supabase
-      .from("events_daily")
-      .select("*")
-      .eq("company_id", companyId)
-      .gte("date", format(start, "yyyy-MM-dd"))
-      .lte("date", format(end, "yyyy-MM-dd"))
-      .order("date", { ascending: true });
-
-    if (data) {
-      // Group by date
-      const grouped: Record<string, DailyStats> = {};
-      
-      data.forEach((event: any) => {
-        if (!grouped[event.date]) {
-          grouped[event.date] = {
-            date: event.date,
-            msg_out: 0,
-            handoff: 0,
-          };
-        }
-        grouped[event.date].msg_out += event.msg_out_count || 0;
-        grouped[event.date].handoff += event.handoff_count || 0;
-      });
-
-      const statsArray = Object.values(grouped);
-      setStats(statsArray);
-
-      // Calculate totals
-      const newTotals = statsArray.reduce(
-        (acc, day) => ({
-          msg_out: acc.msg_out + day.msg_out,
-          handoff: acc.handoff + day.handoff,
-        }),
-        { msg_out: 0, handoff: 0 }
-      );
-      setTotals(newTotals);
-    }
-  };
+  }, [companyId]);
 
   const fetchLastActivity = async () => {
     const { data } = await supabase
@@ -168,14 +81,8 @@ const Dashboard = () => {
     }
   };
 
-  const chartData = stats.map((s) => ({
-    name: format(new Date(s.date), "dd MMM", { locale: es }),
-    Respuestas: s.msg_out,
-    Derivaciones: s.handoff,
-  }));
-
-  // Show onboarding/empty state if no company or no bots
-  const showEmptyState = !companyId || (!hasBots && isProfessional) || (isClient && !hasBots);
+  // Show onboarding/empty state if no company
+  const showEmptyState = !companyId;
 
   if (roleLoading) {
     return (
@@ -204,106 +111,20 @@ const Dashboard = () => {
     <DashboardLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
-            <p className="text-sm text-muted-foreground">
-              Panel de métricas y control
-            </p>
-          </div>
-          <div className="flex gap-2 flex-shrink-0">
-            {(["today", "7days", "30days"] as DateFilter[]).map((filter) => (
-              <Button
-                key={filter}
-                variant={dateFilter === filter ? "default" : "outline"}
-                size="sm"
-                onClick={() => setDateFilter(filter)}
-                className="text-xs sm:text-sm px-2 sm:px-3"
-              >
-                {filter === "today" && "Hoy"}
-                {filter === "7days" && "7 días"}
-                {filter === "30days" && "30 días"}
-              </Button>
-            ))}
-          </div>
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
+          <p className="text-sm text-muted-foreground">
+            Panel de gestión
+          </p>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid gap-3 sm:gap-4 grid-cols-2 max-w-md">
-          <KPICard
-            title="Respuestas del bot"
-            value={totals.msg_out}
-            icon={MessageSquareText}
-            color="cyan"
-          />
-          <KPICard
-            title="Derivaciones"
-            value={totals.handoff}
-            icon={Users}
-            color="yellow"
-          />
-        </div>
+        {/* Financial Summary - Primary content */}
+        {isProfessional && <FinancialSummary />}
 
-        {/* Chart & Cards Row */}
-        <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
-          {/* Chart */}
-          <Card variant="elevated" className="lg:col-span-2">
-            <CardHeader className="pb-2 sm:pb-4">
-              <CardTitle className="text-base sm:text-lg">Actividad de mensajes</CardTitle>
-            </CardHeader>
-            <CardContent className="px-2 sm:px-6">
-              <div className="h-[220px] sm:h-[280px]">
-                {chartData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(240 5% 18%)" />
-                      <XAxis
-                        dataKey="name"
-                        stroke="hsl(215 15% 55%)"
-                        fontSize={10}
-                        tickMargin={8}
-                      />
-                      <YAxis stroke="hsl(215 15% 55%)" fontSize={10} width={30} />
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "hsl(240 6% 7%)",
-                          border: "1px solid hsl(240 5% 18%)",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                        }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="Respuestas"
-                        stroke="hsl(var(--primary))"
-                        strokeWidth={2}
-                        dot={{ fill: "hsl(var(--primary))" }}
-                      />
-                      <Line
-                        type="monotone"
-                        dataKey="Derivaciones"
-                        stroke="hsl(var(--warning))"
-                        strokeWidth={2}
-                        dot={{ fill: "hsl(var(--warning))" }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground gap-3">
-                    <BarChart3 className="h-10 w-10 opacity-30" />
-                    <div className="text-center">
-                      <p className="font-medium">Sin datos en este rango</p>
-                      <p className="text-xs mt-1">Los datos aparecerán cuando tus bots comiencen a recibir mensajes</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Finances Summary */}
-          <FinancesSummary companyId={companyId} />
-        </div>
+        {/* Bot Metrics - Collapsible secondary */}
+        {isProfessional && companyId && (
+          <BotMetricsSummary companyId={companyId} />
+        )}
 
         {/* Role-specific Widgets */}
         {isProfessional && userId && (
