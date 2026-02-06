@@ -223,17 +223,23 @@ export const ClientDetail = ({
         {/* Totals */}
         <Card variant="elevated">
           <CardContent className="p-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-3">
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Setup Total</p>
-                <p className="text-xl font-bold font-mono text-primary">
+                <p className="text-lg font-bold font-mono text-primary">
                   {formatCurrency(totals.setup, displayCurrency)}
                 </p>
               </div>
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
-                <p className="text-xs text-muted-foreground mb-1">Ingreso mensual</p>
-                <p className="text-xl font-bold font-mono text-green-500">
+                <p className="text-xs text-muted-foreground mb-1">Mensual</p>
+                <p className="text-lg font-bold font-mono text-green-500">
                   {formatCurrency(totals.mrr, displayCurrency)}
+                </p>
+              </div>
+              <div className="text-center p-3 bg-secondary/50 rounded-lg">
+                <p className="text-xs text-muted-foreground mb-1">Anual</p>
+                <p className="text-lg font-bold font-mono text-emerald-400">
+                  {formatCurrency(totals.mrr * 12, displayCurrency)}
                 </p>
               </div>
             </div>
