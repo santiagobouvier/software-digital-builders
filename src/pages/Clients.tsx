@@ -183,7 +183,7 @@ const Clients = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="flex flex-col gap-4 sm:gap-6 h-full max-h-full overflow-hidden">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -273,9 +273,9 @@ const Clients = () => {
         </div>
 
         {/* Main content */}
-        <div className="grid gap-6 lg:grid-cols-[1fr,400px]">
+        <div className="grid gap-4 lg:grid-cols-[1fr,400px] flex-1 min-h-0 overflow-hidden">
           {/* Client list */}
-          <div className="order-2 lg:order-1">
+          <div className="order-2 lg:order-1 min-h-0 overflow-hidden">
             <ClientList
               clients={filteredClients}
               isLoading={isLoading}
@@ -286,7 +286,7 @@ const Clients = () => {
           </div>
 
           {/* Client detail */}
-          <div className="order-1 lg:order-2">
+          <div className="order-1 lg:order-2 min-h-0 overflow-y-auto">
             <ClientDetail
               client={selectedClient}
               products={products}
