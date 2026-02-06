@@ -13,13 +13,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import { Loader2, Globe, Search, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { WebInstanceDialog } from "@/components/webs-clientes/WebInstanceDialog";
@@ -225,26 +227,63 @@ const WebsClientes = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Producto</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Dominio</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <ResponsiveTable>
+                <ResponsiveTableHeader>
+                  <ResponsiveTableRow>
+                    <ResponsiveTableHead>Producto</ResponsiveTableHead>
+                    <ResponsiveTableHead>Cliente</ResponsiveTableHead>
+                    <ResponsiveTableHead>Tipo</ResponsiveTableHead>
+                    <ResponsiveTableHead>Dominio</ResponsiveTableHead>
+                    <ResponsiveTableHead>Estado</ResponsiveTableHead>
+                    <ResponsiveTableHead className="text-right">Acciones</ResponsiveTableHead>
+                  </ResponsiveTableRow>
+                </ResponsiveTableHeader>
+                <ResponsiveTableBody>
                   {filteredInstances.map((instance) => (
-                    <TableRow key={instance.id}>
-                      <TableCell className="font-medium">
+                    <ResponsiveTableRow 
+                      key={instance.id}
+                      mobileCard={
+                        <>
+                          <MobileCardHeader
+                            title={instance.product.name}
+                            subtitle={instance.client.company_name}
+                            badge={getStatusBadge(instance.status)}
+                            actions={
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditInstance(instance)}
+                              >
+                                Gestionar
+                              </Button>
+                            }
+                          />
+                          <MobileCardRow label="Tipo">
+                            <span className="font-medium">{getWebTypeLabel(instance.web_type)}</span>
+                          </MobileCardRow>
+                          <MobileCardRow label="Dominio">
+                            {instance.domain ? (
+                              <a 
+                                href={`https://${instance.domain}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary hover:underline truncate max-w-[150px] inline-block"
+                              >
+                                {instance.domain}
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground">Sin dominio</span>
+                            )}
+                          </MobileCardRow>
+                        </>
+                      }
+                    >
+                      <ResponsiveTableCell className="font-medium">
                         {instance.product.name}
-                      </TableCell>
-                      <TableCell>{instance.client.company_name}</TableCell>
-                      <TableCell>{getWebTypeLabel(instance.web_type)}</TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>{instance.client.company_name}</ResponsiveTableCell>
+                      <ResponsiveTableCell>{getWebTypeLabel(instance.web_type)}</ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         {instance.domain ? (
                           <a 
                             href={`https://${instance.domain}`} 
@@ -257,9 +296,9 @@ const WebsClientes = () => {
                         ) : (
                           <span className="text-muted-foreground">Sin dominio</span>
                         )}
-                      </TableCell>
-                      <TableCell>{getStatusBadge(instance.status)}</TableCell>
-                      <TableCell className="text-right">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>{getStatusBadge(instance.status)}</ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -267,11 +306,11 @@ const WebsClientes = () => {
                         >
                           Gestionar
                         </Button>
-                      </TableCell>
-                    </TableRow>
+                      </ResponsiveTableCell>
+                    </ResponsiveTableRow>
                   ))}
-                </TableBody>
-              </Table>
+                </ResponsiveTableBody>
+              </ResponsiveTable>
             </CardContent>
           </Card>
         )}

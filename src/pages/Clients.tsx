@@ -273,26 +273,30 @@ const Clients = () => {
         </div>
 
         {/* Main content */}
-        <div className="grid lg:grid-cols-[1fr,400px] gap-6">
+        <div className="grid gap-6 lg:grid-cols-[1fr,400px]">
           {/* Client list */}
-          <ClientList
-            clients={filteredClients}
-            isLoading={isLoading}
-            selectedId={selectedClient?.id}
-            onSelect={handleSelectClient}
-            onEdit={handleEditClient}
-          />
+          <div className="order-2 lg:order-1">
+            <ClientList
+              clients={filteredClients}
+              isLoading={isLoading}
+              selectedId={selectedClient?.id}
+              onSelect={handleSelectClient}
+              onEdit={handleEditClient}
+            />
+          </div>
 
           {/* Client detail */}
-          <ClientDetail
-            client={selectedClient}
-            products={products}
-            packs={packs}
-            onSubscriptionChange={handleSubscriptionChange}
-            onEdit={() => selectedClient && handleEditClient(selectedClient)}
-            exchangeRate={rate}
-            displayCurrency={displayCurrency}
-          />
+          <div className="order-1 lg:order-2">
+            <ClientDetail
+              client={selectedClient}
+              products={products}
+              packs={packs}
+              onSubscriptionChange={handleSubscriptionChange}
+              onEdit={() => selectedClient && handleEditClient(selectedClient)}
+              exchangeRate={rate}
+              displayCurrency={displayCurrency}
+            />
+          </div>
         </div>
 
         {/* Client form dialog */}

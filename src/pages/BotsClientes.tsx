@@ -13,13 +13,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import { Loader2, Bot, Search, ExternalLink, MessageCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { BotInstanceDialog } from "@/components/bots-clientes/BotInstanceDialog";
@@ -223,26 +225,49 @@ const BotsClientes = () => {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Producto</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Tipo</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead className="text-right">Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <ResponsiveTable>
+                <ResponsiveTableHeader>
+                  <ResponsiveTableRow>
+                    <ResponsiveTableHead>Producto</ResponsiveTableHead>
+                    <ResponsiveTableHead>Cliente</ResponsiveTableHead>
+                    <ResponsiveTableHead>Tipo</ResponsiveTableHead>
+                    <ResponsiveTableHead>Estado</ResponsiveTableHead>
+                    <ResponsiveTableHead className="text-right">Acciones</ResponsiveTableHead>
+                  </ResponsiveTableRow>
+                </ResponsiveTableHeader>
+                <ResponsiveTableBody>
                   {filteredInstances.map((instance) => (
-                    <TableRow key={instance.id}>
-                      <TableCell className="font-medium">
+                    <ResponsiveTableRow 
+                      key={instance.id}
+                      mobileCard={
+                        <>
+                          <MobileCardHeader
+                            title={instance.product.name}
+                            subtitle={instance.client.company_name}
+                            badge={getStatusBadge(instance.status)}
+                            actions={
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleEditInstance(instance)}
+                              >
+                                Gestionar
+                              </Button>
+                            }
+                          />
+                          <MobileCardRow label="Tipo">
+                            <span className="font-medium">{getBotTypeLabel(instance.bot_type)}</span>
+                          </MobileCardRow>
+                        </>
+                      }
+                    >
+                      <ResponsiveTableCell className="font-medium">
                         {instance.product.name}
-                      </TableCell>
-                      <TableCell>{instance.client.company_name}</TableCell>
-                      <TableCell>{getBotTypeLabel(instance.bot_type)}</TableCell>
-                      <TableCell>{getStatusBadge(instance.status)}</TableCell>
-                      <TableCell className="text-right">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>{instance.client.company_name}</ResponsiveTableCell>
+                      <ResponsiveTableCell>{getBotTypeLabel(instance.bot_type)}</ResponsiveTableCell>
+                      <ResponsiveTableCell>{getStatusBadge(instance.status)}</ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right">
                         <Button
                           variant="ghost"
                           size="sm"
@@ -250,11 +275,11 @@ const BotsClientes = () => {
                         >
                           Gestionar
                         </Button>
-                      </TableCell>
-                    </TableRow>
+                      </ResponsiveTableCell>
+                    </ResponsiveTableRow>
                   ))}
-                </TableBody>
-              </Table>
+                </ResponsiveTableBody>
+              </ResponsiveTable>
             </CardContent>
           </Card>
         )}

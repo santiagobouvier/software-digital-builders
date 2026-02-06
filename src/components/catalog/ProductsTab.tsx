@@ -4,13 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -132,33 +134,96 @@ export const ProductsTab = ({ products, isLoading, onRefresh }: ProductsTabProps
               No hay productos registrados
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Moneda</TableHead>
-                  <TableHead className="text-right">Setup</TableHead>
-                  <TableHead className="text-right">Mensual</TableHead>
-                  <TableHead className="text-right">Anual</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="w-[140px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <ResponsiveTable>
+              <ResponsiveTableHeader>
+                <ResponsiveTableRow>
+                  <ResponsiveTableHead>Nombre</ResponsiveTableHead>
+                  <ResponsiveTableHead>Tipo</ResponsiveTableHead>
+                  <ResponsiveTableHead>Moneda</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Setup</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Mensual</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Anual</ResponsiveTableHead>
+                  <ResponsiveTableHead>Estado</ResponsiveTableHead>
+                  <ResponsiveTableHead className="w-[140px]"></ResponsiveTableHead>
+                </ResponsiveTableRow>
+              </ResponsiveTableHeader>
+              <ResponsiveTableBody>
                 {products.map((product) => {
                   const monthlyEquivalent = product.price_one_time / 12;
                   const annualTotal = product.price_monthly * 12;
                   
                   return (
-                    <TableRow key={product.id} className={!product.is_active ? "opacity-50" : ""}>
-                      <TableCell className="font-medium">{product.name}</TableCell>
-                      <TableCell>
+                    <ResponsiveTableRow 
+                      key={product.id} 
+                      className={!product.is_active ? "opacity-50" : ""}
+                      mobileCard={
+                        <>
+                          <MobileCardHeader
+                            title={product.name}
+                            badge={
+                              <div className="flex items-center gap-1.5">
+                                <Badge 
+                                  variant="secondary"
+                                  className={product.currency === 'USD' 
+                                    ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] px-1.5 py-0' 
+                                    : 'bg-blue-500/20 text-blue-400 border-blue-500/30 text-[10px] px-1.5 py-0'
+                                  }
+                                >
+                                  {product.currency}
+                                </Badge>
+                                <Badge 
+                                  variant={product.is_active ? "default" : "secondary"}
+                                  className="text-[10px] px-1.5 py-0"
+                                >
+                                  {product.is_active ? "Activo" : "Inactivo"}
+                                </Badge>
+                              </div>
+                            }
+                            actions={
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEdit(product)}
+                                  className="h-8 w-8"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleToggleActive(product)}
+                                  className="h-8 w-8"
+                                >
+                                  <Power className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            }
+                          />
+                          <div className="grid grid-cols-3 gap-2 pt-2 text-center">
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Setup</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(product.price_one_time, product.currency)}</p>
+                            </div>
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Mensual</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(product.price_monthly, product.currency)}</p>
+                            </div>
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Anual</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(annualTotal, product.currency)}</p>
+                            </div>
+                          </div>
+                        </>
+                      }
+                    >
+                      <ResponsiveTableCell className="font-medium">{product.name}</ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant="outline">
                           {product.billing_type === "recurring" ? "Recurrente" : "Único"}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge 
                           variant="secondary"
                           className={product.currency === 'USD' 
@@ -168,29 +233,29 @@ export const ProductsTab = ({ products, isLoading, onRefresh }: ProductsTabProps
                         >
                           {product.currency}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         <div>{formatCurrency(product.price_one_time, product.currency)}</div>
                         {product.price_one_time > 0 && (
                           <div className="text-xs text-muted-foreground">
                             ≈ {formatCurrency(monthlyEquivalent, product.currency)}/mes
                           </div>
                         )}
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         {formatCurrency(product.price_monthly, product.currency)}
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         {product.price_monthly > 0 && (
                           <span>{formatCurrency(annualTotal, product.currency)}</span>
                         )}
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant={product.is_active ? "default" : "secondary"}>
                           {product.is_active ? "Activo" : "Inactivo"}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <div className="flex items-center gap-1">
                           <Button
                             variant="ghost"
@@ -225,12 +290,12 @@ export const ProductsTab = ({ products, isLoading, onRefresh }: ProductsTabProps
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </ResponsiveTableCell>
+                    </ResponsiveTableRow>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </ResponsiveTableBody>
+            </ResponsiveTable>
           )}
         </CardContent>
       </Card>

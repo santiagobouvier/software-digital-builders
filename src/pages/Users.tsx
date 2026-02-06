@@ -21,13 +21,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Plus, UserPlus, Trash2 } from "lucide-react";
@@ -256,32 +258,65 @@ const Users = () => {
                 No hay usuarios registrados
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Rol</TableHead>
-                    <TableHead>Bot asignado</TableHead>
-                    <TableHead className="w-[80px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <ResponsiveTable>
+                <ResponsiveTableHeader>
+                  <ResponsiveTableRow>
+                    <ResponsiveTableHead>Email</ResponsiveTableHead>
+                    <ResponsiveTableHead>Nombre</ResponsiveTableHead>
+                    <ResponsiveTableHead>Rol</ResponsiveTableHead>
+                    <ResponsiveTableHead>Bot asignado</ResponsiveTableHead>
+                    <ResponsiveTableHead className="w-[80px]"></ResponsiveTableHead>
+                  </ResponsiveTableRow>
+                </ResponsiveTableHeader>
+                <ResponsiveTableBody>
                   {users.map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell className="font-medium">{user.email}</TableCell>
-                      <TableCell>{user.name || "-"}</TableCell>
-                      <TableCell>
+                    <ResponsiveTableRow 
+                      key={user.id}
+                      mobileCard={
+                        <>
+                          <MobileCardHeader
+                            title={user.email}
+                            subtitle={user.name}
+                            badge={
+                              <Badge
+                                variant={user.role === "professional" ? "default" : "secondary"}
+                                className="text-[10px] px-1.5 py-0"
+                              >
+                                {user.role === "professional" ? "Pro" : "Cliente"}
+                              </Badge>
+                            }
+                            actions={
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDeleteUser(user.id, user.email)}
+                                className="h-8 w-8 text-destructive hover:text-destructive"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            }
+                          />
+                          {user.assigned_bot_name && (
+                            <MobileCardRow label="Bot asignado">
+                              <span className="font-medium">{user.assigned_bot_name}</span>
+                            </MobileCardRow>
+                          )}
+                        </>
+                      }
+                    >
+                      <ResponsiveTableCell className="font-medium">{user.email}</ResponsiveTableCell>
+                      <ResponsiveTableCell>{user.name || "-"}</ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge
                           variant={user.role === "professional" ? "default" : "secondary"}
                         >
                           {user.role === "professional" ? "Profesional" : "Cliente"}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         {user.assigned_bot_name || "-"}
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -290,11 +325,11 @@ const Users = () => {
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
-                      </TableCell>
-                    </TableRow>
+                      </ResponsiveTableCell>
+                    </ResponsiveTableRow>
                   ))}
-                </TableBody>
-              </Table>
+                </ResponsiveTableBody>
+              </ResponsiveTable>
             )}
           </CardContent>
         </Card>

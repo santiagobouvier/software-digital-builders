@@ -4,13 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -129,64 +131,125 @@ export const PacksTab = ({ packs, products, isLoading, onRefresh }: PacksTabProp
               No hay packs registrados
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Nombre</TableHead>
-                  <TableHead>Productos</TableHead>
-                  <TableHead>Moneda</TableHead>
-                  <TableHead>Descuento</TableHead>
-                  <TableHead className="text-right">Setup</TableHead>
-                  <TableHead className="text-right">Mensual</TableHead>
-                  <TableHead className="text-right">Anual</TableHead>
-                  <TableHead>Estado</TableHead>
-                  <TableHead className="w-[120px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+            <ResponsiveTable>
+              <ResponsiveTableHeader>
+                <ResponsiveTableRow>
+                  <ResponsiveTableHead>Nombre</ResponsiveTableHead>
+                  <ResponsiveTableHead>Productos</ResponsiveTableHead>
+                  <ResponsiveTableHead>Moneda</ResponsiveTableHead>
+                  <ResponsiveTableHead>Descuento</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Setup</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Mensual</ResponsiveTableHead>
+                  <ResponsiveTableHead className="text-right">Anual</ResponsiveTableHead>
+                  <ResponsiveTableHead>Estado</ResponsiveTableHead>
+                  <ResponsiveTableHead className="w-[120px]"></ResponsiveTableHead>
+                </ResponsiveTableRow>
+              </ResponsiveTableHeader>
+              <ResponsiveTableBody>
                 {packs.map((pack) => {
                   const pricing = getPackPricing(pack);
                   const annualTotal = pricing.totalMonthly * 12;
                   const monthlyEquivalent = pricing.totalOneTime / 12;
                   
                   return (
-                    <TableRow key={pack.id} className={!pack.is_active ? "opacity-50" : ""}>
-                      <TableCell className="font-medium">{pack.name}</TableCell>
-                      <TableCell>
+                    <ResponsiveTableRow 
+                      key={pack.id} 
+                      className={!pack.is_active ? "opacity-50" : ""}
+                      mobileCard={
+                        <>
+                          <MobileCardHeader
+                            title={pack.name}
+                            badge={
+                              <div className="flex items-center gap-1.5">
+                                <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                                  {pack.pack_items.length} prod.
+                                </Badge>
+                                <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                  {pack.currency}
+                                </Badge>
+                              </div>
+                            }
+                            actions={
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleEdit(pack)}
+                                  className="h-8 w-8"
+                                >
+                                  <Pencil className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => handleToggleActive(pack)}
+                                  className="h-8 w-8"
+                                >
+                                  <Power className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            }
+                          />
+                          {pack.discount_type !== "none" && (
+                            <MobileCardRow label="Descuento">
+                              <Badge variant="default" className="text-[10px] px-1.5 py-0">
+                                {getDiscountLabel(pack)}
+                              </Badge>
+                            </MobileCardRow>
+                          )}
+                          <div className="grid grid-cols-3 gap-2 pt-2 text-center">
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Setup</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(pricing.totalOneTime, pack.currency)}</p>
+                            </div>
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Mensual</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(pricing.totalMonthly, pack.currency)}</p>
+                            </div>
+                            <div className="p-2 rounded bg-secondary/50">
+                              <p className="text-[10px] text-muted-foreground mb-0.5">Anual</p>
+                              <p className="text-sm font-mono font-medium">{formatCurrency(annualTotal, pack.currency)}</p>
+                            </div>
+                          </div>
+                        </>
+                      }
+                    >
+                      <ResponsiveTableCell className="font-medium">{pack.name}</ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant="outline">
                           {pack.pack_items.length} producto{pack.pack_items.length !== 1 ? "s" : ""}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant="secondary">{pack.currency}</Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant={pack.discount_type !== "none" ? "default" : "secondary"}>
                           {getDiscountLabel(pack)}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         <div>{formatCurrency(pricing.totalOneTime, pack.currency)}</div>
                         {pricing.totalOneTime > 0 && (
                           <div className="text-xs text-muted-foreground">
                             ≈ {formatCurrency(monthlyEquivalent, pack.currency)}/mes
                           </div>
                         )}
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         {formatCurrency(pricing.totalMonthly, pack.currency)}
-                      </TableCell>
-                      <TableCell className="text-right font-mono">
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell className="text-right font-mono">
                         {pricing.totalMonthly > 0 && (
                           <span>{formatCurrency(annualTotal, pack.currency)}</span>
                         )}
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <Badge variant={pack.is_active ? "default" : "secondary"}>
                           {pack.is_active ? "Activo" : "Inactivo"}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
+                      </ResponsiveTableCell>
+                      <ResponsiveTableCell>
                         <div className="flex items-center gap-1">
                           <Button
                             variant="ghost"
@@ -213,12 +276,12 @@ export const PacksTab = ({ packs, products, isLoading, onRefresh }: PacksTabProp
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                      </TableCell>
-                    </TableRow>
+                      </ResponsiveTableCell>
+                    </ResponsiveTableRow>
                   );
                 })}
-              </TableBody>
-            </Table>
+              </ResponsiveTableBody>
+            </ResponsiveTable>
           )}
         </CardContent>
       </Card>
