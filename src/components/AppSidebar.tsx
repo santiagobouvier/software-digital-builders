@@ -146,11 +146,11 @@ export function AppSidebar({
     <>
       <Sidebar collapsible="icon">
         <SidebarContent>
-          {/* Large Logo for Mobile only - shown above navigation */}
-          {isMobile && (
-            <SidebarGroup className="flex items-center justify-center py-6">
+          {/* Large Logo - shown when sidebar is open (mobile and desktop) */}
+          {!isCollapsed && (
+            <SidebarGroup className="flex items-center justify-center pt-6 pb-8 border-b border-sidebar-border mb-2">
               <Link to="/dashboard">
-                <Logo size="lg" />
+                <Logo size="lg" className="h-14 w-auto" />
               </Link>
             </SidebarGroup>
           )}
