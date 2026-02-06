@@ -9,6 +9,7 @@ import {
   MessageSquareText,
   Users,
   Activity,
+  BarChart3,
 } from "lucide-react";
 import {
   LineChart,
@@ -288,8 +289,12 @@ const Dashboard = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 ) : (
-                  <div className="h-full flex items-center justify-center text-muted-foreground">
-                    No hay datos para mostrar
+                  <div className="h-full flex flex-col items-center justify-center text-muted-foreground gap-3">
+                    <BarChart3 className="h-10 w-10 opacity-30" />
+                    <div className="text-center">
+                      <p className="font-medium">Sin datos en este rango</p>
+                      <p className="text-xs mt-1">Los datos aparecerán cuando tus bots comiencen a recibir mensajes</p>
+                    </div>
                   </div>
                 )}
               </div>
