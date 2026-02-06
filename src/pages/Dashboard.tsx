@@ -125,9 +125,9 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Logo on the right - desktop only */}
-        <div className="hidden md:flex justify-end">
-          <Logo size="lg" className="h-16 lg:h-20 w-auto" />
+        {/* Logo on the right */}
+        <div className="flex justify-end">
+          <Logo size="lg" className="h-12 md:h-16 lg:h-20 w-auto" />
         </div>
 
         {/* Header with welcome message */}
