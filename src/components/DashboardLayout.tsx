@@ -123,7 +123,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
     ...(isProfessional ? [
       { path: "/users", label: "Usuarios", icon: UserCog },
-      { path: "/catalogo", label: "Finanzas", icon: Package },
+      { path: "/catalogo", label: "Catálogo", icon: Package },
       { path: "/clientes", label: "Clientes", icon: Building2 },
       { path: "/bots-clientes", label: "Bots Clientes", icon: MessageCircle },
       { path: "/webs-clientes", label: "Webs Clientes", icon: Globe },
