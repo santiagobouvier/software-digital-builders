@@ -125,20 +125,19 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header with welcome message and logo */}
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
-              {userName}, Te damos la bienvenida a Digital Builders Software.
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Panel de gestión
-            </p>
-          </div>
-          {/* Logo on the right - desktop only */}
-          <div className="hidden md:block flex-shrink-0">
-            <Logo size="lg" className="h-16 lg:h-20 w-auto" />
-          </div>
+        {/* Logo on the right - desktop only */}
+        <div className="hidden md:flex justify-end">
+          <Logo size="lg" className="h-16 lg:h-20 w-auto" />
+        </div>
+
+        {/* Header with welcome message */}
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
+            {userName}, Te damos la bienvenida a Digital Builders Software.
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Panel de gestión
+          </p>
         </div>
 
         {/* Financial Summary - Primary content */}
