@@ -142,24 +142,27 @@ export function AppSidebar({
     return (first + last).toUpperCase();
   };
 
+  // On mobile, sidebar is never "collapsed" in the icon sense - it's either open or closed via sheet
+  const showFullContent = isMobile || !isCollapsed;
+
   return (
     <>
       <Sidebar collapsible="icon">
-        <SidebarContent>
-          {/* Large Logo - shown when sidebar is open (mobile and desktop) */}
-          {!isCollapsed && (
-            <SidebarGroup className="flex items-center justify-center pt-6 pb-8 border-b border-sidebar-border mb-2">
-              <Link to="/dashboard">
-                <Logo size="lg" className="h-14 w-auto" />
+        <SidebarContent className="bg-sidebar">
+          {/* Large Logo - shown when sidebar content is visible */}
+          {showFullContent && (
+            <SidebarGroup className="flex items-center justify-center pt-8 pb-6">
+              <Link to="/dashboard" className="block">
+                <Logo size="lg" className="h-16 w-auto" />
               </Link>
             </SidebarGroup>
           )}
 
           {/* Company Selector */}
-          {companies.length > 1 && !isCollapsed && (
-            <SidebarGroup>
+          {companies.length > 1 && showFullContent && (
+            <SidebarGroup className="px-3">
               <Select value={selectedCompanyId} onValueChange={onCompanyChange}>
-                <SelectTrigger className="w-full bg-sidebar-accent/50 border-sidebar-border text-sm">
+                <SelectTrigger className="w-full bg-sidebar-accent/30 border-sidebar-border/50 text-sm h-10">
                   <SelectValue placeholder="Empresa" />
                 </SelectTrigger>
                 <SelectContent>
@@ -174,19 +177,21 @@ export function AppSidebar({
           )}
 
           {/* Navigation */}
-          <SidebarGroup>
+          <SidebarGroup className="px-2 mt-2">
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1">
                 {navItems.map((item) => (
                   <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
                       asChild
                       isActive={isActive(item.path)}
                       tooltip={item.label}
+                      size="lg"
+                      className="h-11"
                     >
                       <Link to={item.path}>
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.label}</span>
+                        <item.icon className="h-5 w-5" />
+                        <span className="text-sm font-medium">{item.label}</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -195,28 +200,28 @@ export function AppSidebar({
             </SidebarGroupContent>
           </SidebarGroup>
 
+          {/* Spacer */}
+          <div className="flex-1" />
+
           {/* PWA Install */}
-          {isInstallable && !isInstalled && !isCollapsed && (
-            <>
-              <SidebarSeparator />
-              <SidebarGroup>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="w-full justify-start gap-2 border-primary/50 text-primary hover:bg-primary/10"
-                  onClick={install}
-                >
-                  <Download className="h-4 w-4" />
-                  Descargar App
-                </Button>
-              </SidebarGroup>
-            </>
+          {isInstallable && !isInstalled && showFullContent && (
+            <SidebarGroup className="px-3">
+              <Button
+                variant="outline"
+                size="default"
+                className="w-full justify-start gap-3 border-primary/50 text-primary hover:bg-primary/10 h-11"
+                onClick={install}
+              >
+                <Download className="h-5 w-5" />
+                Descargar App
+              </Button>
+            </SidebarGroup>
           )}
 
-          {isInstalled && !isCollapsed && (
-            <SidebarGroup>
-              <div className="flex items-center gap-2 text-xs text-muted-foreground px-2">
-                <Check className="h-4 w-4 text-success" />
+          {isInstalled && showFullContent && (
+            <SidebarGroup className="px-3">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
+                <Check className="h-5 w-5 text-success" />
                 App instalada
               </div>
             </SidebarGroup>
@@ -224,23 +229,24 @@ export function AppSidebar({
         </SidebarContent>
 
         {/* Footer with User Menu */}
-        <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarFooter className="border-t border-sidebar-border p-3">
           <SidebarMenu>
-            <SidebarMenuItem>
+          <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
-                    className={cn("w-full", isCollapsed && "justify-center")}
+                    size="lg"
+                    className={cn("w-full h-14", (isMobile || !isCollapsed) ? "" : "justify-center")}
                   >
-                    <Avatar className="h-7 w-7 flex-shrink-0">
+                    <Avatar className="h-9 w-9 flex-shrink-0">
                       <AvatarImage src={profile?.avatar_url || undefined} />
-                      <AvatarFallback className="bg-primary/20 text-primary text-xs font-medium">
+                      <AvatarFallback className="bg-primary/20 text-primary text-sm font-medium">
                         {getInitials()}
                       </AvatarFallback>
                     </Avatar>
-                    {!isCollapsed && (
+                    {showFullContent && (
                       <>
-                        <div className="flex flex-col flex-1 min-w-0">
+                        <div className="flex flex-col flex-1 min-w-0 ml-1">
                           <span className="text-sm font-medium truncate">
                             {getDisplayName()}
                           </span>
@@ -253,12 +259,12 @@ export function AppSidebar({
                     )}
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent side="top" align="start" className="w-56">
-                  <DropdownMenuLabel>
+                <DropdownMenuContent side="top" align="start" className="w-64">
+                  <DropdownMenuLabel className="p-3">
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
+                      <Avatar className="h-12 w-12">
                         <AvatarImage src={profile?.avatar_url || undefined} />
-                        <AvatarFallback className="bg-primary/20 text-primary">
+                        <AvatarFallback className="bg-primary/20 text-primary text-lg">
                           {getInitials()}
                         </AvatarFallback>
                       </Avatar>
@@ -273,16 +279,16 @@ export function AppSidebar({
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => setProfileDialogOpen(true)}>
-                    <Settings className="h-4 w-4 mr-2" />
+                  <DropdownMenuItem onClick={() => setProfileDialogOpen(true)} className="py-3">
+                    <Settings className="h-4 w-4 mr-3" />
                     Editar perfil
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={onLogout}
-                    className="text-destructive"
+                    className="text-destructive py-3"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="h-4 w-4 mr-3" />
                     Cerrar sesión
                   </DropdownMenuItem>
                 </DropdownMenuContent>
