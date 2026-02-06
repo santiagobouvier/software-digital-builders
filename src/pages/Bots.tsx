@@ -14,13 +14,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  ResponsiveTable,
+  ResponsiveTableBody,
+  ResponsiveTableCell,
+  ResponsiveTableHead,
+  ResponsiveTableHeader,
+  ResponsiveTableRow,
+  MobileCardHeader,
+  MobileCardRow,
+} from "@/components/ui/responsive-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -230,24 +232,117 @@ const Bots = () => {
                 </Button>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Nombre</TableHead>
-                    <TableHead>Conexión</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead>Última actividad</TableHead>
-                    <TableHead>Métricas</TableHead>
-                    {isOwner && <TableHead>Acciones</TableHead>}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
+              <ResponsiveTable>
+                <ResponsiveTableHeader>
+                  <ResponsiveTableRow>
+                    <ResponsiveTableHead>Nombre</ResponsiveTableHead>
+                    <ResponsiveTableHead>Conexión</ResponsiveTableHead>
+                    <ResponsiveTableHead>Estado</ResponsiveTableHead>
+                    <ResponsiveTableHead>Última actividad</ResponsiveTableHead>
+                    <ResponsiveTableHead>Métricas</ResponsiveTableHead>
+                    {isOwner && <ResponsiveTableHead>Acciones</ResponsiveTableHead>}
+                  </ResponsiveTableRow>
+                </ResponsiveTableHeader>
+                <ResponsiveTableBody>
                   {bots.map((bot) => {
                     const isConnected = bot.last_event_at !== null;
                     return (
-                      <TableRow key={bot.id}>
-                        <TableCell className="font-medium">{bot.name}</TableCell>
-                        <TableCell>
+                      <ResponsiveTableRow 
+                        key={bot.id}
+                        mobileCard={
+                          <>
+                            <MobileCardHeader
+                              title={bot.name}
+                              badge={
+                                <Badge
+                                  variant={isConnected ? "default" : "secondary"}
+                                  className={
+                                    isConnected
+                                      ? "bg-success/20 text-success border-success/30 text-[10px] px-1.5 py-0"
+                                      : "bg-muted text-muted-foreground text-[10px] px-1.5 py-0"
+                                  }
+                                >
+                                  {isConnected ? (
+                                    <>
+                                      <Wifi className="h-2.5 w-2.5 mr-0.5" />
+                                      On
+                                    </>
+                                  ) : (
+                                    <>
+                                      <WifiOff className="h-2.5 w-2.5 mr-0.5" />
+                                      Off
+                                    </>
+                                  )}
+                                </Badge>
+                              }
+                              actions={
+                                isOwner && (
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem onClick={() => copyToClipboard(bot.id, "BOT_ID")}>
+                                        <Copy className="h-4 w-4 mr-2" />
+                                        Copiar BOT_ID
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => copyToClipboard(bot.token, "TOKEN")}>
+                                        <Copy className="h-4 w-4 mr-2" />
+                                        Copiar TOKEN
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem onClick={() => toggleBotStatus(bot)}>
+                                        {bot.status === "active" ? (
+                                          <>
+                                            <Pause className="h-4 w-4 mr-2" />
+                                            Pausar
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Play className="h-4 w-4 mr-2" />
+                                            Activar
+                                          </>
+                                        )}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem
+                                        onClick={() => setDeletingBot(bot)}
+                                        className="text-destructive focus:text-destructive"
+                                      >
+                                        <Trash2 className="h-4 w-4 mr-2" />
+                                        Eliminar
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                )
+                              }
+                            />
+                            <MobileCardRow label="Estado">
+                              <StatusBadge status={bot.status} />
+                            </MobileCardRow>
+                            <MobileCardRow label="Actividad">
+                              <span className="text-muted-foreground text-xs">
+                                {bot.last_event_at
+                                  ? format(new Date(bot.last_event_at), "dd MMM, HH:mm", { locale: es })
+                                  : "Sin actividad"}
+                              </span>
+                            </MobileCardRow>
+                            <div className="pt-2">
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => navigate(`/bots/${bot.id}`)}
+                                className="w-full gap-2"
+                              >
+                                <BarChart3 className="h-4 w-4" />
+                                Ver métricas
+                              </Button>
+                            </div>
+                          </>
+                        }
+                      >
+                        <ResponsiveTableCell className="font-medium">{bot.name}</ResponsiveTableCell>
+                        <ResponsiveTableCell>
                           <Badge
                             variant={isConnected ? "default" : "secondary"}
                             className={
@@ -268,16 +363,16 @@ const Bots = () => {
                               </>
                             )}
                           </Badge>
-                        </TableCell>
-                        <TableCell>
+                        </ResponsiveTableCell>
+                        <ResponsiveTableCell>
                           <StatusBadge status={bot.status} />
-                        </TableCell>
-                        <TableCell className="text-muted-foreground">
+                        </ResponsiveTableCell>
+                        <ResponsiveTableCell className="text-muted-foreground">
                           {bot.last_event_at
                             ? format(new Date(bot.last_event_at), "dd MMM yyyy, HH:mm", { locale: es })
                             : "Sin actividad"}
-                        </TableCell>
-                        <TableCell>
+                        </ResponsiveTableCell>
+                        <ResponsiveTableCell>
                           <Button
                             variant="outline"
                             size="sm"
@@ -287,9 +382,9 @@ const Bots = () => {
                             <BarChart3 className="h-4 w-4" />
                             Ver métricas
                           </Button>
-                        </TableCell>
+                        </ResponsiveTableCell>
                         {isOwner && (
-                          <TableCell>
+                          <ResponsiveTableCell>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -339,13 +434,13 @@ const Bots = () => {
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
-                          </TableCell>
+                          </ResponsiveTableCell>
                         )}
-                      </TableRow>
+                      </ResponsiveTableRow>
                     );
                   })}
-                </TableBody>
-              </Table>
+                </ResponsiveTableBody>
+              </ResponsiveTable>
             )}
           </CardContent>
         </Card>
