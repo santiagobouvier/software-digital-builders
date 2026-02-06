@@ -19,12 +19,11 @@ import {
   Pencil, 
   Package, 
   Layers, 
-  DollarSign,
   Trash2,
   Power,
   Building2
 } from "lucide-react";
-import { formatCurrency, calculatePackPricing, getSubscriptionPricing } from "@/lib/pricing";
+import { formatCurrency, calculatePackPricing, getSubscriptionPricing, convertCurrency } from "@/lib/pricing";
 import type { 
   ClientWithSubscriptions, 
   ClientSubscription,
@@ -39,6 +38,8 @@ interface ClientDetailProps {
   packs: PackWithItems[];
   onSubscriptionChange: () => void;
   onEdit: () => void;
+  exchangeRate?: number;
+  displayCurrency?: "USD" | "UYU";
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -60,7 +61,9 @@ export const ClientDetail = ({
   products, 
   packs, 
   onSubscriptionChange,
-  onEdit 
+  onEdit,
+  exchangeRate = 42,
+  displayCurrency = "USD"
 }: ClientDetailProps) => {
   const [isSubFormOpen, setIsSubFormOpen] = useState(false);
   const [editingSub, setEditingSub] = useState<ClientSubscription | null>(null);
@@ -78,8 +81,11 @@ export const ClientDetail = ({
   }
 
   const getSubscriptionPricingData = (sub: ClientSubscription) => {
+    const subCurrency = (sub as any).currency || "USD";
+    let pricing = { oneTime: 0, monthly: 0 };
+    
     if (sub.item_type === "product" && sub.product) {
-      return getSubscriptionPricing(
+      pricing = getSubscriptionPricing(
         sub.pricing_mode,
         sub.product.price_one_time,
         sub.product.price_monthly,
@@ -99,7 +105,7 @@ export const ClientDetail = ({
         sub.pack.discount_type,
         sub.pack.discount_value
       );
-      return getSubscriptionPricing(
+      pricing = getSubscriptionPricing(
         sub.pricing_mode,
         packPricing.totalOneTime,
         packPricing.totalMonthly,
@@ -107,10 +113,16 @@ export const ClientDetail = ({
         sub.custom_monthly
       );
     }
-    return { oneTime: 0, monthly: 0 };
+
+    // Convert to display currency
+    return {
+      oneTime: convertCurrency(pricing.oneTime, subCurrency, displayCurrency, exchangeRate),
+      monthly: convertCurrency(pricing.monthly, subCurrency, displayCurrency, exchangeRate),
+      originalCurrency: subCurrency,
+    };
   };
 
-  // Calculate totals
+  // Calculate totals in display currency
   const activeSubscriptions = client.client_subscriptions?.filter((s) => s.is_active) || [];
   const totals = activeSubscriptions.reduce(
     (acc, sub) => {
@@ -215,13 +227,13 @@ export const ClientDetail = ({
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">Setup Total</p>
                 <p className="text-xl font-bold font-mono text-primary">
-                  {formatCurrency(totals.setup)}
+                  {formatCurrency(totals.setup, displayCurrency)}
                 </p>
               </div>
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
                 <p className="text-xs text-muted-foreground mb-1">MRR</p>
                 <p className="text-xl font-bold font-mono text-green-500">
-                  {formatCurrency(totals.mrr)}
+                  {formatCurrency(totals.mrr, displayCurrency)}
                 </p>
               </div>
             </div>
@@ -273,6 +285,9 @@ export const ClientDetail = ({
                             <Badge variant="outline" className="text-xs">
                               {sub.pricing_mode === "custom" ? "Personalizado" : "Catálogo"}
                             </Badge>
+                            <Badge variant="outline" className="text-xs">
+                              {pricing.originalCurrency}
+                            </Badge>
                             {sub.custom_notes && (
                               <span className="truncate">{sub.custom_notes}</span>
                             )}
@@ -280,10 +295,10 @@ export const ClientDetail = ({
                         </div>
                         <div className="text-right text-sm flex-shrink-0">
                           {pricing.oneTime > 0 && (
-                            <p className="font-mono">{formatCurrency(pricing.oneTime)} setup</p>
+                            <p className="font-mono">{formatCurrency(pricing.oneTime, displayCurrency)} setup</p>
                           )}
                           <p className="font-mono text-green-500">
-                            {formatCurrency(pricing.monthly)}/mes
+                            {formatCurrency(pricing.monthly, displayCurrency)}/mes
                           </p>
                         </div>
                       </div>

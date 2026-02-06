@@ -242,6 +242,7 @@ export type Database = {
         Row: {
           client_id: string
           created_at: string
+          currency: string
           custom_monthly: number
           custom_notes: string | null
           custom_one_time: number
@@ -258,6 +259,7 @@ export type Database = {
         Insert: {
           client_id: string
           created_at?: string
+          currency?: string
           custom_monthly?: number
           custom_notes?: string | null
           custom_one_time?: number
@@ -274,6 +276,7 @@ export type Database = {
         Update: {
           client_id?: string
           created_at?: string
+          currency?: string
           custom_monthly?: number
           custom_notes?: string | null
           custom_one_time?: number
@@ -640,6 +643,30 @@ export type Database = {
           name?: string
           slug?: string
           sort_order?: number
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value: Json
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value: Json
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value?: Json
         }
         Relationships: []
       }
