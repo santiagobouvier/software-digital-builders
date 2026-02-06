@@ -149,16 +149,23 @@ export function AppSidebar({
     <>
       <Sidebar collapsible="icon">
         <SidebarContent className="bg-sidebar">
-          {/* Large Logo - shown when sidebar content is visible */}
-          {showFullContent && (
+          {/* Large Logo - shown when sidebar is expanded */}
+          {showFullContent ? (
             <SidebarGroup className="flex items-center justify-center pt-8 pb-6">
               <Link to="/dashboard" className="block">
                 <Logo size="lg" className="h-16 w-auto" />
               </Link>
             </SidebarGroup>
+          ) : (
+            /* Small icon logo when collapsed on desktop */
+            <SidebarGroup className="flex items-center justify-center py-4">
+              <Link to="/dashboard" className="block">
+                <Logo size="sm" iconOnly className="h-8 w-8" />
+              </Link>
+            </SidebarGroup>
           )}
 
-          {/* Company Selector */}
+          {/* Company Selector - only when expanded */}
           {companies.length > 1 && showFullContent && (
             <SidebarGroup className="px-3">
               <Select value={selectedCompanyId} onValueChange={onCompanyChange}>
@@ -177,7 +184,7 @@ export function AppSidebar({
           )}
 
           {/* Navigation */}
-          <SidebarGroup className="px-2 mt-2">
+          <SidebarGroup className={cn("mt-2", showFullContent ? "px-2" : "px-1")}>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
                 {navItems.map((item) => (
@@ -186,12 +193,12 @@ export function AppSidebar({
                       asChild
                       isActive={isActive(item.path)}
                       tooltip={item.label}
-                      size="lg"
-                      className="h-11"
                     >
                       <Link to={item.path}>
                         <item.icon className="h-5 w-5" />
-                        <span className="text-sm font-medium">{item.label}</span>
+                        {showFullContent && (
+                          <span className="text-sm font-medium">{item.label}</span>
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -203,7 +210,7 @@ export function AppSidebar({
           {/* Spacer */}
           <div className="flex-1" />
 
-          {/* PWA Install */}
+          {/* PWA Install - only when expanded */}
           {isInstallable && !isInstalled && showFullContent && (
             <SidebarGroup className="px-3">
               <Button
@@ -229,16 +236,15 @@ export function AppSidebar({
         </SidebarContent>
 
         {/* Footer with User Menu */}
-        <SidebarFooter className="border-t border-sidebar-border p-3">
+        <SidebarFooter className={cn("border-t border-sidebar-border", showFullContent ? "p-3" : "p-1")}>
           <SidebarMenu>
           <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
-                    size="lg"
-                    className={cn("w-full h-14", (isMobile || !isCollapsed) ? "" : "justify-center")}
+                    className={cn("w-full", showFullContent ? "h-12" : "h-10 justify-center")}
                   >
-                    <Avatar className="h-9 w-9 flex-shrink-0">
+                    <Avatar className={cn("flex-shrink-0", showFullContent ? "h-8 w-8" : "h-7 w-7")}>
                       <AvatarImage src={profile?.avatar_url || undefined} />
                       <AvatarFallback className="bg-primary/20 text-primary text-sm font-medium">
                         {getInitials()}
