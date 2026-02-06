@@ -231,7 +231,7 @@ export const ClientDetail = ({
                 </p>
               </div>
               <div className="text-center p-3 bg-secondary/50 rounded-lg">
-                <p className="text-xs text-muted-foreground mb-1">MRR</p>
+                <p className="text-xs text-muted-foreground mb-1">Ingreso mensual</p>
                 <p className="text-xl font-bold font-mono text-green-500">
                   {formatCurrency(totals.mrr, displayCurrency)}
                 </p>
