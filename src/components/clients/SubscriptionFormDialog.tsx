@@ -171,13 +171,46 @@ export const SubscriptionFormDialog = ({
           const product = products.find((p) => p.id === productId);
           if (product?.category) {
             if (product.category === "bot_whatsapp" || product.category === "bot_interno") {
-              await supabase.from("bot_instances").insert({
-                client_id: clientId,
-                subscription_id: newSub.id,
-                product_id: productId,
-                bot_type: product.category,
-                status: "setup",
-              });
+              // First get the company_id from company_users
+              const { data: { user } } = await supabase.auth.getUser();
+              if (user) {
+                const { data: companyData } = await supabase
+                  .from("company_users")
+                  .select("company_id")
+                  .eq("user_id", user.id)
+                  .limit(1)
+                  .single();
+                
+                if (companyData) {
+                  // Get client name for bot naming
+                  const { data: clientData } = await supabase
+                    .from("clients")
+                    .select("company_name")
+                    .eq("id", clientId)
+                    .single();
+                  
+                  const botName = `${product.name} - ${clientData?.company_name || "Cliente"}`;
+                  
+                  // Create the technical bot (with token)
+                  const { data: newBot } = await supabase
+                    .from("bots")
+                    .insert({
+                      company_id: companyData.company_id,
+                      name: botName,
+                    })
+                    .select()
+                    .single();
+                  
+                  // Create the operational bot instance
+                  await supabase.from("bot_instances").insert({
+                    client_id: clientId,
+                    subscription_id: newSub.id,
+                    product_id: productId,
+                    bot_type: product.category,
+                    status: "setup",
+                  });
+                }
+              }
             } else if (product.category === "web_rapida" || product.category === "web_autogestionable") {
               await supabase.from("web_instances").insert({
                 client_id: clientId,

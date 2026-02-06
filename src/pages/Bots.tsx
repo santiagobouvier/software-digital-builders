@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { StatusBadge } from "@/components/StatusBadge";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -13,7 +11,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
@@ -31,7 +28,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Plus,
   Copy,
   MoreHorizontal,
   Bot as BotIcon,
@@ -63,9 +59,6 @@ const Bots = () => {
   const navigate = useNavigate();
   const [bots, setBots] = useState<Bot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newBotName, setNewBotName] = useState("");
   const [companyId, setCompanyId] = useState<string>("");
   const [isOwner, setIsOwner] = useState(false);
   const [visibleTokens, setVisibleTokens] = useState<Set<string>>(new Set());
@@ -112,37 +105,6 @@ const Bots = () => {
       setBots(data as Bot[]);
     }
     setIsLoading(false);
-  };
-
-  const handleCreateBot = async () => {
-    if (!newBotName.trim()) return;
-
-    setIsCreating(true);
-    const { data, error } = await supabase
-      .from("bots")
-      .insert({
-        company_id: companyId,
-        name: newBotName.trim(),
-      })
-      .select()
-      .single();
-
-    if (error) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else if (data) {
-      setBots([data as Bot, ...bots]);
-      toast({
-        title: "Bot creado",
-        description: "El bot se ha creado correctamente.",
-      });
-      setNewBotName("");
-      setIsCreateOpen(false);
-    }
-    setIsCreating(false);
   };
 
   const toggleBotStatus = async (bot: Bot) => {
@@ -197,54 +159,9 @@ const Bots = () => {
           <div className="min-w-0">
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">Bots</h1>
             <p className="text-sm text-muted-foreground">
-              Conectá BuilderBot enviando eventos a /api/track.
+              Los bots se crean automáticamente al asignar un producto de tipo bot a un cliente.
             </p>
           </div>
-          {isOwner && (
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-              <DialogTrigger asChild>
-                <Button className="gap-2 flex-shrink-0" size="sm">
-                  <Plus className="h-4 w-4" />
-                  <span className="hidden sm:inline">Crear bot</span>
-                  <span className="sm:hidden">Crear</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Crear nuevo bot</DialogTitle>
-                  <DialogDescription>
-                    Ingresa un nombre para tu nuevo bot. Se generará un token automáticamente.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="bot-name">Nombre del bot</Label>
-                    <Input
-                      id="bot-name"
-                      placeholder="Mi bot de WhatsApp"
-                      value={newBotName}
-                      onChange={(e) => setNewBotName(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button variant="outline" onClick={() => setIsCreateOpen(false)}>
-                    Cancelar
-                  </Button>
-                  <Button onClick={handleCreateBot} disabled={isCreating || !newBotName.trim()}>
-                    {isCreating ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Creando...
-                      </>
-                    ) : (
-                      "Crear bot"
-                    )}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
         </div>
 
         {/* Bots Table */}
@@ -255,12 +172,19 @@ const Bots = () => {
                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
               </div>
             ) : bots.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
+              <div className="flex flex-col items-center justify-center py-12 text-center px-4">
                 <BotIcon className="h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-medium">No hay bots</h3>
-                <p className="text-muted-foreground text-sm">
-                  {isOwner ? "Crea tu primer bot para comenzar." : "No hay bots configurados todavía."}
+                <p className="text-muted-foreground text-sm max-w-sm">
+                  Los bots se crean automáticamente cuando asignas un producto de tipo bot a un cliente desde su ficha.
                 </p>
+                <Button 
+                  variant="outline" 
+                  className="mt-4"
+                  onClick={() => navigate("/clientes")}
+                >
+                  Ir a Clientes
+                </Button>
               </div>
             ) : (
               <Table>
