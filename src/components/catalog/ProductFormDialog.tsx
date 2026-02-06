@@ -14,6 +14,15 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+  DrawerClose,
+} from "@/components/ui/drawer";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -23,6 +32,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Info } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Product, BillingType, ProductCategory } from "@/types/catalog";
 
 interface ProductFormDialogProps {
@@ -131,146 +141,179 @@ export const ProductFormDialog = ({
     }
   };
 
+  const isMobile = useIsMobile();
+
+  const formContent = (
+    <div className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Nombre *</Label>
+        <Input
+          id="name"
+          placeholder="Ej: Bot de WhatsApp"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="description">Descripción</Label>
+        <Textarea
+          id="description"
+          placeholder="Descripción del producto..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          rows={3}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Tipo de facturación</Label>
+        <Select value={billingType} onValueChange={(v) => setBillingType(v as BillingType)}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="recurring">Recurrente (mensual)</SelectItem>
+            <SelectItem value="one_time">Pago único</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Categoría</Label>
+        <Select value={category} onValueChange={(v) => setCategory(v as ProductCategory)}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="bot_whatsapp">Bot WhatsApp</SelectItem>
+            <SelectItem value="bot_interno">Bot Interno</SelectItem>
+            <SelectItem value="web_rapida">Web Rápida</SelectItem>
+            <SelectItem value="web_autogestionable">Web Autogestionable</SelectItem>
+            <SelectItem value="otro">Otro</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Currency selector */}
+      <div className="space-y-2">
+        <Label>Moneda</Label>
+        <Select value={currency} onValueChange={setCurrency}>
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="USD">USD (Dólares)</SelectItem>
+            <SelectItem value="UYU">UYU (Pesos)</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="priceOneTime">Setup ({currency})</Label>
+          <Input
+            id="priceOneTime"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            value={priceOneTime}
+            onChange={(e) => setPriceOneTime(e.target.value)}
+          />
+          {oneTimeValue > 0 && (
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Info className="h-3 w-3" />
+              ≈ {formatCurrency(monthlyEquivalent, currency)}/mes
+            </p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="priceMonthly">Mensual ({currency})</Label>
+          <Input
+            id="priceMonthly"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0"
+            value={priceMonthly}
+            onChange={(e) => setPriceMonthly(e.target.value)}
+          />
+          {monthlyValue > 0 && (
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Info className="h-3 w-3" />
+              = {formatCurrency(annualTotal, currency)}/año
+            </p>
+          )}
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <Label htmlFor="isActive">Activo</Label>
+        <Switch
+          id="isActive"
+          checked={isActive}
+          onCheckedChange={setIsActive}
+        />
+      </div>
+    </div>
+  );
+
+  const footerButtons = (
+    <>
+      <Button variant="outline" onClick={onClose}>
+        Cancelar
+      </Button>
+      <Button onClick={handleSubmit} disabled={isSaving}>
+        {isSaving ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            Guardando...
+          </>
+        ) : product ? (
+          "Guardar cambios"
+        ) : (
+          "Crear producto"
+        )}
+      </Button>
+    </>
+  );
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} onOpenChange={onClose}>
+        <DrawerContent className="max-h-[95vh]">
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{product ? "Editar producto" : "Nuevo producto"}</DrawerTitle>
+            <DrawerDescription>
+              {product ? "Modifica los datos del producto" : "Crea un nuevo producto para el catálogo"}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 overflow-y-auto flex-1">
+            {formContent}
+          </div>
+          <DrawerFooter className="pt-4">
+            {footerButtons}
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    );
+  }
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>{product ? "Editar producto" : "Nuevo producto"}</DialogTitle>
           <DialogDescription>
             {product ? "Modifica los datos del producto" : "Crea un nuevo producto para el catálogo"}
           </DialogDescription>
         </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nombre *</Label>
-            <Input
-              id="name"
-              placeholder="Ej: Bot de WhatsApp"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Descripción</Label>
-            <Textarea
-              id="description"
-              placeholder="Descripción del producto..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Tipo de facturación</Label>
-            <Select value={billingType} onValueChange={(v) => setBillingType(v as BillingType)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recurring">Recurrente (mensual)</SelectItem>
-                <SelectItem value="one_time">Pago único</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Categoría</Label>
-            <Select value={category} onValueChange={(v) => setCategory(v as ProductCategory)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="bot_whatsapp">Bot WhatsApp</SelectItem>
-                <SelectItem value="bot_interno">Bot Interno</SelectItem>
-                <SelectItem value="web_rapida">Web Rápida</SelectItem>
-                <SelectItem value="web_autogestionable">Web Autogestionable</SelectItem>
-                <SelectItem value="otro">Otro</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Currency selector */}
-          <div className="space-y-2">
-            <Label>Moneda</Label>
-            <Select value={currency} onValueChange={setCurrency}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="USD">USD (Dólares)</SelectItem>
-                <SelectItem value="UYU">UYU (Pesos)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="priceOneTime">Setup ({currency})</Label>
-              <Input
-                id="priceOneTime"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0"
-                value={priceOneTime}
-                onChange={(e) => setPriceOneTime(e.target.value)}
-              />
-              {oneTimeValue > 0 && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Info className="h-3 w-3" />
-                  ≈ {formatCurrency(monthlyEquivalent, currency)}/mes
-                </p>
-              )}
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="priceMonthly">Mensual ({currency})</Label>
-              <Input
-                id="priceMonthly"
-                type="number"
-                min="0"
-                step="0.01"
-                placeholder="0"
-                value={priceMonthly}
-                onChange={(e) => setPriceMonthly(e.target.value)}
-              />
-              {monthlyValue > 0 && (
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Info className="h-3 w-3" />
-                  = {formatCurrency(annualTotal, currency)}/año
-                </p>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Label htmlFor="isActive">Activo</Label>
-            <Switch
-              id="isActive"
-              checked={isActive}
-              onCheckedChange={setIsActive}
-            />
-          </div>
+        <div className="overflow-y-auto flex-1 pr-2">
+          {formContent}
         </div>
-
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Cancelar
-          </Button>
-          <Button onClick={handleSubmit} disabled={isSaving}>
-            {isSaving ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                Guardando...
-              </>
-            ) : product ? (
-              "Guardar cambios"
-            ) : (
-              "Crear producto"
-            )}
-          </Button>
+          {footerButtons}
         </DialogFooter>
       </DialogContent>
     </Dialog>
