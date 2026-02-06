@@ -13,6 +13,8 @@ import BotDetail from "./pages/BotDetail";
 import Team from "./pages/Team";
 import Users from "./pages/Users";
 import Stats from "./pages/Stats";
+import Catalog from "./pages/Catalog";
+import Clients from "./pages/Clients";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -106,6 +108,22 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Stats />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/catalogo"
+            element={
+              <ProtectedRoute>
+                <Catalog />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/clientes"
+            element={
+              <ProtectedRoute>
+                <Clients />
               </ProtectedRoute>
             }
           />

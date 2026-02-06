@@ -27,6 +27,8 @@ import {
   ChevronDown,
   Menu,
   X,
+  Package,
+  Building2,
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { cn } from "@/lib/utils";
@@ -117,7 +119,11 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { path: "/bots", label: "Bots", icon: Bot },
     ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
-    ...(isProfessional ? [{ path: "/users", label: "Usuarios", icon: UserCog }] : []),
+    ...(isProfessional ? [
+      { path: "/users", label: "Usuarios", icon: UserCog },
+      { path: "/catalogo", label: "Catálogo", icon: Package },
+      { path: "/clientes", label: "Clientes", icon: Building2 },
+    ] : []),
   ];
 
   if (!user) return null;
