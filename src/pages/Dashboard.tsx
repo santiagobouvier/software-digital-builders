@@ -125,8 +125,8 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Logo - right on mobile, left on desktop */}
-        <div className="flex justify-end md:justify-start">
+        {/* Logo - left on all devices */}
+        <div className="flex justify-start">
           <Logo size="lg" className="h-12 md:h-16 lg:h-20 w-auto" />
         </div>
 
