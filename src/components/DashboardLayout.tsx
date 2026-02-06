@@ -1,42 +1,9 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
+import { useState, useEffect, createContext, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Logo } from "@/components/Logo";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  LayoutDashboard,
-  Bot,
-  Users,
-  UserCog,
-  LogOut,
-  ChevronDown,
-  Menu,
-  X,
-  Package,
-  Building2,
-  MessageCircle,
-  Globe,
-  Download,
-  Check,
-} from "lucide-react";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 import { useUserRole } from "@/hooks/useUserRole";
-import { usePWAInstall } from "@/hooks/usePWAInstall";
-import { cn } from "@/lib/utils";
 
 interface Company {
   id: string;
@@ -50,13 +17,10 @@ interface DashboardLayoutProps {
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { isProfessional } = useUserRole();
-  const { isInstallable, isInstalled, install } = usePWAInstall();
   const [user, setUser] = useState<any>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -121,164 +85,38 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const currentCompany = companies.find(c => c.id === selectedCompanyId);
   const isOwner = currentCompany?.role === "owner";
 
-  const navItems = [
-    { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { path: "/bots", label: "Bots", icon: Bot },
-    ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
-    ...(isProfessional ? [
-      { path: "/users", label: "Usuarios", icon: UserCog },
-      { path: "/catalogo", label: "Catálogo", icon: Package },
-      { path: "/clientes", label: "Clientes", icon: Building2 },
-      { path: "/bots-clientes", label: "Bots Clientes", icon: MessageCircle },
-      { path: "/webs-clientes", label: "Webs Clientes", icon: Globe },
-    ] : []),
-  ];
-
   if (!user) return null;
 
   return (
-    <div className="min-h-screen max-h-screen flex flex-col bg-background overflow-hidden">
-      {/* Header */}
-      <header className="sticky top-0 z-50 flex-shrink-0 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-6">
-          <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-            <Link to="/dashboard" className="flex-shrink-0">
-              <Logo size="sm" />
-            </Link>
+    <SidebarProvider defaultOpen={true}>
+      <AppSidebar
+        user={user}
+        companies={companies}
+        selectedCompanyId={selectedCompanyId}
+        onCompanyChange={handleCompanyChange}
+        onLogout={handleLogout}
+        isProfessional={isProfessional}
+        isOwner={isOwner}
+      />
+      <SidebarInset>
+        {/* Minimal header with sidebar trigger */}
+        <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
+          <SidebarTrigger className="-ml-1" />
+          <div className="flex-1" />
+        </header>
 
-            {/* Company Selector */}
-            {companies.length > 1 && (
-              <Select value={selectedCompanyId} onValueChange={handleCompanyChange}>
-                <SelectTrigger className="w-[140px] sm:w-[200px] bg-secondary border-border text-sm">
-                  <SelectValue placeholder="Empresa" />
-                </SelectTrigger>
-                <SelectContent>
-                  {companies.map((company) => (
-                    <SelectItem key={company.id} value={company.id}>
-                      {company.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <Link key={item.path} to={item.path}>
-                  <Button
-                    variant={location.pathname === item.path || location.pathname.startsWith(item.path + "/") ? "secondary" : "ghost"}
-                    size="sm"
-                    className={cn(
-                      "gap-2",
-                      (location.pathname === item.path || location.pathname.startsWith(item.path + "/")) && "bg-secondary"
-                    )}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.label}
-                  </Button>
-                </Link>
-              ))}
-            </nav>
+        {/* Main Content */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div className="px-4 sm:px-6 py-4 sm:py-6 max-w-7xl mx-auto">
+            {children}
           </div>
-
-          <div className="flex items-center gap-2 sm:gap-4">
-            {/* User Menu */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="sm" className="gap-1 sm:gap-2 px-2 sm:px-3">
-                  <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm">
-                    {user.email?.[0].toUpperCase()}
-                  </div>
-                  <ChevronDown className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground hidden sm:block" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{user.user_metadata?.name || "Usuario"}</span>
-                    <span className="text-xs text-muted-foreground truncate">{user.email}</span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-destructive">
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Mobile Menu Toggle */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden h-9 w-9"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <nav className="md:hidden border-t border-border p-3 space-y-1 bg-background">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <Button
-                  variant={location.pathname === item.path || location.pathname.startsWith(item.path + "/") ? "secondary" : "ghost"}
-                  className="w-full justify-start gap-2"
-                  size="sm"
-                >
-                  <item.icon className="h-4 w-4" />
-                  {item.label}
-                </Button>
-              </Link>
-            ))}
-            
-            {/* PWA Install Button */}
-            {isInstallable && !isInstalled && (
-              <Button
-                variant="outline"
-                className="w-full justify-start gap-2 border-primary/50 text-primary hover:bg-primary/10"
-                size="sm"
-                onClick={() => {
-                  install();
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                <Download className="h-4 w-4" />
-                Descargar App
-              </Button>
-            )}
-            
-            {isInstalled && (
-              <div className="flex items-center gap-2 text-xs text-muted-foreground px-3 py-2">
-                <Check className="h-4 w-4 text-green-500" />
-                App instalada
-              </div>
-            )}
-          </nav>
-        )}
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden">
-        <div className="px-3 sm:px-6 py-4 sm:py-6 max-w-7xl mx-auto">
-          {children}
-        </div>
-      </main>
-    </div>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 
 // Context for selected company
-import { createContext, useContext } from "react";
-
 interface CompanyContextType {
   companyId: string;
   isOwner: boolean;
