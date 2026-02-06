@@ -150,17 +150,10 @@ export function AppSidebar({
       <Sidebar collapsible="icon">
         <SidebarContent className="bg-sidebar">
           {/* Large Logo - shown when sidebar is expanded */}
-          {showFullContent ? (
+          {showFullContent && (
             <SidebarGroup className="flex items-center justify-center pt-8 pb-6">
               <Link to="/dashboard" className="block">
                 <Logo size="lg" className="h-16 w-auto" />
-              </Link>
-            </SidebarGroup>
-          ) : (
-            /* Small icon logo when collapsed on desktop */
-            <SidebarGroup className="flex items-center justify-center py-4">
-              <Link to="/dashboard" className="block">
-                <Logo size="sm" iconOnly className="h-8 w-8" />
               </Link>
             </SidebarGroup>
           )}
