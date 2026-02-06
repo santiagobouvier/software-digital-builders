@@ -110,14 +110,14 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 relative">
-        {/* Large transparent logo as background watermark - desktop only */}
-        <div className="hidden md:flex absolute inset-0 items-start justify-center pointer-events-none overflow-hidden">
-          <Logo size="lg" className="opacity-[0.04] w-auto h-32 lg:h-40 mt-8" />
+      <div className="space-y-6">
+        {/* Large transparent logo as title - desktop only */}
+        <div className="hidden md:flex justify-center">
+          <Logo size="lg" className="opacity-10 h-24 lg:h-32 w-auto" />
         </div>
 
         {/* Header */}
-        <div className="min-w-0 relative z-10">
+        <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
           <p className="text-sm text-muted-foreground">
             Panel de gestión
