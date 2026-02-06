@@ -12,6 +12,9 @@ import {
   Loader2,
   Package,
   UserPlus,
+  DollarSign,
+  MessageCircle,
+  Globe,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +35,9 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
   const [userCount, setUserCount] = useState(0);
   const [totalBots, setTotalBots] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [clientCount, setClientCount] = useState(0);
+  const [botInstanceCount, setBotInstanceCount] = useState(0);
+  const [webInstanceCount, setWebInstanceCount] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -80,6 +86,25 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
       .eq("role", "client");
     
     setUserCount(usersData?.length || 0);
+
+    // Get clients count
+    const { data: clientsData } = await supabase
+      .from("clients")
+      .select("id");
+    setClientCount(clientsData?.length || 0);
+
+    // Get bot instances count
+    const { data: botInstancesData } = await supabase
+      .from("bot_instances")
+      .select("id");
+    setBotInstanceCount(botInstancesData?.length || 0);
+
+    // Get web instances count
+    const { data: webInstancesData } = await supabase
+      .from("web_instances")
+      .select("id");
+    setWebInstanceCount(webInstancesData?.length || 0);
+
     setIsLoading(false);
   };
 
@@ -95,6 +120,101 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
 
   return (
     <div className="space-y-4">
+      {/* Module Cards */}
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+        {/* Clientes */}
+        <Card 
+          variant="elevated" 
+          className="cursor-pointer hover:bg-muted/10 transition-colors"
+          onClick={() => navigate("/clientes")}
+        >
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col gap-3">
+              <div className="p-2 rounded-lg bg-primary/10 w-fit">
+                <Building2 className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold">Clientes</p>
+                <p className="text-xs text-muted-foreground">Alta y gestión</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary">{clientCount} activos</Badge>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Finanzas */}
+        <Card 
+          variant="elevated" 
+          className="cursor-pointer hover:bg-muted/10 transition-colors"
+          onClick={() => navigate("/catalogo")}
+        >
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col gap-3">
+              <div className="p-2 rounded-lg bg-success/10 w-fit">
+                <DollarSign className="h-5 w-5 text-success" />
+              </div>
+              <div>
+                <p className="font-semibold">Finanzas</p>
+                <p className="text-xs text-muted-foreground">Productos y packs</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary">MRR & Setup</Badge>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Bots Clientes */}
+        <Card 
+          variant="elevated" 
+          className="cursor-pointer hover:bg-muted/10 transition-colors"
+          onClick={() => navigate("/bots-clientes")}
+        >
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col gap-3">
+              <div className="p-2 rounded-lg bg-warning/10 w-fit">
+                <MessageCircle className="h-5 w-5 text-warning" />
+              </div>
+              <div>
+                <p className="font-semibold">Bots</p>
+                <p className="text-xs text-muted-foreground">Instancias operativas</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary">{botInstanceCount} instancias</Badge>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Webs Clientes */}
+        <Card 
+          variant="elevated" 
+          className="cursor-pointer hover:bg-muted/10 transition-colors"
+          onClick={() => navigate("/webs-clientes")}
+        >
+          <CardContent className="pt-4 pb-4">
+            <div className="flex flex-col gap-3">
+              <div className="p-2 rounded-lg bg-cyan-500/10 w-fit">
+                <Globe className="h-5 w-5 text-cyan-500" />
+              </div>
+              <div>
+                <p className="font-semibold">Webs</p>
+                <p className="text-xs text-muted-foreground">Instancias operativas</p>
+              </div>
+              <div className="flex items-center justify-between">
+                <Badge variant="secondary">{webInstanceCount} instancias</Badge>
+                <ArrowRight className="h-4 w-4 text-muted-foreground" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Global Stats */}
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         <Card variant="elevated">
@@ -204,20 +324,16 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
           <div className="flex flex-wrap gap-3">
             <Button onClick={() => navigate("/clientes")} size="sm" className="gap-2">
               <UserPlus className="h-4 w-4" />
-              Gestionar clientes
+              Nuevo cliente
             </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate("/catalogo")}
+              onClick={() => navigate("/bots")}
               className="gap-2"
             >
-              <Package className="h-4 w-4" />
-              Ver catálogo
-            </Button>
-            <Button onClick={() => navigate("/bots")} variant="outline" size="sm" className="gap-2">
               <Bot className="h-4 w-4" />
-              Gestionar bots
+              Bots técnicos
             </Button>
             <Button
               variant="outline"

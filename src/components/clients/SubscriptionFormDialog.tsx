@@ -157,8 +157,39 @@ export const SubscriptionFormDialog = ({
         if (error) throw error;
         toast({ title: "Suscripción actualizada" });
       } else {
-        const { error } = await supabase.from("client_subscriptions").insert(data);
+        // Create subscription
+        const { data: newSub, error } = await supabase
+          .from("client_subscriptions")
+          .insert(data)
+          .select()
+          .single();
+        
         if (error) throw error;
+
+        // Auto-create instances for bot/web products
+        if (itemType === "product" && productId) {
+          const product = products.find((p) => p.id === productId);
+          if (product?.category) {
+            if (product.category === "bot_whatsapp" || product.category === "bot_interno") {
+              await supabase.from("bot_instances").insert({
+                client_id: clientId,
+                subscription_id: newSub.id,
+                product_id: productId,
+                bot_type: product.category,
+                status: "setup",
+              });
+            } else if (product.category === "web_rapida" || product.category === "web_autogestionable") {
+              await supabase.from("web_instances").insert({
+                client_id: clientId,
+                subscription_id: newSub.id,
+                product_id: productId,
+                web_type: product.category,
+                status: "development",
+              });
+            }
+          }
+        }
+
         toast({ title: "Suscripción añadida" });
       }
 

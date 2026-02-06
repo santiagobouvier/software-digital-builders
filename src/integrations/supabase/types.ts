@@ -72,6 +72,64 @@ export type Database = {
           },
         ]
       }
+      bot_instances: {
+        Row: {
+          bot_type: Database["public"]["Enums"]["product_category"]
+          client_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          product_id: string
+          status: string
+          subscription_id: string
+          updated_at: string
+        }
+        Insert: {
+          bot_type: Database["public"]["Enums"]["product_category"]
+          client_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_id: string
+          status?: string
+          subscription_id: string
+          updated_at?: string
+        }
+        Update: {
+          bot_type?: Database["public"]["Enums"]["product_category"]
+          client_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+          status?: string
+          subscription_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bot_instances_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_instances_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bot_instances_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: true
+            referencedRelation: "client_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bot_subscriptions: {
         Row: {
           annual_price: number
@@ -477,6 +535,7 @@ export type Database = {
       products: {
         Row: {
           billing_type: Database["public"]["Enums"]["billing_type"]
+          category: Database["public"]["Enums"]["product_category"] | null
           created_at: string
           currency: string
           description: string | null
@@ -490,6 +549,7 @@ export type Database = {
         }
         Insert: {
           billing_type?: Database["public"]["Enums"]["billing_type"]
+          category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           currency?: string
           description?: string | null
@@ -503,6 +563,7 @@ export type Database = {
         }
         Update: {
           billing_type?: Database["public"]["Enums"]["billing_type"]
+          category?: Database["public"]["Enums"]["product_category"] | null
           created_at?: string
           currency?: string
           description?: string | null
@@ -632,6 +693,67 @@ export type Database = {
         }
         Relationships: []
       }
+      web_instances: {
+        Row: {
+          client_id: string
+          created_at: string
+          domain: string | null
+          id: string
+          notes: string | null
+          product_id: string
+          status: string
+          subscription_id: string
+          updated_at: string
+          web_type: Database["public"]["Enums"]["product_category"]
+        }
+        Insert: {
+          client_id: string
+          created_at?: string
+          domain?: string | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          status?: string
+          subscription_id: string
+          updated_at?: string
+          web_type: Database["public"]["Enums"]["product_category"]
+        }
+        Update: {
+          client_id?: string
+          created_at?: string
+          domain?: string | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          status?: string
+          subscription_id?: string
+          updated_at?: string
+          web_type?: Database["public"]["Enums"]["product_category"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "web_instances_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "web_instances_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "web_instances_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: true
+            referencedRelation: "client_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -670,6 +792,12 @@ export type Database = {
       company_role: "owner" | "viewer"
       discount_type: "none" | "percent" | "fixed"
       pricing_mode: "catalog" | "custom"
+      product_category:
+        | "bot_whatsapp"
+        | "bot_interno"
+        | "web_rapida"
+        | "web_autogestionable"
+        | "otro"
       subscription_item_type: "product" | "pack"
       subscription_plan: "monthly" | "annual"
     }
@@ -807,6 +935,13 @@ export const Constants = {
       company_role: ["owner", "viewer"],
       discount_type: ["none", "percent", "fixed"],
       pricing_mode: ["catalog", "custom"],
+      product_category: [
+        "bot_whatsapp",
+        "bot_interno",
+        "web_rapida",
+        "web_autogestionable",
+        "otro",
+      ],
       subscription_item_type: ["product", "pack"],
       subscription_plan: ["monthly", "annual"],
     },

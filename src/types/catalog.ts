@@ -5,12 +5,14 @@ export type DiscountType = 'none' | 'percent' | 'fixed';
 export type ClientStatus = 'lead' | 'active' | 'paused' | 'cancelled';
 export type SubscriptionItemType = 'product' | 'pack';
 export type PricingMode = 'catalog' | 'custom';
+export type ProductCategory = 'bot_whatsapp' | 'bot_interno' | 'web_rapida' | 'web_autogestionable' | 'otro';
 
 export interface Product {
   id: string;
   name: string;
   description: string | null;
   billing_type: BillingType;
+  category: ProductCategory | null;
   price_one_time: number;
   price_monthly: number;
   currency: string;
