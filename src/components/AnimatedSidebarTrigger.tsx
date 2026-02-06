@@ -7,7 +7,10 @@ interface AnimatedSidebarTriggerProps {
 }
 
 export function AnimatedSidebarTrigger({ className }: AnimatedSidebarTriggerProps) {
-  const { toggleSidebar, open } = useSidebar();
+  const { toggleSidebar, open, openMobile, isMobile } = useSidebar();
+  
+  // Use the correct open state based on device
+  const isOpen = isMobile ? openMobile : open;
 
   const lineVariants = {
     closed: {
@@ -81,7 +84,7 @@ export function AnimatedSidebarTrigger({ className }: AnimatedSidebarTriggerProp
         className
       )}
       initial={false}
-      animate={open ? "open" : "closed"}
+      animate={isOpen ? "open" : "closed"}
       variants={containerVariants}
       transition={{
         duration: 0.4,
