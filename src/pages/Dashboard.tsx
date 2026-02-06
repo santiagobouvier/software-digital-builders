@@ -11,6 +11,7 @@ import { ProfessionalWidgets } from "@/components/dashboard/ProfessionalWidgets"
 import { ClientWidgets } from "@/components/dashboard/ClientWidgets";
 import { FinancialSummary } from "@/components/dashboard/FinancialSummary";
 import { BotMetricsSummary } from "@/components/dashboard/BotMetricsSummary";
+import { Logo } from "@/components/Logo";
 
 
 const Dashboard = () => {
@@ -125,14 +126,17 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header with welcome message */}
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
-            {userName}, Te damos la bienvenida a Digital Builders Software.
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Panel de gestión
-          </p>
+        {/* Header with logo and welcome message */}
+        <div className="min-w-0 space-y-4">
+          <Logo size="lg" className="h-12 md:h-14 w-auto" />
+          <div>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
+              {userName}, Te damos la bienvenida a Digital Builders Software.
+            </h1>
+            <p className="text-sm text-muted-foreground">
+              Panel de gestión
+            </p>
+          </div>
         </div>
 
         {/* Financial Summary - Primary content */}
