@@ -31,8 +31,11 @@ import {
   Building2,
   MessageCircle,
   Globe,
+  Download,
+  Check,
 } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { cn } from "@/lib/utils";
 
 interface Company {
@@ -49,6 +52,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { isProfessional } = useUserRole();
+  const { isInstallable, isInstalled, install } = usePWAInstall();
   const [user, setUser] = useState<any>(null);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [selectedCompanyId, setSelectedCompanyId] = useState<string>("");
@@ -235,6 +239,29 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 </Button>
               </Link>
             ))}
+            
+            {/* PWA Install Button */}
+            {isInstallable && !isInstalled && (
+              <Button
+                variant="outline"
+                className="w-full justify-start gap-2 border-primary/50 text-primary hover:bg-primary/10"
+                size="sm"
+                onClick={() => {
+                  install();
+                  setIsMobileMenuOpen(false);
+                }}
+              >
+                <Download className="h-4 w-4" />
+                Descargar App
+              </Button>
+            )}
+            
+            {isInstalled && (
+              <div className="flex items-center gap-2 text-xs text-muted-foreground px-3 py-2">
+                <Check className="h-4 w-4 text-green-500" />
+                App instalada
+              </div>
+            )}
           </nav>
         )}
       </header>
