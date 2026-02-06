@@ -38,9 +38,9 @@ export const KPICard = ({
   return (
     <Card variant="elevated" className="overflow-hidden">
       <CardContent className="p-4 sm:p-6">
-        <div className="flex items-start justify-between gap-2">
-          <div className="space-y-1 sm:space-y-2 min-w-0">
-            <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">{title}</p>
+        <div className="flex items-start justify-between gap-3">
+          <div className="space-y-1 sm:space-y-2 flex-1">
+            <p className="text-xs sm:text-sm font-medium text-muted-foreground leading-tight">{title}</p>
             <p className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
               {typeof value === "number" ? value.toLocaleString() : value}
             </p>
