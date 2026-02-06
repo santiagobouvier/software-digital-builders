@@ -50,6 +50,7 @@ export const PackFormDialog = ({
   const [description, setDescription] = useState("");
   const [discountType, setDiscountType] = useState<DiscountType>("none");
   const [discountValue, setDiscountValue] = useState("");
+  const [currency, setCurrency] = useState("USD");
   const [isActive, setIsActive] = useState(true);
   const [items, setItems] = useState<PackItem[]>([]);
 
@@ -59,6 +60,7 @@ export const PackFormDialog = ({
       setDescription(pack.description || "");
       setDiscountType(pack.discount_type);
       setDiscountValue(pack.discount_value.toString());
+      setCurrency(pack.currency || "USD");
       setIsActive(pack.is_active);
       setItems(pack.pack_items.map((item) => ({
         product_id: item.product_id,
@@ -74,6 +76,7 @@ export const PackFormDialog = ({
     setDescription("");
     setDiscountType("none");
     setDiscountValue("0");
+    setCurrency("USD");
     setIsActive(true);
     setItems([]);
   };
@@ -151,6 +154,7 @@ export const PackFormDialog = ({
         description: description.trim() || null,
         discount_type: discountType,
         discount_value: discount,
+        currency,
         is_active: isActive,
       };
 
@@ -257,6 +261,20 @@ export const PackFormDialog = ({
             />
           </div>
 
+          {/* Currency selector */}
+          <div className="space-y-2">
+            <Label>Moneda</Label>
+            <Select value={currency} onValueChange={setCurrency}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD (Dólares)</SelectItem>
+                <SelectItem value="UYU">UYU (Pesos)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Tipo de descuento</Label>
@@ -267,7 +285,7 @@ export const PackFormDialog = ({
                 <SelectContent>
                   <SelectItem value="none">Sin descuento</SelectItem>
                   <SelectItem value="percent">Porcentaje (%)</SelectItem>
-                  <SelectItem value="fixed">Monto fijo (USD)</SelectItem>
+                  <SelectItem value="fixed">Monto fijo ({currency})</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -275,7 +293,7 @@ export const PackFormDialog = ({
             {discountType !== "none" && (
               <div className="space-y-2">
                 <Label htmlFor="discountValue">
-                  Valor del descuento {discountType === "percent" ? "(%)" : "(USD)"}
+                  Valor del descuento {discountType === "percent" ? "(%)" : `(${currency})`}
                 </Label>
                 <Input
                   id="discountValue"

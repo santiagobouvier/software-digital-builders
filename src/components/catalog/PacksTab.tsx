@@ -134,9 +134,11 @@ export const PacksTab = ({ packs, products, isLoading, onRefresh }: PacksTabProp
                 <TableRow>
                   <TableHead>Nombre</TableHead>
                   <TableHead>Productos</TableHead>
+                  <TableHead>Moneda</TableHead>
                   <TableHead>Descuento</TableHead>
                   <TableHead className="text-right">Setup</TableHead>
                   <TableHead className="text-right">Mensual</TableHead>
+                  <TableHead className="text-right">Anual</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="w-[120px]"></TableHead>
                 </TableRow>
@@ -144,6 +146,9 @@ export const PacksTab = ({ packs, products, isLoading, onRefresh }: PacksTabProp
               <TableBody>
                 {packs.map((pack) => {
                   const pricing = getPackPricing(pack);
+                  const annualTotal = pricing.totalMonthly * 12;
+                  const monthlyEquivalent = pricing.totalOneTime / 12;
+                  
                   return (
                     <TableRow key={pack.id} className={!pack.is_active ? "opacity-50" : ""}>
                       <TableCell className="font-medium">{pack.name}</TableCell>
@@ -153,15 +158,28 @@ export const PacksTab = ({ packs, products, isLoading, onRefresh }: PacksTabProp
                         </Badge>
                       </TableCell>
                       <TableCell>
+                        <Badge variant="secondary">{pack.currency}</Badge>
+                      </TableCell>
+                      <TableCell>
                         <Badge variant={pack.discount_type !== "none" ? "default" : "secondary"}>
                           {getDiscountLabel(pack)}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right font-mono">
-                        {formatCurrency(pricing.totalOneTime, pack.currency)}
+                        <div>{formatCurrency(pricing.totalOneTime, pack.currency)}</div>
+                        {pricing.totalOneTime > 0 && (
+                          <div className="text-xs text-muted-foreground">
+                            ≈ {formatCurrency(monthlyEquivalent, pack.currency)}/mes
+                          </div>
+                        )}
                       </TableCell>
                       <TableCell className="text-right font-mono">
                         {formatCurrency(pricing.totalMonthly, pack.currency)}
+                      </TableCell>
+                      <TableCell className="text-right font-mono">
+                        {pricing.totalMonthly > 0 && (
+                          <span>{formatCurrency(annualTotal, pack.currency)}</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <Badge variant={pack.is_active ? "default" : "secondary"}>
