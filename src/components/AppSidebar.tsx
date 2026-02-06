@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import {
   LayoutDashboard,
   Bot,
@@ -12,6 +14,7 @@ import {
   Check,
   LogOut,
   ChevronDown,
+  Settings,
 } from "lucide-react";
 import {
   Sidebar,
@@ -41,15 +44,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
+import { ProfileEditDialog } from "@/components/ProfileEditDialog";
 import { cn } from "@/lib/utils";
 
 interface Company {
   id: string;
   name: string;
   role: string;
+}
+
+interface Profile {
+  name: string | null;
+  last_name: string | null;
+  avatar_url: string | null;
 }
 
 interface AppSidebarProps {
@@ -75,6 +86,26 @@ export function AppSidebar({
   const { state } = useSidebar();
   const { isInstallable, isInstalled, install } = usePWAInstall();
   const isCollapsed = state === "collapsed";
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileDialogOpen, setProfileDialogOpen] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      loadProfile();
+    }
+  }, [user]);
+
+  const loadProfile = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("name, last_name, avatar_url")
+      .eq("user_id", user.id)
+      .single();
+
+    if (data) {
+      setProfile(data);
+    }
+  };
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -94,142 +125,175 @@ export function AppSidebar({
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(path + "/");
 
+  const getDisplayName = () => {
+    if (profile?.name) {
+      return profile.last_name
+        ? `${profile.name} ${profile.last_name}`
+        : profile.name;
+    }
+    return user?.user_metadata?.name || "Usuario";
+  };
+
+  const getInitials = () => {
+    const first = profile?.name?.[0] || user?.email?.[0] || "U";
+    const last = profile?.last_name?.[0] || "";
+    return (first + last).toUpperCase();
+  };
+
   return (
-    <Sidebar collapsible="icon">
-      {/* Header with Logo */}
-      <SidebarHeader className="border-b border-sidebar-border">
-        <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1">
-          <Logo size="sm" iconOnly={isCollapsed} />
-        </Link>
-      </SidebarHeader>
+    <>
+      <Sidebar collapsible="icon">
+        {/* Header with Logo */}
+        <SidebarHeader className="border-b border-sidebar-border">
+          <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1">
+            <Logo size="sm" iconOnly={isCollapsed} />
+          </Link>
+        </SidebarHeader>
 
-      <SidebarContent>
-        {/* Company Selector */}
-        {companies.length > 1 && !isCollapsed && (
-          <SidebarGroup>
-            <Select value={selectedCompanyId} onValueChange={onCompanyChange}>
-              <SelectTrigger className="w-full bg-sidebar-accent/50 border-sidebar-border text-sm">
-                <SelectValue placeholder="Empresa" />
-              </SelectTrigger>
-              <SelectContent>
-                {companies.map((company) => (
-                  <SelectItem key={company.id} value={company.id}>
-                    {company.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </SidebarGroup>
-        )}
-
-        {/* Navigation */}
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.path}>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActive(item.path)}
-                    tooltip={item.label}
-                  >
-                    <Link to={item.path}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.label}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        {/* PWA Install */}
-        {isInstallable && !isInstalled && !isCollapsed && (
-          <>
-            <SidebarSeparator />
+        <SidebarContent>
+          {/* Company Selector */}
+          {companies.length > 1 && !isCollapsed && (
             <SidebarGroup>
-              <Button
-                variant="outline"
-                size="sm"
-                className="w-full justify-start gap-2 border-primary/50 text-primary hover:bg-primary/10"
-                onClick={install}
-              >
-                <Download className="h-4 w-4" />
-                Descargar App
-              </Button>
+              <Select value={selectedCompanyId} onValueChange={onCompanyChange}>
+                <SelectTrigger className="w-full bg-sidebar-accent/50 border-sidebar-border text-sm">
+                  <SelectValue placeholder="Empresa" />
+                </SelectTrigger>
+                <SelectContent>
+                  {companies.map((company) => (
+                    <SelectItem key={company.id} value={company.id}>
+                      {company.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </SidebarGroup>
-          </>
-        )}
+          )}
 
-        {isInstalled && !isCollapsed && (
+          {/* Navigation */}
           <SidebarGroup>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground px-2">
-              <Check className="h-4 w-4 text-success" />
-              App instalada
-            </div>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map((item) => (
+                  <SidebarMenuItem key={item.path}>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={isActive(item.path)}
+                      tooltip={item.label}
+                    >
+                      <Link to={item.path}>
+                        <item.icon className="h-4 w-4" />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
           </SidebarGroup>
-        )}
-      </SidebarContent>
 
-      {/* Footer with User Menu */}
-      <SidebarFooter className="border-t border-sidebar-border">
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  className={cn(
-                    "w-full",
-                    isCollapsed && "justify-center"
-                  )}
+          {/* PWA Install */}
+          {isInstallable && !isInstalled && !isCollapsed && (
+            <>
+              <SidebarSeparator />
+              <SidebarGroup>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full justify-start gap-2 border-primary/50 text-primary hover:bg-primary/10"
+                  onClick={install}
                 >
-                  <div className="h-7 w-7 rounded-full bg-primary/20 flex items-center justify-center text-primary font-medium text-sm flex-shrink-0">
-                    {user?.email?.[0].toUpperCase()}
-                  </div>
-                  {!isCollapsed && (
-                    <>
-                      <div className="flex flex-col flex-1 min-w-0">
-                        <span className="text-sm font-medium truncate">
-                          {user?.user_metadata?.name || "Usuario"}
+                  <Download className="h-4 w-4" />
+                  Descargar App
+                </Button>
+              </SidebarGroup>
+            </>
+          )}
+
+          {isInstalled && !isCollapsed && (
+            <SidebarGroup>
+              <div className="flex items-center gap-2 text-xs text-muted-foreground px-2">
+                <Check className="h-4 w-4 text-success" />
+                App instalada
+              </div>
+            </SidebarGroup>
+          )}
+        </SidebarContent>
+
+        {/* Footer with User Menu */}
+        <SidebarFooter className="border-t border-sidebar-border">
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton
+                    className={cn("w-full", isCollapsed && "justify-center")}
+                  >
+                    <Avatar className="h-7 w-7 flex-shrink-0">
+                      <AvatarImage src={profile?.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/20 text-primary text-xs font-medium">
+                        {getInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {!isCollapsed && (
+                      <>
+                        <div className="flex flex-col flex-1 min-w-0">
+                          <span className="text-sm font-medium truncate">
+                            {getDisplayName()}
+                          </span>
+                          <span className="text-xs text-muted-foreground truncate">
+                            {user?.email}
+                          </span>
+                        </div>
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                      </>
+                    )}
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent side="top" align="start" className="w-56">
+                  <DropdownMenuLabel>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={profile?.avatar_url || undefined} />
+                        <AvatarFallback className="bg-primary/20 text-primary">
+                          {getInitials()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col min-w-0">
+                        <span className="font-medium truncate">
+                          {getDisplayName()}
                         </span>
                         <span className="text-xs text-muted-foreground truncate">
                           {user?.email}
                         </span>
                       </div>
-                      <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    </>
-                  )}
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                align="start"
-                className="w-56"
-              >
-                <DropdownMenuLabel>
-                  <div className="flex flex-col">
-                    <span className="font-medium">
-                      {user?.user_metadata?.name || "Usuario"}
-                    </span>
-                    <span className="text-xs text-muted-foreground truncate">
-                      {user?.email}
-                    </span>
-                  </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={onLogout}
-                  className="text-destructive"
-                >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
-      </SidebarFooter>
-    </Sidebar>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => setProfileDialogOpen(true)}>
+                    <Settings className="h-4 w-4 mr-2" />
+                    Editar perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={onLogout}
+                    className="text-destructive"
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Cerrar sesión
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
+
+      <ProfileEditDialog
+        open={profileDialogOpen}
+        onOpenChange={setProfileDialogOpen}
+        user={user}
+        onProfileUpdate={loadProfile}
+      />
+    </>
   );
 }
