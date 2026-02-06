@@ -31,6 +31,8 @@ import type {
   PricingMode 
 } from "@/types/catalog";
 
+type Currency = "USD" | "UYU";
+
 interface SubscriptionFormDialogProps {
   open: boolean;
   onClose: () => void;
@@ -55,6 +57,7 @@ export const SubscriptionFormDialog = ({
   const [selectedProductId, setSelectedProductId] = useState("");
   const [selectedPackId, setSelectedPackId] = useState("");
   const [pricingMode, setPricingMode] = useState<PricingMode>("catalog");
+  const [currency, setCurrency] = useState<Currency>("USD");
   const [customOneTime, setCustomOneTime] = useState("");
   const [customMonthly, setCustomMonthly] = useState("");
   const [customNotes, setCustomNotes] = useState("");
@@ -68,6 +71,7 @@ export const SubscriptionFormDialog = ({
       setSelectedProductId(subscription.product_id || "");
       setSelectedPackId(subscription.pack_id || "");
       setPricingMode(subscription.pricing_mode);
+      setCurrency((subscription as any).currency || "USD");
       setCustomOneTime(subscription.custom_one_time.toString());
       setCustomMonthly(subscription.custom_monthly.toString());
       setCustomNotes(subscription.custom_notes || "");
@@ -81,6 +85,7 @@ export const SubscriptionFormDialog = ({
     setSelectedProductId(activeProducts[0]?.id || "");
     setSelectedPackId(activePacks[0]?.id || "");
     setPricingMode("catalog");
+    setCurrency("USD");
     setCustomOneTime("0");
     setCustomMonthly("0");
     setCustomNotes("");
@@ -143,6 +148,7 @@ export const SubscriptionFormDialog = ({
         product_id: productId,
         pack_id: packId,
         pricing_mode: pricingMode,
+        currency: currency,
         custom_one_time: pricingMode === "custom" ? oneTime : 0,
         custom_monthly: pricingMode === "custom" ? monthly : 0,
         custom_notes: customNotes.trim() || null,
@@ -237,7 +243,7 @@ export const SubscriptionFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>
             {subscription ? "Editar suscripción" : "Añadir suscripción"}
@@ -249,7 +255,7 @@ export const SubscriptionFormDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto flex-1">
           {/* Item type selector */}
           <div className="space-y-2">
             <Label>Tipo</Label>
@@ -325,7 +331,7 @@ export const SubscriptionFormDialog = ({
 
           {/* Catalog price preview */}
           <div className="p-3 bg-secondary/50 rounded-lg text-sm">
-            <p className="text-muted-foreground mb-1">Precio de catálogo:</p>
+            <p className="text-muted-foreground mb-1">Precio de catálogo (USD):</p>
             <div className="flex gap-4">
               <span>Setup: <strong className="font-mono">{formatCurrency(catalogPricing.oneTime)}</strong></span>
               <span>Mensual: <strong className="font-mono">{formatCurrency(catalogPricing.monthly)}</strong></span>
@@ -351,12 +357,31 @@ export const SubscriptionFormDialog = ({
             </RadioGroup>
           </div>
 
+          {/* Currency selector */}
+          <div className="space-y-2">
+            <Label>Moneda</Label>
+            <RadioGroup 
+              value={currency} 
+              onValueChange={(v) => setCurrency(v as Currency)}
+              className="flex gap-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="USD" id="usd" />
+                <Label htmlFor="usd" className="cursor-pointer">USD (Dólares)</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="UYU" id="uyu" />
+                <Label htmlFor="uyu" className="cursor-pointer">UYU (Pesos)</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
           {/* Custom pricing inputs */}
           {pricingMode === "custom" && (
             <>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="customOneTime">Setup (USD)</Label>
+                  <Label htmlFor="customOneTime">Setup ({currency})</Label>
                   <Input
                     id="customOneTime"
                     type="number"
@@ -368,7 +393,7 @@ export const SubscriptionFormDialog = ({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="customMonthly">Mensual (USD)</Label>
+                  <Label htmlFor="customMonthly">Mensual ({currency})</Label>
                   <Input
                     id="customMonthly"
                     type="number"
@@ -395,7 +420,7 @@ export const SubscriptionFormDialog = ({
           )}
         </div>
 
-        <DialogFooter>
+        <DialogFooter className="flex-shrink-0">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>

@@ -12,24 +12,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Plus, Search, Users, DollarSign, TrendingUp } from "lucide-react";
+import { Loader2, Plus, Search, Users, TrendingUp } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
+import { useExchangeRate } from "@/hooks/useExchangeRate";
 import { Navigate } from "react-router-dom";
 import { formatCurrency } from "@/lib/pricing";
 import { ClientList } from "@/components/clients/ClientList";
 import { ClientDetail } from "@/components/clients/ClientDetail";
 import { ClientFormDialog } from "@/components/clients/ClientFormDialog";
+import { ExchangeRateEditor } from "@/components/ExchangeRateEditor";
 import type { 
   Client, 
   ClientWithSubscriptions, 
   Product, 
   PackWithItems,
   ClientStatus,
-  CLIENT_STATUS_LABELS 
 } from "@/types/catalog";
+
+type DisplayCurrency = "USD" | "UYU";
 
 const Clients = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
+  const { rate, updateExchangeRate, isLoading: rateLoading } = useExchangeRate();
   const [clients, setClients] = useState<Client[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [packs, setPacks] = useState<PackWithItems[]>([]);
@@ -37,6 +41,7 @@ const Clients = () => {
   const [selectedClient, setSelectedClient] = useState<ClientWithSubscriptions | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<Client | null>(null);
+  const [displayCurrency, setDisplayCurrency] = useState<DisplayCurrency>("USD");
   
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -187,40 +192,59 @@ const Clients = () => {
               Gestiona clientes y sus suscripciones
             </p>
           </div>
-          <Button onClick={() => setIsFormOpen(true)} className="gap-2">
-            <Plus className="h-4 w-4" />
-            Nuevo cliente
-          </Button>
+          <div className="flex items-center gap-2">
+            <ExchangeRateEditor rate={rate} onUpdate={updateExchangeRate} />
+            <Button onClick={() => setIsFormOpen(true)} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Nuevo cliente
+            </Button>
+          </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 max-w-2xl">
-          <Card variant="elevated">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <Users className="h-5 w-5 text-primary" />
+        {/* Stats + Currency toggle */}
+        <div className="flex flex-wrap items-center gap-4">
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
+            <Card variant="elevated">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{totalClients}</p>
+                    <p className="text-xs text-muted-foreground">Total clientes</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{totalClients}</p>
-                  <p className="text-xs text-muted-foreground">Total clientes</p>
+              </CardContent>
+            </Card>
+            <Card variant="elevated">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-success/10">
+                    <TrendingUp className="h-5 w-5 text-success" />
+                  </div>
+                  <div>
+                    <p className="text-2xl font-bold">{activeClients}</p>
+                    <p className="text-xs text-muted-foreground">Activos</p>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-          <Card variant="elevated">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500/10">
-                  <TrendingUp className="h-5 w-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{activeClients}</p>
-                  <p className="text-xs text-muted-foreground">Activos</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Display currency toggle */}
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-sm text-muted-foreground">Mostrar en:</span>
+            <Select value={displayCurrency} onValueChange={(v) => setDisplayCurrency(v as DisplayCurrency)}>
+              <SelectTrigger className="w-[100px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">USD</SelectItem>
+                <SelectItem value="UYU">UYU</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         {/* Filters */}
@@ -266,6 +290,8 @@ const Clients = () => {
             packs={packs}
             onSubscriptionChange={handleSubscriptionChange}
             onEdit={() => selectedClient && handleEditClient(selectedClient)}
+            exchangeRate={rate}
+            displayCurrency={displayCurrency}
           />
         </div>
 
