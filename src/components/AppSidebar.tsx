@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   LayoutDashboard,
   Bot,
@@ -86,6 +87,7 @@ export function AppSidebar({
   const { state } = useSidebar();
   const { isInstallable, isInstalled, install } = usePWAInstall();
   const isCollapsed = state === "collapsed";
+  const isMobile = useIsMobile();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileDialogOpen, setProfileDialogOpen] = useState(false);
 
@@ -143,14 +145,25 @@ export function AppSidebar({
   return (
     <>
       <Sidebar collapsible="icon">
-        {/* Header with Logo */}
-        <SidebarHeader className="border-b border-sidebar-border">
-          <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1">
-            <Logo size="sm" iconOnly={isCollapsed} />
-          </Link>
-        </SidebarHeader>
+        {/* Header with Logo - hidden on mobile */}
+        {!isMobile && (
+          <SidebarHeader className="border-b border-sidebar-border">
+            <Link to="/dashboard" className="flex items-center gap-2 px-2 py-1">
+              <Logo size="sm" iconOnly={isCollapsed} />
+            </Link>
+          </SidebarHeader>
+        )}
 
         <SidebarContent>
+          {/* Large Logo for Mobile - shown above navigation */}
+          {isMobile && (
+            <SidebarGroup className="flex items-center justify-center py-6">
+              <Link to="/dashboard">
+                <Logo size="lg" />
+              </Link>
+            </SidebarGroup>
+          )}
+
           {/* Company Selector */}
           {companies.length > 1 && !isCollapsed && (
             <SidebarGroup>
