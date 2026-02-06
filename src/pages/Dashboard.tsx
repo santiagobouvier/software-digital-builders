@@ -18,13 +18,27 @@ const Dashboard = () => {
   const [lastActivity, setLastActivity] = useState<Date | null>(null);
   const [companyId, setCompanyId] = useState<string>("");
   const [companyName, setCompanyName] = useState<string>("");
+  const [userName, setUserName] = useState<string>("");
   const [hasBots, setHasBots] = useState(false);
   const [hasUsers, setHasUsers] = useState(false);
 
   useEffect(() => {
-    const loadCompany = async () => {
+    const loadCompanyAndUser = async () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      // Load user profile name
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("user_id", user.id)
+        .single();
+      
+      if (profileData?.name) {
+        setUserName(profileData.name);
+      } else {
+        setUserName(user.user_metadata?.name || "Usuario");
+      }
 
       const savedCompanyId = localStorage.getItem("selectedCompanyId");
       
@@ -60,7 +74,7 @@ const Dashboard = () => {
       }
     };
 
-    loadCompany();
+    loadCompanyAndUser();
   }, []);
 
   useEffect(() => {
@@ -111,14 +125,16 @@ const Dashboard = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Large transparent logo as title - desktop only */}
+        {/* Large logo as header - desktop only */}
         <div className="hidden md:flex justify-center">
-          <Logo size="lg" className="opacity-10 h-24 lg:h-32 w-auto" />
+          <Logo size="lg" className="h-20 lg:h-24 w-auto" />
         </div>
 
-        {/* Header */}
-        <div className="min-w-0">
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight truncate">{companyName}</h1>
+        {/* Header with welcome message */}
+        <div className="min-w-0 text-center md:text-left">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight">
+            {userName}, Te damos la bienvenida a Digital Builders Software.
+          </h1>
           <p className="text-sm text-muted-foreground">
             Panel de gestión
           </p>
