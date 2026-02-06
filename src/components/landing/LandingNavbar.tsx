@@ -1,9 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Download, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
@@ -17,6 +18,7 @@ const navLinks = [
 export const LandingNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { isInstallable, isInstalled, install } = usePWAInstall();
 
   // Generate stars once
   const stars = useMemo(() => 
@@ -267,14 +269,38 @@ export const LandingNavbar = () => {
                 ))}
               </nav>
 
-              {/* CTA Button - static, just fade in */}
+              {/* CTA Buttons - static, just fade in */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, delay: 0.45 }}
-                className="mt-12"
+                className="mt-12 flex flex-col gap-3"
               >
+                {/* Install App Button - only show on mobile when installable */}
+                {isInstallable && !isInstalled && (
+                  <Button
+                    onClick={() => {
+                      install();
+                      setIsOpen(false);
+                    }}
+                    variant="outline"
+                    size="lg"
+                    className="h-12 px-8 text-base border-primary/50 hover:bg-primary/10"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Descargar App
+                  </Button>
+                )}
+
+                {/* Show installed badge */}
+                {isInstalled && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+                    <Check className="h-4 w-4 text-green-500" />
+                    App instalada
+                  </div>
+                )}
+
                 <Button asChild size="lg" className="h-12 px-8 text-base">
                   <Link to="/login" onClick={() => setIsOpen(false)}>
                     <Sparkles className="h-4 w-4 mr-2" />
