@@ -35,8 +35,8 @@ const Landing = () => {
       <main className="relative z-10">
         <HeroSection />
         <AboutSection />
-        <PlatformSection />
         <ServicesSection />
+        <PlatformSection />
         <SecuritySection />
         <SelfServiceSection />
         <ContactSection />
