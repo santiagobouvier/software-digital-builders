@@ -172,6 +172,9 @@ export const ServicesSection = () => {
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     {service.description}
                   </p>
+                  {service.dialogId && (
+                    <p className="text-xs text-primary mt-3 font-medium">Ver más →</p>
+                  )}
                 </CardContent>
               </Card>
             ))}
@@ -217,6 +220,9 @@ export const ServicesSection = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {service.description}
                     </p>
+                    {service.dialogId && (
+                      <p className="text-xs text-primary mt-3 font-medium opacity-70 group-hover:opacity-100 transition-opacity duration-300">Ver más →</p>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
