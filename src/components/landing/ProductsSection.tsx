@@ -23,11 +23,6 @@ const products = [
   },
   {
     icon: Bot,
-    title: "Bots para Instagram",
-    description: "Respuesta automática y organización de mensajes en Instagram.",
-  },
-  {
-    icon: Bot,
     title: "Bots internos para empresas",
     description: "Bots privados para capacitación, soporte interno o uso del equipo.",
   },
