@@ -1,14 +1,15 @@
+import { useState } from "react";
 import {
   Globe,
   Smartphone,
   MessageSquare,
-  
   Building2,
   Code2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
 
 const services = [
   {
@@ -28,6 +29,7 @@ const services = [
     title: "Bots para WhatsApp",
     description:
       "Automatiza la atención al cliente en WhatsApp. Responde consultas, capta leads y mejora los tiempos de respuesta.",
+    dialogId: "whatsapp" as const,
   },
   {
     icon: Building2,
@@ -46,6 +48,7 @@ const services = [
 
 export const ServicesSection = () => {
   const reduceMotion = useReducedMotion();
+  const [openDialog, setOpenDialog] = useState<string | null>(null);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -131,7 +134,10 @@ export const ServicesSection = () => {
             {services.map((service) => (
               <Card
                 key={service.title}
+                onClick={() => service.dialogId && setOpenDialog(service.dialogId)}
                 className={`group bg-card/60 backdrop-blur-sm h-full ${
+                  service.dialogId ? "cursor-pointer" : ""
+                } ${
                   service.premium
                     ? "border-primary/40"
                     : "border-border/40"
@@ -173,7 +179,10 @@ export const ServicesSection = () => {
             {services.map((service) => (
               <motion.div key={service.title} variants={itemVariants}>
                 <Card
+                  onClick={() => service.dialogId && setOpenDialog(service.dialogId)}
                   className={`group bg-card/60 backdrop-blur-sm h-full transition-all duration-300 hover:-translate-y-2 hover:shadow-xl ${
+                    service.dialogId ? "cursor-pointer" : ""
+                  } ${
                     service.premium
                       ? "border-primary/40 hover:border-primary/60 hover:shadow-primary/10"
                       : "border-border/40 hover:border-primary/40 hover:shadow-primary/5"
@@ -207,6 +216,11 @@ export const ServicesSection = () => {
           </motion.div>
         )}
       </div>
+
+      <ServiceWhatsAppDialog
+        open={openDialog === "whatsapp"}
+        onOpenChange={(open) => !open && setOpenDialog(null)}
+      />
     </section>
   );
 };
