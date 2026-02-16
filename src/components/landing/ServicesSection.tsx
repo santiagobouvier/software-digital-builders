@@ -11,6 +11,7 @@ import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
 import { ServiceWebRapidaDialog } from "./ServiceWebRapidaDialog";
+import { ServiceWebAutogestionableDialog } from "./ServiceWebAutogestionableDialog";
 
 const services = [
   {
@@ -25,6 +26,7 @@ const services = [
     title: "Páginas web autogestionables",
     description:
       "Administra tu propio contenido sin depender de nadie. Actualiza textos, imágenes y secciones cuando quieras.",
+    dialogId: "web-autogestionable" as const,
   },
   {
     icon: MessageSquare,
@@ -225,6 +227,10 @@ export const ServicesSection = () => {
       />
       <ServiceWebRapidaDialog
         open={openDialog === "web-rapida"}
+        onOpenChange={(open) => !open && setOpenDialog(null)}
+      />
+      <ServiceWebAutogestionableDialog
+        open={openDialog === "web-autogestionable"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
     </section>
