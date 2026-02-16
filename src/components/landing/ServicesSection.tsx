@@ -12,6 +12,7 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
 import { ServiceWebRapidaDialog } from "./ServiceWebRapidaDialog";
 import { ServiceWebAutogestionableDialog } from "./ServiceWebAutogestionableDialog";
+import { ServiceBotInternoDialog } from "./ServiceBotInternoDialog";
 
 const services = [
   {
@@ -40,6 +41,7 @@ const services = [
     title: "Bots internos para empresas",
     description:
       "Automatiza procesos internos, notificaciones y flujos de trabajo. Soluciones adaptadas a tu operación.",
+    dialogId: "bot-interno" as const,
   },
   {
     icon: Code2,
@@ -231,6 +233,10 @@ export const ServicesSection = () => {
       />
       <ServiceWebAutogestionableDialog
         open={openDialog === "web-autogestionable"}
+        onOpenChange={(open) => !open && setOpenDialog(null)}
+      />
+      <ServiceBotInternoDialog
+        open={openDialog === "bot-interno"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
     </section>
