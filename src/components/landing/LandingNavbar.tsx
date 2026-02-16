@@ -8,9 +8,8 @@ import { usePWAInstall } from "@/hooks/usePWAInstall";
 
 const navLinks = [
   { label: "Inicio", href: "#inicio" },
-  { label: "Productos", href: "#productos" },
-  { label: "Plataforma", href: "#plataforma" },
   { label: "Servicios", href: "#servicios" },
+  { label: "Plataforma", href: "#plataforma" },
   { label: "Seguridad", href: "#seguridad" },
   { label: "Contacto", href: "#contacto" },
 ];
