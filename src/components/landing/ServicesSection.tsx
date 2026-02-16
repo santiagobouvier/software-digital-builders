@@ -13,6 +13,7 @@ import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
 import { ServiceWebRapidaDialog } from "./ServiceWebRapidaDialog";
 import { ServiceWebAutogestionableDialog } from "./ServiceWebAutogestionableDialog";
 import { ServiceBotInternoDialog } from "./ServiceBotInternoDialog";
+import { ServiceSoftwareDialog } from "./ServiceSoftwareDialog";
 
 const services = [
   {
@@ -49,6 +50,7 @@ const services = [
     description:
       "Desarrollo de soluciones personalizadas para necesidades específicas. Servicio premium con acompañamiento dedicado.",
     premium: true,
+    dialogId: "software" as const,
   },
 ];
 
@@ -237,6 +239,10 @@ export const ServicesSection = () => {
       />
       <ServiceBotInternoDialog
         open={openDialog === "bot-interno"}
+        onOpenChange={(open) => !open && setOpenDialog(null)}
+      />
+      <ServiceSoftwareDialog
+        open={openDialog === "software"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
     </section>
