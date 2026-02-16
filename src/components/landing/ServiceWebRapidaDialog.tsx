@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Globe, CheckCircle2, XCircle, ArrowRight, Users, DollarSign } from "lucide-react";
+import { Globe, CheckCircle2, XCircle, ArrowRight, Users } from "lucide-react";
 
 interface ServiceWebRapidaDialogProps {
   open: boolean;
@@ -125,19 +125,6 @@ export const ServiceWebRapidaDialog = ({ open, onOpenChange }: ServiceWebRapidaD
             </p>
           </section>
 
-          <section className="rounded-xl border border-border/40 bg-card/60 p-5">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-primary" /> Inversión
-            </h3>
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <p><span className="font-semibold text-foreground">Setup único + mantenimiento opcional</span></p>
-            </div>
-            <Button variant="outline" size="sm" className="mt-3" asChild>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                Consultar por precios
-              </a>
-            </Button>
-          </section>
         </div>
 
         <div className="p-6 pt-4 border-t border-border/30 shrink-0 space-y-2">

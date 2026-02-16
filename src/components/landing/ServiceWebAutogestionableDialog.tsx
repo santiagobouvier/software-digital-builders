@@ -132,14 +132,6 @@ export const ServiceWebAutogestionableDialog = ({ open, onOpenChange }: ServiceW
             </p>
           </div>
 
-          {/* Inversión */}
-          <div className="p-4 rounded-xl bg-card/80 border border-border/50 text-center">
-            <h3 className="text-lg font-semibold mb-1">Inversión</h3>
-            <p className="text-sm text-muted-foreground mb-3">Setup inicial + mensualidad</p>
-            <Button variant="outline" size="sm" onClick={scrollToContact}>
-              Consultar por precios
-            </Button>
-          </div>
         </div>
 
         {/* Fixed footer */}
