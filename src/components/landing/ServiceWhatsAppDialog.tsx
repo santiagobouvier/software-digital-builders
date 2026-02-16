@@ -1,6 +1,6 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, CheckCircle2, XCircle, ArrowRight, Users, DollarSign } from "lucide-react";
+import { MessageSquare, CheckCircle2, XCircle, ArrowRight, Users } from "lucide-react";
 
 interface ServiceWhatsAppDialogProps {
   open: boolean;
@@ -137,22 +137,6 @@ export const ServiceWhatsAppDialog = ({ open, onOpenChange }: ServiceWhatsAppDia
             </p>
           </section>
 
-          {/* Inversión */}
-          <section className="rounded-xl border border-border/40 bg-card/60 p-5">
-            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-              <DollarSign className="h-5 w-5 text-primary" /> Inversión
-            </h3>
-            <div className="space-y-1 text-sm text-muted-foreground">
-              <p><span className="font-semibold text-foreground">Chatbots desde USD 80/mes</span></p>
-              <p>Setup inicial según el negocio</p>
-              <p className="text-xs italic mt-2">Cada chatbot se adapta al volumen y complejidad de tu empresa.</p>
-            </div>
-            <Button variant="outline" size="sm" className="mt-3" asChild>
-              <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
-                Consultar por precios
-              </a>
-            </Button>
-          </section>
         </div>
 
         {/* Fixed footer CTA */}

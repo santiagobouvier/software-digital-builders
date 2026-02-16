@@ -130,15 +130,6 @@ export const ServiceBotInternoDialog = ({ open, onOpenChange }: ServiceBotIntern
             </p>
           </div>
 
-          {/* Inversión */}
-          <div className="p-4 rounded-xl bg-card/80 border border-border/50 text-center">
-            <h3 className="text-lg font-semibold mb-1">Inversión</h3>
-            <p className="text-2xl font-bold text-primary mb-1">Bots desde USD 80/mes</p>
-            <p className="text-sm text-muted-foreground mb-3">Setup inicial según complejidad</p>
-            <Button variant="outline" size="sm" onClick={scrollToContact}>
-              Consultar por precios
-            </Button>
-          </div>
         </div>
 
         <div className="p-4 border-t border-border/50 shrink-0">

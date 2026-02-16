@@ -127,13 +127,6 @@ export const ServiceSoftwareDialog = ({ open, onOpenChange }: ServiceSoftwareDia
             </p>
           </div>
 
-          <div className="p-4 rounded-xl bg-card/80 border border-border/50 text-center">
-            <h3 className="text-lg font-semibold mb-1">Inversión</h3>
-            <p className="text-sm text-muted-foreground mb-3">Setup + mensualidad según alcance</p>
-            <Button variant="outline" size="sm" onClick={scrollToContact}>
-              Consultar por precios
-            </Button>
-          </div>
         </div>
 
         <div className="p-4 border-t border-border/50 shrink-0">
