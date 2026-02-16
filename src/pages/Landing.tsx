@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { LandingNavbar } from "@/components/landing/LandingNavbar";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { AboutSection } from "@/components/landing/AboutSection";
-import { ProductsSection } from "@/components/landing/ProductsSection";
 import { PlatformSection } from "@/components/landing/PlatformSection";
 import { ServicesSection } from "@/components/landing/ServicesSection";
 import { SecuritySection } from "@/components/landing/SecuritySection";
@@ -36,7 +35,6 @@ const Landing = () => {
       <main className="relative z-10">
         <HeroSection />
         <AboutSection />
-        <ProductsSection />
         <PlatformSection />
         <ServicesSection />
         <SecuritySection />
