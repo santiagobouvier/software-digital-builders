@@ -2,7 +2,7 @@ import {
   Globe,
   Smartphone,
   MessageSquare,
-  Instagram,
+  
   Building2,
   Code2,
 } from "lucide-react";
@@ -28,12 +28,6 @@ const services = [
     title: "Bots para WhatsApp",
     description:
       "Automatiza la atención al cliente en WhatsApp. Responde consultas, capta leads y mejora los tiempos de respuesta.",
-  },
-  {
-    icon: Instagram,
-    title: "Bots para Instagram",
-    description:
-      "Gestiona mensajes directos y comentarios de forma automática. Aumenta el engagement sin esfuerzo manual.",
   },
   {
     icon: Building2,
