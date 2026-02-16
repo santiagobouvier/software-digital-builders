@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
+import { ServiceWebRapidaDialog } from "./ServiceWebRapidaDialog";
 
 const services = [
   {
@@ -17,6 +18,7 @@ const services = [
     title: "Páginas web rápidas",
     description:
       "Sitios web optimizados, veloces y profesionales. Listos para captar clientes y mostrar tu negocio de forma clara.",
+    dialogId: "web-rapida" as const,
   },
   {
     icon: Smartphone,
@@ -219,6 +221,10 @@ export const ServicesSection = () => {
 
       <ServiceWhatsAppDialog
         open={openDialog === "whatsapp"}
+        onOpenChange={(open) => !open && setOpenDialog(null)}
+      />
+      <ServiceWebRapidaDialog
+        open={openDialog === "web-rapida"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
     </section>
