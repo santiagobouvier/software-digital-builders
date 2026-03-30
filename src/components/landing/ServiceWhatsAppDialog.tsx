@@ -37,9 +37,14 @@ const yesIs = [
   "Configurado por personas reales",
 ];
 
-const WHATSAPP_URL = "https://wa.me/5491164460740?text=Hola%2C%20quiero%20un%20chatbot%20para%20mi%20negocio";
-
 export const ServiceWhatsAppDialog = ({ open, onOpenChange }: ServiceWhatsAppDialogProps) => {
+  const scrollToContact = () => {
+    onOpenChange(false);
+    setTimeout(() => {
+      document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 bg-background border-border/60">
@@ -147,10 +152,8 @@ export const ServiceWhatsAppDialog = ({ open, onOpenChange }: ServiceWhatsAppDia
           <p className="text-xs text-muted-foreground text-center">
             Dejá de perder consultas. Automatizá la atención y cerrá más ventas.
           </p>
-          <Button className="w-full" size="lg" asChild>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+          <Button className="w-full" size="lg" onClick={scrollToContact}>
               Quiero un chatbot para mi negocio <ArrowRight className="h-4 w-4 ml-1" />
-            </a>
           </Button>
         </div>
       </DialogContent>
