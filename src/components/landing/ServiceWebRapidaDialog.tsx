@@ -139,10 +139,8 @@ export const ServiceWebRapidaDialog = ({ open, onOpenChange }: ServiceWebRapidaD
           <p className="text-xs text-muted-foreground text-center">
             En pocos días tenés tu web lista para captar clientes.
           </p>
-          <Button className="w-full" size="lg" asChild>
-            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
+          <Button className="w-full" size="lg" onClick={scrollToContact}>
               Quiero mi página web <ArrowRight className="h-4 w-4 ml-1" />
-            </a>
           </Button>
         </div>
       </DialogContent>
