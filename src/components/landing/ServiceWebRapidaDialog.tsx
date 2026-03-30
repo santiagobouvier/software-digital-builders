@@ -35,9 +35,14 @@ const yesIs = [
   "Rápida de entregar y fácil de escalar",
 ];
 
-const WHATSAPP_URL = "https://wa.me/5491164460740?text=Hola%2C%20quiero%20una%20p%C3%A1gina%20web%20r%C3%A1pida%20para%20mi%20negocio";
-
 export const ServiceWebRapidaDialog = ({ open, onOpenChange }: ServiceWebRapidaDialogProps) => {
+  const scrollToContact = () => {
+    onOpenChange(false);
+    setTimeout(() => {
+      document.getElementById("contacto")?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0 gap-0 bg-background border-border/60">
