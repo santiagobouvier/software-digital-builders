@@ -9,7 +9,7 @@ import { SelfServiceSection } from "@/components/landing/SelfServiceSection";
 import { ContactSection } from "@/components/landing/ContactSection";
 import { Footer } from "@/components/landing/Footer";
 import { Starfield } from "@/components/landing/Starfield";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
+
 import { Preloader } from "@/components/landing/Preloader";
 
 const Landing = () => {
