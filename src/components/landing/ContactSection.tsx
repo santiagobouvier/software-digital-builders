@@ -142,35 +142,6 @@ export const ContactSection = () => {
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
           >
-            {/* WhatsApp */}
-            <motion.a
-              href="https://wa.me/598091093977"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group"
-              whileHover={{ y: -3 }}
-              transition={{ type: "spring", stiffness: 400, damping: 25 }}
-            >
-              <Card className="bg-card/60 backdrop-blur-sm border-border/40 hover:border-primary/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5">
-                <CardContent className="p-5 flex items-center gap-4">
-                  <motion.div 
-                    className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-colors duration-300"
-                    whileHover={{ rotate: 10 }}
-                  >
-                    <MessageSquare className="h-6 w-6 text-accent" />
-                  </motion.div>
-                  <div>
-                    <h3 className="font-semibold group-hover:text-primary transition-colors duration-300">
-                      WhatsApp
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      Escribinos directamente
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.a>
-
             {/* Email */}
             <motion.a
               href="mailto:info@digitalbuilders.net"

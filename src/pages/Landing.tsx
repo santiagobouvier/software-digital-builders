@@ -42,7 +42,7 @@ const Landing = () => {
         <ContactSection />
       </main>
       <Footer />
-      <WhatsAppButton />
+      
     </div>
   );
 };
