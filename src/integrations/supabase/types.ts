@@ -322,6 +322,7 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          logo_url: string | null
           notes: string | null
           phone: string | null
           status: Database["public"]["Enums"]["client_status"]
@@ -334,6 +335,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          logo_url?: string | null
           notes?: string | null
           phone?: string | null
           status?: Database["public"]["Enums"]["client_status"]
@@ -346,6 +348,7 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          logo_url?: string | null
           notes?: string | null
           phone?: string | null
           status?: Database["public"]["Enums"]["client_status"]

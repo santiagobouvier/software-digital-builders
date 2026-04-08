@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Pencil, Building2 } from "lucide-react";
 import type { Client, CLIENT_STATUS_LABELS, CLIENT_STATUS_COLORS } from "@/types/catalog";
 import { cn } from "@/lib/utils";
+import { ClientAvatar } from "./ClientAvatar";
 
 interface ClientListProps {
   clients: Client[];
@@ -70,17 +71,24 @@ export const ClientList = ({
               )}
               onClick={() => onSelect(client)}
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-medium truncate">{client.company_name}</h3>
-                  <Badge className={cn("text-xs", STATUS_COLORS[client.status])}>
-                    {STATUS_LABELS[client.status]}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  {client.contact_name && <span>{client.contact_name}</span>}
-                  {client.contact_name && client.email && <span>•</span>}
-                  {client.email && <span className="truncate">{client.email}</span>}
+              <div className="flex-1 min-w-0 flex items-center gap-3">
+                <ClientAvatar
+                  logoUrl={client.logo_url}
+                  companyName={client.company_name}
+                  size="sm"
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium truncate">{client.company_name}</h3>
+                    <Badge className={cn("text-xs", STATUS_COLORS[client.status])}>
+                      {STATUS_LABELS[client.status]}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {client.contact_name && <span>{client.contact_name}</span>}
+                    {client.contact_name && client.email && <span>•</span>}
+                    {client.email && <span className="truncate">{client.email}</span>}
+                  </div>
                 </div>
               </div>
               <Button

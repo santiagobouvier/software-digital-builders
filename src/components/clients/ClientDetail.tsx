@@ -31,6 +31,7 @@ import type {
   PackWithItems 
 } from "@/types/catalog";
 import { SubscriptionFormDialog } from "./SubscriptionFormDialog";
+import { ClientAvatar } from "./ClientAvatar";
 
 interface ClientDetailProps {
   client: ClientWithSubscriptions | null;
@@ -189,11 +190,18 @@ export const ClientDetail = ({
         <Card variant="elevated">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
-              <div>
-                <CardTitle className="text-lg">{client.company_name}</CardTitle>
-                <Badge className={STATUS_COLORS[client.status]}>
-                  {STATUS_LABELS[client.status]}
-                </Badge>
+              <div className="flex items-center gap-3">
+                <ClientAvatar
+                  logoUrl={client.logo_url}
+                  companyName={client.company_name}
+                  size="lg"
+                />
+                <div>
+                  <CardTitle className="text-lg">{client.company_name}</CardTitle>
+                  <Badge className={STATUS_COLORS[client.status]}>
+                    {STATUS_LABELS[client.status]}
+                  </Badge>
+                </div>
               </div>
               <Button variant="outline" size="sm" onClick={onEdit}>
                 <Pencil className="h-4 w-4 mr-1" />
