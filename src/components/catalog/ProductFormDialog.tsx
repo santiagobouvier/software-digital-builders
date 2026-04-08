@@ -117,6 +117,11 @@ export const ProductFormDialog = ({
       return;
     }
 
+    if (!product && !selectedClientId) {
+      toast({ title: "Error", description: "Seleccioná un cliente", variant: "destructive" });
+      return;
+    }
+
     const oneTime = parseFloat(priceOneTime) || 0;
     const monthly = parseFloat(priceMonthly) || 0;
 
