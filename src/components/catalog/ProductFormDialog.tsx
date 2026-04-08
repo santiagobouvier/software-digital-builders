@@ -153,9 +153,26 @@ export const ProductFormDialog = ({
         if (error) throw error;
         toast({ title: "Producto actualizado" });
       } else {
-        const { error } = await supabase.from("products").insert(data);
+        const { data: newProduct, error } = await supabase
+          .from("products")
+          .insert(data)
+          .select("id")
+          .single();
         if (error) throw error;
-        toast({ title: "Producto creado" });
+
+        // Auto-create subscription
+        const { error: subError } = await supabase
+          .from("client_subscriptions")
+          .insert({
+            client_id: selectedClientId,
+            item_type: "product" as const,
+            product_id: newProduct.id,
+            pricing_mode: "catalog" as const,
+            currency,
+          });
+        if (subError) throw subError;
+
+        toast({ title: "Producto creado y asignado al cliente" });
       }
 
       onSuccess();
