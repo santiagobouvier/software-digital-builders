@@ -33,7 +33,7 @@ import { toast } from "@/hooks/use-toast";
 import { Loader2, Info } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { Product, BillingType, ProductCategory } from "@/types/catalog";
+import type { Product, BillingType, ProductCategory, Client } from "@/types/catalog";
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -57,6 +57,26 @@ export const ProductFormDialog = ({
   const [priceMonthly, setPriceMonthly] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [isActive, setIsActive] = useState(true);
+  const [selectedClientId, setSelectedClientId] = useState("");
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loadingClients, setLoadingClients] = useState(false);
+
+  useEffect(() => {
+    if (open && !product) {
+      loadClients();
+    }
+  }, [open, product]);
+
+  const loadClients = async () => {
+    setLoadingClients(true);
+    const { data } = await supabase
+      .from("clients")
+      .select("*")
+      .in("status", ["lead", "active"])
+      .order("company_name");
+    if (data) setClients(data as Client[]);
+    setLoadingClients(false);
+  };
 
   useEffect(() => {
     if (product) {
@@ -82,6 +102,7 @@ export const ProductFormDialog = ({
     setPriceMonthly("0");
     setCurrency("USD");
     setIsActive(true);
+    setSelectedClientId("");
   };
 
   // Calculate equivalents
@@ -93,6 +114,11 @@ export const ProductFormDialog = ({
   const handleSubmit = async () => {
     if (!name.trim()) {
       toast({ title: "Error", description: "El nombre es requerido", variant: "destructive" });
+      return;
+    }
+
+    if (!product && !selectedClientId) {
+      toast({ title: "Error", description: "Seleccioná un cliente", variant: "destructive" });
       return;
     }
 
@@ -127,9 +153,26 @@ export const ProductFormDialog = ({
         if (error) throw error;
         toast({ title: "Producto actualizado" });
       } else {
-        const { error } = await supabase.from("products").insert(data);
+        const { data: newProduct, error } = await supabase
+          .from("products")
+          .insert(data)
+          .select("id")
+          .single();
         if (error) throw error;
-        toast({ title: "Producto creado" });
+
+        // Auto-create subscription
+        const { error: subError } = await supabase
+          .from("client_subscriptions")
+          .insert({
+            client_id: selectedClientId,
+            item_type: "product" as const,
+            product_id: newProduct.id,
+            pricing_mode: "catalog" as const,
+            currency,
+          });
+        if (subError) throw subError;
+
+        toast({ title: "Producto creado y asignado al cliente" });
       }
 
       onSuccess();
@@ -145,6 +188,25 @@ export const ProductFormDialog = ({
 
   const formContent = (
     <div className="space-y-4">
+      {/* Client selector - only for new products */}
+      {!product && (
+        <div className="space-y-2">
+          <Label>Cliente *</Label>
+          <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+            <SelectTrigger>
+              <SelectValue placeholder={loadingClients ? "Cargando..." : "Seleccioná un cliente"} />
+            </SelectTrigger>
+            <SelectContent>
+              {clients.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.company_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="name">Nombre *</Label>
         <Input
