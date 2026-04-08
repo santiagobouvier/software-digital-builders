@@ -102,6 +102,7 @@ export const ProductFormDialog = ({
     setPriceMonthly("0");
     setCurrency("USD");
     setIsActive(true);
+    setSelectedClientId("");
   };
 
   // Calculate equivalents
