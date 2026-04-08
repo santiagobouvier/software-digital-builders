@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload, X } from "lucide-react";
+import { ClientAvatar } from "./ClientAvatar";
 import type { Client, ClientStatus, ClientFormData } from "@/types/catalog";
 
 interface ClientFormDialogProps {
@@ -37,6 +38,10 @@ export const ClientFormDialog = ({
   onSuccess 
 }: ClientFormDialogProps) => {
   const [isSaving, setIsSaving] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [removeLogo, setRemoveLogo] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<ClientFormData>({
     company_name: "",
     contact_name: "",
@@ -58,9 +63,12 @@ export const ClientFormDialog = ({
         status: client.status,
         notes: client.notes || "",
       });
+      setLogoPreview(client.logo_url || null);
     } else {
       resetForm();
     }
+    setLogoFile(null);
+    setRemoveLogo(false);
   }, [client, open]);
 
   const resetForm = () => {
@@ -73,10 +81,47 @@ export const ClientFormDialog = ({
       status: "lead",
       notes: "",
     });
+    setLogoPreview(null);
+    setLogoFile(null);
+    setRemoveLogo(false);
   };
 
   const handleChange = (field: keyof ClientFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "Error", description: "La imagen no puede superar 2MB", variant: "destructive" });
+      return;
+    }
+    setLogoFile(file);
+    setRemoveLogo(false);
+    setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveLogo = () => {
+    setLogoFile(null);
+    setLogoPreview(null);
+    setRemoveLogo(true);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const uploadLogo = async (clientId: string): Promise<string | null> => {
+    if (!logoFile) return null;
+    const ext = logoFile.name.split(".").pop();
+    const path = `${clientId}.${ext}`;
+
+    const { error } = await supabase.storage
+      .from("client-logos")
+      .upload(path, logoFile, { upsert: true });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage.from("client-logos").getPublicUrl(path);
+    return `${data.publicUrl}?t=${Date.now()}`;
   };
 
   const handleSubmit = async () => {
@@ -88,7 +133,7 @@ export const ClientFormDialog = ({
     setIsSaving(true);
 
     try {
-      const data = {
+      const data: Record<string, any> = {
         company_name: formData.company_name.trim(),
         contact_name: formData.contact_name.trim() || null,
         email: formData.email.trim() || null,
@@ -99,6 +144,13 @@ export const ClientFormDialog = ({
       };
 
       if (client) {
+        // Upload logo if new file selected
+        if (logoFile) {
+          data.logo_url = await uploadLogo(client.id);
+        } else if (removeLogo) {
+          data.logo_url = null;
+        }
+
         const { error } = await supabase
           .from("clients")
           .update(data)
@@ -107,8 +159,18 @@ export const ClientFormDialog = ({
         if (error) throw error;
         toast({ title: "Cliente actualizado" });
       } else {
-        const { error } = await supabase.from("clients").insert(data);
+        const { data: newClient, error } = await supabase
+          .from("clients")
+          .insert(data)
+          .select("id")
+          .single();
         if (error) throw error;
+
+        // Upload logo for newly created client
+        if (logoFile && newClient) {
+          const logoUrl = await uploadLogo(newClient.id);
+          await supabase.from("clients").update({ logo_url: logoUrl }).eq("id", newClient.id);
+        }
         toast({ title: "Cliente creado" });
       }
 
@@ -132,6 +194,47 @@ export const ClientFormDialog = ({
         </DialogHeader>
 
         <div className="space-y-4">
+          {/* Logo upload */}
+          <div className="space-y-2">
+            <Label>Logo</Label>
+            <div className="flex items-center gap-4">
+              <ClientAvatar
+                logoUrl={logoPreview}
+                companyName={formData.company_name || "?"}
+                size="lg"
+              />
+              <div className="flex gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleLogoSelect}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload className="h-4 w-4 mr-1" />
+                  Subir
+                </Button>
+                {logoPreview && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleRemoveLogo}
+                  >
+                    <X className="h-4 w-4 mr-1" />
+                    Quitar
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="company_name">Nombre de empresa *</Label>
             <Input
