@@ -84,10 +84,11 @@ export const ClientList = ({
                       {STATUS_LABELS[client.status]}
                     </Badge>
                   </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  {client.contact_name && <span>{client.contact_name}</span>}
-                  {client.contact_name && client.email && <span>•</span>}
-                  {client.email && <span className="truncate">{client.email}</span>}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {client.contact_name && <span>{client.contact_name}</span>}
+                    {client.contact_name && client.email && <span>•</span>}
+                    {client.email && <span className="truncate">{client.email}</span>}
+                  </div>
                 </div>
               </div>
               <Button
