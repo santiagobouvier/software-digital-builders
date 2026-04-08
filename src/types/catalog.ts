@@ -113,6 +113,7 @@ export interface ClientFormData {
   country: string;
   status: ClientStatus;
   notes: string;
+  logo_bg_color: string;
 }
 
 export interface SubscriptionFormData {
