@@ -6,6 +6,7 @@ interface ClientAvatarProps {
   logoUrl?: string | null;
   companyName: string;
   size?: "sm" | "md" | "lg";
+  bgColor?: string | null;
   className?: string;
 }
 
@@ -21,7 +22,7 @@ const iconSizes = {
   lg: "h-7 w-7",
 };
 
-export const ClientAvatar = ({ logoUrl, companyName, size = "md", className }: ClientAvatarProps) => {
+export const ClientAvatar = ({ logoUrl, companyName, size = "md", bgColor, className }: ClientAvatarProps) => {
   const initials = companyName
     .split(" ")
     .slice(0, 2)
@@ -30,9 +31,12 @@ export const ClientAvatar = ({ logoUrl, companyName, size = "md", className }: C
     .toUpperCase();
 
   return (
-    <Avatar className={cn(sizeClasses[size], "rounded-lg", className)}>
+    <Avatar
+      className={cn(sizeClasses[size], "rounded-lg", className)}
+      style={logoUrl && bgColor ? { backgroundColor: bgColor } : undefined}
+    >
       {logoUrl ? (
-        <AvatarImage src={logoUrl} alt={companyName} className="object-cover" />
+        <AvatarImage src={logoUrl} alt={companyName} className="object-contain p-0.5" />
       ) : null}
       <AvatarFallback className="rounded-lg bg-muted">
         {initials || <Building2 className={iconSizes[size]} />}

@@ -194,6 +194,7 @@ export const ClientDetail = ({
                 <ClientAvatar
                   logoUrl={client.logo_url}
                   companyName={client.company_name}
+                  bgColor={client.logo_bg_color}
                   size="lg"
                 />
                 <div>
