@@ -233,15 +233,27 @@ export const ClientFormDialog = ({
                   Subir
                 </Button>
                 {logoPreview && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleRemoveLogo}
-                  >
-                    <X className="h-4 w-4 mr-1" />
-                    Quitar
-                  </Button>
+                  <>
+                    <div className="flex items-center gap-1.5">
+                      <Label htmlFor="logo_bg_color" className="text-xs whitespace-nowrap">Fondo:</Label>
+                      <input
+                        id="logo_bg_color"
+                        type="color"
+                        value={formData.logo_bg_color}
+                        onChange={(e) => handleChange("logo_bg_color", e.target.value)}
+                        className="h-8 w-8 rounded border border-border cursor-pointer p-0.5"
+                      />
+                    </div>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleRemoveLogo}
+                    >
+                      <X className="h-4 w-4 mr-1" />
+                      Quitar
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
