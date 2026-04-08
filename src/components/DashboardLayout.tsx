@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AnimatedSidebarTrigger } from "@/components/AnimatedSidebarTrigger";
 import { useUserRole } from "@/hooks/useUserRole";
+import { GlobalSearch } from "@/components/GlobalSearch";
 
 interface Company {
   id: string;
