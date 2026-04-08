@@ -161,7 +161,15 @@ export const ClientFormDialog = ({
       } else {
         const { data: newClient, error } = await supabase
           .from("clients")
-          .insert(data)
+          .insert({
+            company_name: data.company_name as string,
+            contact_name: data.contact_name as string | null,
+            email: data.email as string | null,
+            phone: data.phone as string | null,
+            country: data.country as string | null,
+            status: data.status as ClientStatus,
+            notes: data.notes as string | null,
+          })
           .select("id")
           .single();
         if (error) throw error;
