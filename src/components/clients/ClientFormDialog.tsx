@@ -50,6 +50,7 @@ export const ClientFormDialog = ({
     country: "",
     status: "lead",
     notes: "",
+    logo_bg_color: "#ffffff",
   });
 
   useEffect(() => {
