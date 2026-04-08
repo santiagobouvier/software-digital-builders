@@ -31,6 +31,7 @@ import type {
   PackWithItems 
 } from "@/types/catalog";
 import { SubscriptionFormDialog } from "./SubscriptionFormDialog";
+import { ClientAvatar } from "./ClientAvatar";
 
 interface ClientDetailProps {
   client: ClientWithSubscriptions | null;
