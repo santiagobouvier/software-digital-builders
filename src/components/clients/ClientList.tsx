@@ -71,13 +71,19 @@ export const ClientList = ({
               )}
               onClick={() => onSelect(client)}
             >
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className="font-medium truncate">{client.company_name}</h3>
-                  <Badge className={cn("text-xs", STATUS_COLORS[client.status])}>
-                    {STATUS_LABELS[client.status]}
-                  </Badge>
-                </div>
+              <div className="flex-1 min-w-0 flex items-center gap-3">
+                <ClientAvatar
+                  logoUrl={client.logo_url}
+                  companyName={client.company_name}
+                  size="sm"
+                />
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium truncate">{client.company_name}</h3>
+                    <Badge className={cn("text-xs", STATUS_COLORS[client.status])}>
+                      {STATUS_LABELS[client.status]}
+                    </Badge>
+                  </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   {client.contact_name && <span>{client.contact_name}</span>}
                   {client.contact_name && client.email && <span>•</span>}
