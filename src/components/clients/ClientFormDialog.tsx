@@ -213,6 +213,7 @@ export const ClientFormDialog = ({
               <ClientAvatar
                 logoUrl={logoPreview}
                 companyName={formData.company_name || "?"}
+                bgColor={formData.logo_bg_color}
                 size="lg"
               />
               <div className="flex gap-2">
