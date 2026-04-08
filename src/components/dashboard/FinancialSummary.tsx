@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
-import { DollarSign, TrendingUp, Building2, Loader2 } from "lucide-react";
+import { DollarSign, TrendingUp, Building2, Loader2, Wallet } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { formatCurrency, convertCurrency, getSubscriptionPricing, calculatePackPricing } from "@/lib/pricing";
+import { formatCurrency, getSubscriptionPricing, calculatePackPricing } from "@/lib/pricing";
 import { useExchangeRate } from "@/hooks/useExchangeRate";
+import { RevenueCharts, CATEGORY_LABELS } from "./RevenueCharts";
 
 interface ClientSubscription {
   id: string;
@@ -20,6 +21,7 @@ interface ClientSubscription {
     name: string;
     price_one_time: number;
     price_monthly: number;
+    category: string | null;
   } | null;
   pack?: {
     name: string;
@@ -30,6 +32,7 @@ interface ClientSubscription {
       product: {
         price_one_time: number;
         price_monthly: number;
+        category: string | null;
       } | null;
     }>;
   } | null;
@@ -46,7 +49,7 @@ interface ClientStatus {
 export const FinancialSummary = () => {
   const navigate = useNavigate();
   const { rate, convert } = useExchangeRate();
-  const displayCurrency = "USD"; // Default display in USD
+  const displayCurrency = "USD";
   const [subscriptions, setSubscriptions] = useState<ClientSubscription[]>([]);
   const [clientStats, setClientStats] = useState<ClientStatus[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -70,12 +73,12 @@ export const FinancialSummary = () => {
           custom_monthly,
           currency,
           is_active,
-          product:products(name, price_one_time, price_monthly),
+          product:products(name, price_one_time, price_monthly, category),
           pack:packs(
             name, 
             discount_type, 
             discount_value,
-            pack_items(quantity, product:products(price_one_time, price_monthly))
+            pack_items(quantity, product:products(price_one_time, price_monthly, category))
           ),
           client:clients(company_name)
         `)
@@ -90,7 +93,6 @@ export const FinancialSummary = () => {
     }
 
     if (clientsResult.data) {
-      // Group by status
       const statusMap: Record<string, number> = {};
       clientsResult.data.forEach((c) => {
         statusMap[c.status] = (statusMap[c.status] || 0) + 1;
@@ -103,12 +105,18 @@ export const FinancialSummary = () => {
     setIsLoading(false);
   };
 
-  const financialMetrics = useMemo(() => {
+  const { financialMetrics, clientRevenues, categoryRevenues } = useMemo(() => {
     let totalMRR = 0;
     let totalSetup = 0;
 
+    // Per-client aggregation
+    const clientMap: Record<string, { clientName: string; clientId: string; mrr: number; setup: number; currency: string }> = {};
+    // Per-category aggregation
+    const categoryMap: Record<string, { mrr: number; count: number }> = {};
+
     subscriptions.forEach((sub) => {
       let pricing = { oneTime: 0, monthly: 0 };
+      let category = "otro";
       
       if (sub.item_type === "product" && sub.product) {
         pricing = getSubscriptionPricing(
@@ -118,6 +126,7 @@ export const FinancialSummary = () => {
           sub.custom_one_time,
           sub.custom_monthly
         );
+        category = sub.product.category || "otro";
       } else if (sub.item_type === "pack" && sub.pack) {
         const packItems = sub.pack.pack_items
           .filter((item) => item.product)
@@ -142,21 +151,50 @@ export const FinancialSummary = () => {
           sub.custom_one_time,
           sub.custom_monthly
         );
+        // Use first product's category from pack
+        const firstProduct = sub.pack.pack_items.find((i) => i.product);
+        category = firstProduct?.product?.category || "otro";
       }
 
-      // Convert to display currency using hook's convert function
       const convertedMRR = convert(pricing.monthly, sub.currency, displayCurrency);
       const convertedSetup = convert(pricing.oneTime, sub.currency, displayCurrency);
       
       totalMRR += convertedMRR;
       totalSetup += convertedSetup;
+
+      // Client aggregation
+      const clientName = sub.client?.company_name || "Sin nombre";
+      if (!clientMap[sub.client_id]) {
+        clientMap[sub.client_id] = { clientName, clientId: sub.client_id, mrr: 0, setup: 0, currency: displayCurrency };
+      }
+      clientMap[sub.client_id].mrr += convertedMRR;
+      clientMap[sub.client_id].setup += convertedSetup;
+
+      // Category aggregation
+      if (!categoryMap[category]) {
+        categoryMap[category] = { mrr: 0, count: 0 };
+      }
+      categoryMap[category].mrr += convertedMRR;
+      categoryMap[category].count += 1;
     });
 
     return {
-      mrr: totalMRR,
-      arr: totalMRR * 12,
-      setup: totalSetup,
-      activeSubscriptions: subscriptions.length,
+      financialMetrics: {
+        mrr: totalMRR,
+        arr: totalMRR * 12,
+        setup: totalSetup,
+        activeSubscriptions: subscriptions.length,
+      },
+      clientRevenues: Object.values(clientMap).map((c) => ({
+        ...c,
+        annual: c.mrr * 12,
+      })),
+      categoryRevenues: Object.entries(categoryMap).map(([category, data]) => ({
+        category,
+        label: CATEGORY_LABELS[category] || category,
+        mrr: data.mrr,
+        count: data.count,
+      })),
     };
   }, [subscriptions, displayCurrency, convert]);
 
@@ -196,7 +234,7 @@ export const FinancialSummary = () => {
   return (
     <div className="space-y-4">
       {/* Financial KPIs */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
         {/* MRR */}
         <Card variant="elevated">
           <CardContent className="pt-4 pb-4">
@@ -204,11 +242,12 @@ export const FinancialSummary = () => {
               <div className="p-2 rounded-lg bg-success/10">
                 <TrendingUp className="h-5 w-5 text-success" />
               </div>
-              <div>
-                <p className="text-xl sm:text-2xl font-bold font-mono">
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold font-mono truncate">
                   {formatCurrency(financialMetrics.mrr, displayCurrency)}
                 </p>
                 <p className="text-xs text-muted-foreground">Ingreso mensual</p>
+                <p className="text-[10px] text-muted-foreground/70">{displayCurrency}</p>
               </div>
             </div>
           </CardContent>
@@ -221,11 +260,30 @@ export const FinancialSummary = () => {
               <div className="p-2 rounded-lg bg-primary/10">
                 <DollarSign className="h-5 w-5 text-primary" />
               </div>
-              <div>
-                <p className="text-xl sm:text-2xl font-bold font-mono">
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold font-mono truncate">
                   {formatCurrency(financialMetrics.arr, displayCurrency)}
                 </p>
                 <p className="text-xs text-muted-foreground">Proyección anual</p>
+                <p className="text-[10px] text-muted-foreground/70">{displayCurrency}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Setup Total */}
+        <Card variant="elevated">
+          <CardContent className="pt-4 pb-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-cyan-500/10">
+                <Wallet className="h-5 w-5 text-cyan-500" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-xl sm:text-2xl font-bold font-mono truncate">
+                  {formatCurrency(financialMetrics.setup, displayCurrency)}
+                </p>
+                <p className="text-xs text-muted-foreground">Setup total</p>
+                <p className="text-[10px] text-muted-foreground/70">{displayCurrency}</p>
               </div>
             </div>
           </CardContent>
@@ -261,6 +319,13 @@ export const FinancialSummary = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Revenue Charts */}
+      <RevenueCharts
+        clientRevenues={clientRevenues}
+        categoryRevenues={categoryRevenues}
+        displayCurrency={displayCurrency}
+      />
 
       {/* Client Pipeline */}
       <Card variant="elevated">
