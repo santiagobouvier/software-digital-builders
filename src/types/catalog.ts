@@ -58,6 +58,7 @@ export interface Client {
   status: ClientStatus;
   notes: string | null;
   logo_url: string | null;
+  logo_bg_color: string | null;
   created_at: string;
   updated_at: string;
 }
