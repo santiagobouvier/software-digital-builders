@@ -188,6 +188,25 @@ export const ProductFormDialog = ({
 
   const formContent = (
     <div className="space-y-4">
+      {/* Client selector - only for new products */}
+      {!product && (
+        <div className="space-y-2">
+          <Label>Cliente *</Label>
+          <Select value={selectedClientId} onValueChange={setSelectedClientId}>
+            <SelectTrigger>
+              <SelectValue placeholder={loadingClients ? "Cargando..." : "Seleccioná un cliente"} />
+            </SelectTrigger>
+            <SelectContent>
+              {clients.map((c) => (
+                <SelectItem key={c.id} value={c.id}>
+                  {c.company_name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
+
       <div className="space-y-2">
         <Label htmlFor="name">Nombre *</Label>
         <Input
