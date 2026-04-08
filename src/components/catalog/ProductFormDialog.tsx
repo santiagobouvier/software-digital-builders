@@ -57,6 +57,26 @@ export const ProductFormDialog = ({
   const [priceMonthly, setPriceMonthly] = useState("");
   const [currency, setCurrency] = useState("USD");
   const [isActive, setIsActive] = useState(true);
+  const [selectedClientId, setSelectedClientId] = useState("");
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loadingClients, setLoadingClients] = useState(false);
+
+  useEffect(() => {
+    if (open && !product) {
+      loadClients();
+    }
+  }, [open, product]);
+
+  const loadClients = async () => {
+    setLoadingClients(true);
+    const { data } = await supabase
+      .from("clients")
+      .select("*")
+      .in("status", ["lead", "active"])
+      .order("company_name");
+    if (data) setClients(data as Client[]);
+    setLoadingClients(false);
+  };
 
   useEffect(() => {
     if (product) {
