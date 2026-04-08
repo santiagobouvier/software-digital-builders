@@ -33,7 +33,7 @@ import { toast } from "@/hooks/use-toast";
 import { Loader2, Info } from "lucide-react";
 import { formatCurrency } from "@/lib/pricing";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { Product, BillingType, ProductCategory } from "@/types/catalog";
+import type { Product, BillingType, ProductCategory, Client } from "@/types/catalog";
 
 interface ProductFormDialogProps {
   open: boolean;
