@@ -63,6 +63,7 @@ export const ClientFormDialog = ({
         country: client.country || "",
         status: client.status,
         notes: client.notes || "",
+        logo_bg_color: client.logo_bg_color || "#ffffff",
       });
       setLogoPreview(client.logo_url || null);
     } else {
