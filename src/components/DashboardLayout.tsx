@@ -5,6 +5,7 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { AnimatedSidebarTrigger } from "@/components/AnimatedSidebarTrigger";
 import { useUserRole } from "@/hooks/useUserRole";
+import { GlobalSearch } from "@/components/GlobalSearch";
 
 interface Company {
   id: string;
@@ -103,7 +104,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         {/* Minimal header with animated sidebar trigger */}
         <header className="sticky top-0 z-40 flex h-12 items-center gap-2 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
           <AnimatedSidebarTrigger className="-ml-1" />
-          <div className="flex-1" />
+          <div className="flex-1 flex justify-center px-2">
+            {isProfessional && <GlobalSearch />}
+          </div>
         </header>
 
         {/* Main Content */}
