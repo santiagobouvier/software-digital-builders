@@ -144,6 +144,7 @@ export const ClientFormDialog = ({
         country: formData.country.trim() || null,
         status: formData.status as ClientStatus,
         notes: formData.notes.trim() || null,
+        logo_bg_color: formData.logo_bg_color || "#ffffff",
       };
 
       if (client) {
