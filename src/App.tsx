@@ -70,22 +70,6 @@ const App = () => (
             }
           />
           <Route
-            path="/bots"
-            element={
-              <ProtectedRoute>
-                <Bots />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bots/:id"
-            element={
-              <ProtectedRoute>
-                <BotDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/team"
             element={
               <ProtectedRoute>
@@ -101,14 +85,7 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/stats"
-            element={
-              <ProtectedRoute>
-                <Stats />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/catalogo"
             element={
