@@ -174,19 +174,21 @@ export const ClientsSection = () => {
               </div>
             )}
           </DialogHeader>
-          <div className="flex-1 bg-background overflow-auto flex items-start justify-center">
+          <div className="flex-1 bg-background overflow-auto flex items-center justify-center p-4">
             {active && (
-              view === "desktop" && !isMobile ? (
-                <iframe
-                  key={`${active.url}-desktop`}
-                  src={active.url}
-                  title={active.name}
-                  className="w-full h-full border-0"
-                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                />
+              view === "mobile" && !isMobile ? (
+                <div className="w-[390px] h-[95%] max-h-[844px] rounded-[2rem] border-4 border-border/60 shadow-2xl overflow-hidden bg-background">
+                  <iframe
+                    key={`${active.url}-mobile`}
+                    src={active.url}
+                    title={active.name}
+                    className="w-full h-full border-0"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                  />
+                </div>
               ) : (
                 <iframe
-                  key={`${active.url}-mobile`}
+                  key={`${active.url}-desktop`}
                   src={active.url}
                   title={active.name}
                   className="w-full h-full border-0"
