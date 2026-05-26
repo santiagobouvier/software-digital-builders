@@ -4,12 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   LayoutDashboard,
-  Bot,
   Users,
   UserCog,
   Package,
   Building2,
-  MessageCircle,
   Globe,
   Download,
   Check,
@@ -17,6 +15,7 @@ import {
   ChevronDown,
   Settings,
 } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
