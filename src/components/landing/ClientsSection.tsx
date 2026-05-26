@@ -41,6 +41,13 @@ const clients: Client[] = [
 
 export const ClientsSection = () => {
   const [active, setActive] = useState<Client | null>(null);
+  const [view, setView] = useState<"desktop" | "mobile">("desktop");
+
+  useEffect(() => {
+    if (active) setView("desktop");
+  }, [active]);
+
+
 
   return (
     <section id="clientes" className="py-24 sm:py-32 relative">
