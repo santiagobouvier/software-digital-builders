@@ -3,11 +3,11 @@ import { motion } from "framer-motion";
 
 const features = [
   "Actualizá contenido de tu web sin ayuda técnica",
-  "Controlá el estado de tus bots en tiempo real",
   "Visualizá métricas y reportes de actividad",
   "Gestioná accesos y usuarios de tu cuenta",
   "Revisá historial de cambios y actualizaciones",
   "Solicitá soporte directamente desde el panel",
+  "Gestioná clientes, productos y suscripciones",
 ];
 
 const containerVariants = {

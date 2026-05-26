@@ -12,7 +12,7 @@ const features = [
     icon: LayoutDashboard,
     title: "Panel centralizado",
     description:
-      "Todos tus proyectos, webs y bots organizados en un solo lugar. Acceso rápido a lo que necesitás.",
+      "Todos tus proyectos, clientes y productos organizados en un solo lugar. Acceso rápido a lo que necesitás.",
   },
   {
     icon: BarChart3,

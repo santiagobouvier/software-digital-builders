@@ -167,7 +167,7 @@ export const AboutSection = () => {
                 variants={itemVariants}
               >
                 Creamos soluciones digitales a medida para negocios que quieren
-                destacar. Desde páginas web hasta bots de atención automática,
+                destacar. Desde páginas web hasta sistemas personalizados,
                 transformamos ideas en herramientas que funcionan.
               </motion.p>
 
