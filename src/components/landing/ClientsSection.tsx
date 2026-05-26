@@ -60,7 +60,7 @@ const clients: Client[] = [
     name: "Tabeira de León & Asoc.",
     type: "logo",
     src: tabeiraLogo,
-    size: "2xl",
+    size: "3xl",
     invert: true,
     url: "https://tabeiradeleon.com/",
   },
