@@ -5,13 +5,11 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { 
   Building2, 
-  Bot, 
   Users, 
   ArrowRight,
   Loader2,
   UserPlus,
   DollarSign,
-  MessageCircle,
   Globe,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +22,6 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [clientCount, setClientCount] = useState(0);
-  const [botInstanceCount, setBotInstanceCount] = useState(0);
   const [webInstanceCount, setWebInstanceCount] = useState(0);
 
   useEffect(() => {
@@ -34,14 +31,12 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
   const loadData = async () => {
     setIsLoading(true);
 
-    const [clientsRes, botInstancesRes, webInstancesRes] = await Promise.all([
+    const [clientsRes, webInstancesRes] = await Promise.all([
       supabase.from("clients").select("id"),
-      supabase.from("bot_instances").select("id"),
       supabase.from("web_instances").select("id"),
     ]);
 
     setClientCount(clientsRes.data?.length || 0);
-    setBotInstanceCount(botInstancesRes.data?.length || 0);
     setWebInstanceCount(webInstancesRes.data?.length || 0);
     setIsLoading(false);
   };
@@ -59,7 +54,7 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
   return (
     <div className="space-y-4">
       {/* Module Shortcuts */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Card 
           variant="elevated" 
           className="cursor-pointer hover:bg-muted/10 transition-colors"
@@ -107,28 +102,6 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
         <Card 
           variant="elevated" 
           className="cursor-pointer hover:bg-muted/10 transition-colors"
-          onClick={() => navigate("/bots-clientes")}
-        >
-          <CardContent className="pt-4 pb-4">
-            <div className="flex flex-col gap-3">
-              <div className="p-2 rounded-lg bg-warning/10 w-fit">
-                <MessageCircle className="h-5 w-5 text-warning" />
-              </div>
-              <div>
-                <p className="font-semibold">Bots</p>
-                <p className="text-xs text-muted-foreground">Instancias operativas</p>
-              </div>
-              <div className="flex items-center justify-between">
-                <Badge variant="secondary">{botInstanceCount} instancias</Badge>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card 
-          variant="elevated" 
-          className="cursor-pointer hover:bg-muted/10 transition-colors"
           onClick={() => navigate("/webs-clientes")}
         >
           <CardContent className="pt-4 pb-4">
@@ -159,15 +132,6 @@ export const ProfessionalWidgets = ({ userId }: ProfessionalWidgetsProps) => {
             <Button onClick={() => navigate("/clientes")} size="sm" className="gap-2">
               <UserPlus className="h-4 w-4" />
               Nuevo cliente
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/bots")}
-              className="gap-2"
-            >
-              <Bot className="h-4 w-4" />
-              Bots técnicos
             </Button>
             <Button
               variant="outline"
