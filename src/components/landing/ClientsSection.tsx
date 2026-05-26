@@ -24,7 +24,7 @@ const clients: Client[] = [
     type: "logo",
     src: consteelLogo,
     invert: true,
-    url: "https://consteel.com.uy",
+    url: "https://consteelconstrucciones.com",
   },
   {
     name: "Shinrinyoku Uruguay",
