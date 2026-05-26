@@ -41,19 +41,11 @@ interface User {
   email: string;
   name: string | null;
   role: "professional" | "client";
-  assigned_bot_id: string | null;
-  assigned_bot_name: string | null;
-}
-
-interface Bot {
-  id: string;
-  name: string;
 }
 
 const Users = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
   const [users, setUsers] = useState<User[]>([]);
-  const [bots, setBots] = useState<Bot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -63,7 +55,7 @@ const Users = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [selectedRole, setSelectedRole] = useState<"professional" | "client">("client");
-  const [selectedBotId, setSelectedBotId] = useState<string>("");
+
 
   useEffect(() => {
     if (isProfessional) {
@@ -73,7 +65,7 @@ const Users = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    await Promise.all([loadUsers(), loadBots()]);
+    await loadUsers();
     setIsLoading(false);
   };
 
@@ -98,54 +90,26 @@ const Users = () => {
       return;
     }
 
-    // Get bot access
-    const { data: accessData } = await supabase
-      .from("user_bot_access")
-      .select("user_id, bot_id, bots(name)");
-
     // Combine data
     const usersList: User[] = rolesData.map((roleEntry: any) => {
       const profile = profilesData.find((p: any) => p.user_id === roleEntry.user_id);
-      const access = accessData?.find((a: any) => a.user_id === roleEntry.user_id);
-      
       return {
         id: roleEntry.user_id,
         email: profile?.email || "Sin email",
         name: profile?.name || null,
         role: roleEntry.role,
-        assigned_bot_id: access?.bot_id || null,
-        assigned_bot_name: (access?.bots as any)?.name || null,
       };
     });
 
     setUsers(usersList);
   };
 
-  const loadBots = async () => {
-    const { data } = await supabase
-      .from("bots")
-      .select("id, name")
-      .order("name");
-
-    if (data) {
-      setBots(data);
-    }
-  };
 
   const handleCreateUser = async () => {
     if (!email || !password) {
       toast({
         title: "Error",
         description: "Email y contraseña son requeridos",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedRole === "client" && !selectedBotId) {
-      toast({
-        title: "Error",
-        description: "Selecciona un bot para el cliente",
         variant: "destructive",
       });
       return;
@@ -161,7 +125,6 @@ const Users = () => {
           password,
           name,
           role: selectedRole,
-          botId: selectedRole === "client" ? selectedBotId : null,
         },
       });
 
@@ -178,7 +141,6 @@ const Users = () => {
       setPassword("");
       setName("");
       setSelectedRole("client");
-      setSelectedBotId("");
       setIsDialogOpen(false);
 
       // Reload users
@@ -230,7 +192,7 @@ const Users = () => {
   }
 
   if (!isProfessional) {
-    return <Navigate to="/stats" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
@@ -264,7 +226,7 @@ const Users = () => {
                     <ResponsiveTableHead>Email</ResponsiveTableHead>
                     <ResponsiveTableHead>Nombre</ResponsiveTableHead>
                     <ResponsiveTableHead>Rol</ResponsiveTableHead>
-                    <ResponsiveTableHead>Bot asignado</ResponsiveTableHead>
+                    
                     <ResponsiveTableHead className="w-[80px]"></ResponsiveTableHead>
                   </ResponsiveTableRow>
                 </ResponsiveTableHeader>
@@ -296,11 +258,6 @@ const Users = () => {
                               </Button>
                             }
                           />
-                          {user.assigned_bot_name && (
-                            <MobileCardRow label="Bot asignado">
-                              <span className="font-medium">{user.assigned_bot_name}</span>
-                            </MobileCardRow>
-                          )}
                         </>
                       }
                     >
@@ -312,9 +269,6 @@ const Users = () => {
                         >
                           {user.role === "professional" ? "Profesional" : "Cliente"}
                         </Badge>
-                      </ResponsiveTableCell>
-                      <ResponsiveTableCell>
-                        {user.assigned_bot_name || "-"}
                       </ResponsiveTableCell>
                       <ResponsiveTableCell>
                         <Button
@@ -394,23 +348,6 @@ const Users = () => {
                 </Select>
               </div>
 
-              {selectedRole === "client" && (
-                <div className="space-y-2">
-                  <Label>Bot asignado *</Label>
-                  <Select value={selectedBotId} onValueChange={setSelectedBotId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un bot" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {bots.map((bot) => (
-                        <SelectItem key={bot.id} value={bot.id}>
-                          {bot.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
             </div>
 
             <DialogFooter>

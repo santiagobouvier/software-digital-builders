@@ -1,4 +1,4 @@
-import { Bot, Users, Plus, ArrowRight } from "lucide-react";
+import { Users, ArrowRight, Briefcase } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -16,14 +16,12 @@ interface OnboardingStep {
 interface EmptyDashboardProps {
   isProfessional: boolean;
   hasCompany: boolean;
-  hasBots: boolean;
   hasUsers: boolean;
 }
 
-export const EmptyDashboard = ({ 
-  isProfessional, 
-  hasCompany, 
-  hasBots,
+export const EmptyDashboard = ({
+  isProfessional,
+  hasCompany,
   hasUsers,
 }: EmptyDashboardProps) => {
   const navigate = useNavigate();
@@ -37,17 +35,17 @@ export const EmptyDashboard = ({
           completed: hasCompany,
         },
         {
-          id: "bot",
-          title: "Crear tu primer bot",
-          description: "Configurá un bot para empezar a recibir métricas",
-          completed: hasBots,
-          action: () => navigate("/bots"),
-          actionLabel: "Crear bot",
+          id: "clients",
+          title: "Cargá tus clientes",
+          description: "Empezá a registrar clientes en el CRM",
+          completed: false,
+          action: () => navigate("/clientes"),
+          actionLabel: "Ir a Clientes",
         },
         {
           id: "users",
           title: "Agregar usuarios (opcional)",
-          description: "Invitá clientes para que vean sus métricas",
+          description: "Invitá a tu equipo a la plataforma",
           completed: hasUsers,
           action: () => navigate("/users"),
           actionLabel: "Gestionar usuarios",
@@ -57,8 +55,8 @@ export const EmptyDashboard = ({
         {
           id: "access",
           title: "Acceso configurado",
-          description: "Ya tenés acceso a tus bots asignados",
-          completed: hasBots,
+          description: "Tu administrador te dará acceso cuando esté todo listo",
+          completed: false,
         },
       ];
 
@@ -67,20 +65,19 @@ export const EmptyDashboard = ({
 
   return (
     <div className="space-y-6">
-      {/* Welcome Card */}
       <Card variant="elevated">
         <CardHeader>
           <CardTitle className="text-xl sm:text-2xl">
-            ¡Bienvenido a Digital Builders Bots!
+            ¡Bienvenido a Digital Builders Software!
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-muted-foreground">
             {isProfessional
-              ? "Configurá tu primer bot para empezar a recibir métricas de tus conversaciones."
-              : "Cuando tu administrador te asigne bots, podrás ver sus métricas aquí."}
+              ? "Configurá tu cuenta para empezar a gestionar tus clientes y proyectos."
+              : "Cuando tu administrador te asigne acceso, vas a poder ver tu información aquí."}
           </p>
-          
+
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Progreso de configuración</span>
@@ -91,7 +88,6 @@ export const EmptyDashboard = ({
         </CardContent>
       </Card>
 
-      {/* Onboarding Steps */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {steps.map((step, index) => (
           <Card
@@ -137,7 +133,6 @@ export const EmptyDashboard = ({
         ))}
       </div>
 
-      {/* Quick Actions for Professional */}
       {isProfessional && (
         <Card variant="elevated">
           <CardHeader>
@@ -145,9 +140,9 @@ export const EmptyDashboard = ({
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-3">
-              <Button onClick={() => navigate("/bots")} className="gap-2">
-                <Bot className="h-4 w-4" />
-                Ir a Bots
+              <Button onClick={() => navigate("/clientes")} className="gap-2">
+                <Briefcase className="h-4 w-4" />
+                Ir a Clientes
               </Button>
               <Button
                 variant="outline"

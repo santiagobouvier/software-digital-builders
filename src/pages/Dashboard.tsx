@@ -77,7 +77,7 @@ const Dashboard = () => {
         <EmptyDashboard
           isProfessional={isProfessional}
           hasCompany={!!companyId}
-          hasBots={false}
+          
           hasUsers={hasUsers}
         />
       </DashboardLayout>
