@@ -39,6 +39,19 @@ const clients: Client[] = [
     type: "wordmark",
     url: "https://quevedoarte.com",
   },
+  {
+    name: "The English Room",
+    type: "logo",
+    src: theEnglishRoomLogo,
+    url: "https://theenglishroom.edu.uy/",
+  },
+  {
+    name: "RDA y Asociados",
+    type: "logo",
+    src: rdaLogo,
+    invert: true,
+    url: "https://rdayasociados.com/",
+  },
 ];
 
 export const ClientsSection = () => {
