@@ -8,14 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Bots from "./pages/Bots";
-import BotDetail from "./pages/BotDetail";
 import Team from "./pages/Team";
 import Users from "./pages/Users";
-import Stats from "./pages/Stats";
 import Catalog from "./pages/Catalog";
 import Clients from "./pages/Clients";
-import BotsClientes from "./pages/BotsClientes";
 import WebsClientes from "./pages/WebsClientes";
 import NotFound from "./pages/NotFound";
 
@@ -74,22 +70,6 @@ const App = () => (
             }
           />
           <Route
-            path="/bots"
-            element={
-              <ProtectedRoute>
-                <Bots />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bots/:id"
-            element={
-              <ProtectedRoute>
-                <BotDetail />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/team"
             element={
               <ProtectedRoute>
@@ -105,14 +85,7 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/stats"
-            element={
-              <ProtectedRoute>
-                <Stats />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/catalogo"
             element={
@@ -126,14 +99,6 @@ const App = () => (
             element={
               <ProtectedRoute>
                 <Clients />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/bots-clientes"
-            element={
-              <ProtectedRoute>
-                <BotsClientes />
               </ProtectedRoute>
             }
           />
