@@ -8,14 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Bots from "./pages/Bots";
-import BotDetail from "./pages/BotDetail";
 import Team from "./pages/Team";
 import Users from "./pages/Users";
-import Stats from "./pages/Stats";
 import Catalog from "./pages/Catalog";
 import Clients from "./pages/Clients";
-import BotsClientes from "./pages/BotsClientes";
 import WebsClientes from "./pages/WebsClientes";
 import NotFound from "./pages/NotFound";
 
