@@ -16,7 +16,7 @@ type Client = {
   name: string;
   url: string;
 } & (
-  | { type: "logo"; src: string; invert?: boolean }
+  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" }
   | { type: "wordmark" }
 );
 
@@ -26,12 +26,14 @@ const clients: Client[] = [
     type: "logo",
     src: consteelLogo,
     invert: true,
+    size: "xl",
     url: "https://www.consteelconstrucciones.com/",
   },
   {
     name: "Shinrinyoku Uruguay",
     type: "logo",
     src: shinrinyokuLogo,
+    size: "xl",
     url: "https://shinrinyoku.uy",
   },
   {
@@ -43,6 +45,7 @@ const clients: Client[] = [
     name: "The English Room",
     type: "logo",
     src: theEnglishRoomLogo,
+    size: "xl",
     url: "https://theenglishroom.edu.uy/",
   },
   {
@@ -106,7 +109,13 @@ export const ClientsSection = () => {
                   src={client.src}
                   alt={`Logo ${client.name}`}
                   loading="lazy"
-                  className={`h-16 sm:h-20 object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
+                  className={`${
+                    client.size === "xl"
+                      ? "h-24 sm:h-32"
+                      : client.size === "lg"
+                        ? "h-20 sm:h-24"
+                        : "h-16 sm:h-20"
+                  } object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
                     client.invert ? "[filter:brightness(0)_invert(1)]" : ""
                   }`}
                 />
