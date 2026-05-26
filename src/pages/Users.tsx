@@ -65,7 +65,7 @@ const Users = () => {
 
   const loadData = async () => {
     setIsLoading(true);
-    await Promise.all([loadUsers(), loadBots()]);
+    await loadUsers();
     setIsLoading(false);
   };
 
@@ -90,39 +90,20 @@ const Users = () => {
       return;
     }
 
-    // Get bot access
-    const { data: accessData } = await supabase
-      .from("user_bot_access")
-      .select("user_id, bot_id, bots(name)");
-
     // Combine data
     const usersList: User[] = rolesData.map((roleEntry: any) => {
       const profile = profilesData.find((p: any) => p.user_id === roleEntry.user_id);
-      const access = accessData?.find((a: any) => a.user_id === roleEntry.user_id);
-      
       return {
         id: roleEntry.user_id,
         email: profile?.email || "Sin email",
         name: profile?.name || null,
         role: roleEntry.role,
-        assigned_bot_id: access?.bot_id || null,
-        assigned_bot_name: (access?.bots as any)?.name || null,
       };
     });
 
     setUsers(usersList);
   };
 
-  const loadBots = async () => {
-    const { data } = await supabase
-      .from("bots")
-      .select("id, name")
-      .order("name");
-
-    if (data) {
-      setBots(data);
-    }
-  };
 
   const handleCreateUser = async () => {
     if (!email || !password) {
