@@ -138,7 +138,7 @@ export const ClientsSection = () => {
       </div>
 
       <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <DialogContent className="max-w-[98vw] w-[98vw] h-[92vh] md:max-w-[520px] md:w-[520px] md:h-[860px] p-0 gap-0 flex flex-col overflow-hidden">
+        <DialogContent className="max-w-[98vw] w-[98vw] h-[92vh] md:max-w-[90vw] md:w-[90vw] md:h-[90vh] p-0 gap-0 flex flex-col overflow-hidden">
           <DialogHeader className="px-6 py-3 border-b border-border/50 flex-row items-center justify-between space-y-0">
             <DialogTitle className="text-base font-medium">
               {active?.name}
