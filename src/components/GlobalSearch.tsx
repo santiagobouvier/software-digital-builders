@@ -75,30 +75,6 @@ export function GlobalSearch() {
       );
     }
 
-    if (botsRes.data) {
-      setBots(
-        botsRes.data.map((b) => ({
-          id: b.id,
-          label: b.name,
-          sublabel: b.status === "active" ? "Activo" : "Pausado",
-          icon: <Bot className="h-4 w-4 text-success" />,
-          path: `/bots/${b.id}`,
-        }))
-      );
-    }
-
-    if (botInstancesRes.data) {
-      setBotInstances(
-        (botInstancesRes.data as any[]).map((bi) => ({
-          id: bi.id,
-          label: `${bi.product?.name || "Bot"} → ${bi.client?.company_name || "Cliente"}`,
-          sublabel: bi.status,
-          icon: <MessageCircle className="h-4 w-4 text-warning" />,
-          path: `/bots-clientes`,
-        }))
-      );
-    }
-
     if (webInstancesRes.data) {
       setWebInstances(
         (webInstancesRes.data as any[]).map((wi) => ({
@@ -146,15 +122,11 @@ export function GlobalSearch() {
   };
 
   const filteredClients = filterResults(clients);
-  const filteredBots = filterResults(bots);
-  const filteredBotInstances = filterResults(botInstances);
   const filteredWebInstances = filterResults(webInstances);
   const filteredProducts = filterResults(products);
 
   const hasResults =
     filteredClients.length +
-      filteredBots.length +
-      filteredBotInstances.length +
       filteredWebInstances.length +
       filteredProducts.length >
     0;
@@ -175,7 +147,7 @@ export function GlobalSearch() {
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
-          placeholder="Buscar clientes, bots, productos..."
+          placeholder="Buscar clientes, webs, productos..."
           value={query}
           onValueChange={setQuery}
         />
@@ -203,58 +175,6 @@ export function GlobalSearch() {
                 </CommandItem>
               ))}
             </CommandGroup>
-          )}
-
-          {filteredBots.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading="Bots técnicos">
-                {filteredBots.slice(0, 5).map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    value={item.label}
-                    onSelect={() => handleSelect(item.path)}
-                    className="gap-3"
-                  >
-                    {item.icon}
-                    <div className="flex flex-col min-w-0">
-                      <span className="truncate">{item.label}</span>
-                      {item.sublabel && (
-                        <span className="text-xs text-muted-foreground truncate">
-                          {item.sublabel}
-                        </span>
-                      )}
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
-          )}
-
-          {filteredBotInstances.length > 0 && (
-            <>
-              <CommandSeparator />
-              <CommandGroup heading="Instancias de bots">
-                {filteredBotInstances.slice(0, 5).map((item) => (
-                  <CommandItem
-                    key={item.id}
-                    value={item.label}
-                    onSelect={() => handleSelect(item.path)}
-                    className="gap-3"
-                  >
-                    {item.icon}
-                    <div className="flex flex-col min-w-0">
-                      <span className="truncate">{item.label}</span>
-                      {item.sublabel && (
-                        <span className="text-xs text-muted-foreground truncate">
-                          {item.sublabel}
-                        </span>
-                      )}
-                    </div>
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </>
           )}
 
           {filteredWebInstances.length > 0 && (
