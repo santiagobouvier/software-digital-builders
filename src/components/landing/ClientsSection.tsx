@@ -12,7 +12,6 @@ import shinrinyokuLogo from "@/assets/clients/shinrinyoku.png";
 import theEnglishRoomLogo from "@/assets/clients/the-english-room.svg";
 import rdaLogo from "@/assets/clients/rda-logo.png";
 import tabeiraLogo from "@/assets/clients/tabeira-de-leon.svg";
-import tarantoLogo from "@/assets/clients/taranto.svg";
 
 type Client = {
   name: string;
