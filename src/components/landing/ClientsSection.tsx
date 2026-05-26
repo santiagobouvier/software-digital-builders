@@ -11,6 +11,7 @@ import consteelLogo from "@/assets/clients/consteel.png";
 import shinrinyokuLogo from "@/assets/clients/shinrinyoku.png";
 import theEnglishRoomLogo from "@/assets/clients/the-english-room.svg";
 import rdaLogo from "@/assets/clients/rda-logo.png";
+import tabeiraLogo from "@/assets/clients/tabeira-de-leon.webp";
 
 type Client = {
   name: string;
@@ -54,6 +55,13 @@ const clients: Client[] = [
     src: rdaLogo,
     invert: true,
     url: "https://rdayasociados.com/",
+  },
+  {
+    name: "Tabeira de León & Asoc.",
+    type: "logo",
+    src: tabeiraLogo,
+    size: "xl",
+    url: "https://tabeiradeleon.com/",
   },
 ];
 
