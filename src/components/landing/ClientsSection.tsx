@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import consteelLogo from "@/assets/clients/consteel.png";
 import shinrinyokuLogo from "@/assets/clients/shinrinyoku.png";
+import theEnglishRoomLogo from "@/assets/clients/the-english-room.webp";
+import rdaLogo from "@/assets/clients/rda-logo.png";
 
 type Client = {
   name: string;
@@ -36,6 +38,19 @@ const clients: Client[] = [
     name: "Quevedo Arte",
     type: "wordmark",
     url: "https://quevedoarte.com",
+  },
+  {
+    name: "The English Room",
+    type: "logo",
+    src: theEnglishRoomLogo,
+    url: "https://theenglishroom.edu.uy/",
+  },
+  {
+    name: "RDA y Asociados",
+    type: "logo",
+    src: rdaLogo,
+    invert: true,
+    url: "https://rdayasociados.com/",
   },
 ];
 
