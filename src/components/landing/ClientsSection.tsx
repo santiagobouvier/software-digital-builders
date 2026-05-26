@@ -57,10 +57,20 @@ const clients: Client[] = [
 export const ClientsSection = () => {
   const [active, setActive] = useState<Client | null>(null);
   const [view, setView] = useState<"desktop" | "mobile">("desktop");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (active) setView("desktop");
-  }, [active]);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    if (active) setView(isMobile ? "mobile" : "desktop");
+  }, [active, isMobile]);
+
+
 
 
 
