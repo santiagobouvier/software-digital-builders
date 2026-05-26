@@ -36,7 +36,7 @@ const Login = () => {
         .maybeSingle();
 
       if (roleData?.role === "client") {
-        navigate("/stats");
+        navigate("/dashboard");
       } else {
         navigate("/dashboard");
       }
