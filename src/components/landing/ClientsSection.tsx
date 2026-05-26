@@ -57,10 +57,20 @@ const clients: Client[] = [
 export const ClientsSection = () => {
   const [active, setActive] = useState<Client | null>(null);
   const [view, setView] = useState<"desktop" | "mobile">("desktop");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (active) setView("desktop");
-  }, [active]);
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    if (active) setView(isMobile ? "mobile" : "desktop");
+  }, [active, isMobile]);
+
+
 
 
 
@@ -119,43 +129,45 @@ export const ClientsSection = () => {
       </div>
 
       <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <DialogContent className="max-w-[98vw] w-[98vw] h-[92vh] p-0 gap-0 flex flex-col overflow-hidden sm:max-w-[98vw]">
+        <DialogContent className="max-w-[98vw] w-[98vw] h-[92vh] md:max-w-[520px] md:w-[520px] md:h-[860px] p-0 gap-0 flex flex-col overflow-hidden">
           <DialogHeader className="px-6 py-3 border-b border-border/50 flex-row items-center justify-between space-y-0">
             <DialogTitle className="text-base font-medium">
               {active?.name}
             </DialogTitle>
-            <div className="inline-flex items-center rounded-md border border-border/60 bg-background/50 p-1 mr-8">
-              <button
-                onClick={() => setView("desktop")}
-                aria-label="Vista desktop"
-                aria-pressed={view === "desktop"}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  view === "desktop"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Monitor className="h-3.5 w-3.5" />
-                Desktop
-              </button>
-              <button
-                onClick={() => setView("mobile")}
-                aria-label="Vista mobile"
-                aria-pressed={view === "mobile"}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
-                  view === "mobile"
-                    ? "bg-primary text-primary-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Smartphone className="h-3.5 w-3.5" />
-                Mobile
-              </button>
-            </div>
+            {!isMobile && (
+              <div className="hidden md:inline-flex items-center rounded-md border border-border/60 bg-background/50 p-1 mr-8">
+                <button
+                  onClick={() => setView("desktop")}
+                  aria-label="Vista desktop"
+                  aria-pressed={view === "desktop"}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                    view === "desktop"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Monitor className="h-3.5 w-3.5" />
+                  Desktop
+                </button>
+                <button
+                  onClick={() => setView("mobile")}
+                  aria-label="Vista mobile"
+                  aria-pressed={view === "mobile"}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium transition-colors ${
+                    view === "mobile"
+                      ? "bg-primary text-primary-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  <Smartphone className="h-3.5 w-3.5" />
+                  Mobile
+                </button>
+              </div>
+            )}
           </DialogHeader>
           <div className="flex-1 bg-background overflow-auto flex items-start justify-center">
             {active && (
-              view === "desktop" ? (
+              view === "desktop" && !isMobile ? (
                 <iframe
                   key={`${active.url}-desktop`}
                   src={active.url}
@@ -164,22 +176,19 @@ export const ClientsSection = () => {
                   sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
                 />
               ) : (
-                <div className="py-6">
-                  <div className="w-[390px] h-[780px] rounded-[2rem] border-[10px] border-foreground/80 overflow-hidden shadow-2xl bg-background">
-                    <iframe
-                      key={`${active.url}-mobile`}
-                      src={active.url}
-                      title={active.name}
-                      className="w-full h-full border-0"
-                      sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-                    />
-                  </div>
-                </div>
+                <iframe
+                  key={`${active.url}-mobile`}
+                  src={active.url}
+                  title={active.name}
+                  className="w-full h-full border-0"
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                />
               )
             )}
           </div>
         </DialogContent>
       </Dialog>
+
     </section>
   );
 };
