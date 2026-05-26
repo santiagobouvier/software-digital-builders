@@ -16,7 +16,7 @@ type Client = {
   name: string;
   url: string;
 } & (
-  | { type: "logo"; src: string; invert?: boolean }
+  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" }
   | { type: "wordmark" }
 );
 
@@ -26,12 +26,14 @@ const clients: Client[] = [
     type: "logo",
     src: consteelLogo,
     invert: true,
+    size: "xl",
     url: "https://www.consteelconstrucciones.com/",
   },
   {
     name: "Shinrinyoku Uruguay",
     type: "logo",
     src: shinrinyokuLogo,
+    size: "xl",
     url: "https://shinrinyoku.uy",
   },
   {
@@ -43,6 +45,7 @@ const clients: Client[] = [
     name: "The English Room",
     type: "logo",
     src: theEnglishRoomLogo,
+    size: "xl",
     url: "https://theenglishroom.edu.uy/",
   },
   {
