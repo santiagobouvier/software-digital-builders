@@ -2,17 +2,13 @@ import { useState } from "react";
 import {
   Globe,
   Smartphone,
-  MessageSquare,
-  Building2,
   Code2,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { ServiceWhatsAppDialog } from "./ServiceWhatsAppDialog";
 import { ServiceWebRapidaDialog } from "./ServiceWebRapidaDialog";
 import { ServiceWebAutogestionableDialog } from "./ServiceWebAutogestionableDialog";
-import { ServiceBotInternoDialog } from "./ServiceBotInternoDialog";
 import { ServiceSoftwareDialog } from "./ServiceSoftwareDialog";
 
 const services = [
@@ -29,20 +25,6 @@ const services = [
     description:
       "Administra tu propio contenido sin depender de nadie. Actualiza textos, imágenes y secciones cuando quieras.",
     dialogId: "web-autogestionable" as const,
-  },
-  {
-    icon: MessageSquare,
-    title: "Bots para WhatsApp",
-    description:
-      "Automatiza la atención al cliente en WhatsApp. Responde consultas, capta leads y mejora los tiempos de respuesta.",
-    dialogId: "whatsapp" as const,
-  },
-  {
-    icon: Building2,
-    title: "Bots internos para empresas",
-    description:
-      "Automatiza procesos internos, notificaciones y flujos de trabajo. Soluciones adaptadas a tu operación.",
-    dialogId: "bot-interno" as const,
   },
   {
     icon: Code2,
@@ -231,20 +213,12 @@ export const ServicesSection = () => {
         )}
       </div>
 
-      <ServiceWhatsAppDialog
-        open={openDialog === "whatsapp"}
-        onOpenChange={(open) => !open && setOpenDialog(null)}
-      />
       <ServiceWebRapidaDialog
         open={openDialog === "web-rapida"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
       <ServiceWebAutogestionableDialog
         open={openDialog === "web-autogestionable"}
-        onOpenChange={(open) => !open && setOpenDialog(null)}
-      />
-      <ServiceBotInternoDialog
-        open={openDialog === "bot-interno"}
         onOpenChange={(open) => !open && setOpenDialog(null)}
       />
       <ServiceSoftwareDialog
