@@ -271,9 +271,6 @@ const Users = () => {
                         </Badge>
                       </ResponsiveTableCell>
                       <ResponsiveTableCell>
-                        {user.assigned_bot_name || "-"}
-                      </ResponsiveTableCell>
-                      <ResponsiveTableCell>
                         <Button
                           variant="ghost"
                           size="icon"
