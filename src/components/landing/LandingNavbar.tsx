@@ -11,6 +11,7 @@ const navLinks = [
   { label: "Servicios", href: "#servicios" },
   { label: "Plataforma", href: "#plataforma" },
   { label: "Seguridad", href: "#seguridad" },
+  { label: "Clientes", href: "#clientes" },
   { label: "Contacto", href: "#contacto" },
 ];
 
