@@ -258,11 +258,6 @@ const Users = () => {
                               </Button>
                             }
                           />
-                          {user.assigned_bot_name && (
-                            <MobileCardRow label="Bot asignado">
-                              <span className="font-medium">{user.assigned_bot_name}</span>
-                            </MobileCardRow>
-                          )}
                         </>
                       }
                     >
