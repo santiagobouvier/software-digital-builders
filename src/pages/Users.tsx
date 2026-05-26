@@ -192,7 +192,7 @@ const Users = () => {
   }
 
   if (!isProfessional) {
-    return <Navigate to="/stats" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return (
