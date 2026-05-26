@@ -348,23 +348,6 @@ const Users = () => {
                 </Select>
               </div>
 
-              {selectedRole === "client" && (
-                <div className="space-y-2">
-                  <Label>Bot asignado *</Label>
-                  <Select value={selectedBotId} onValueChange={setSelectedBotId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona un bot" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {bots.map((bot) => (
-                        <SelectItem key={bot.id} value={bot.id}>
-                          {bot.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
             </div>
 
             <DialogFooter>
