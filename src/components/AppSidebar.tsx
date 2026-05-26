@@ -110,18 +110,17 @@ export function AppSidebar({
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { path: "/bots", label: "Bots", icon: Bot },
     ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
     ...(isProfessional
       ? [
           { path: "/users", label: "Usuarios", icon: UserCog },
           { path: "/catalogo", label: "Catálogo", icon: Package },
           { path: "/clientes", label: "Clientes", icon: Building2 },
-          { path: "/bots-clientes", label: "Bots Clientes", icon: MessageCircle },
           { path: "/webs-clientes", label: "Webs Clientes", icon: Globe },
         ]
       : []),
   ];
+
 
   const isActive = (path: string) =>
     location.pathname === path || location.pathname.startsWith(path + "/");
