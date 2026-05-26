@@ -12,13 +12,12 @@ import shinrinyokuLogo from "@/assets/clients/shinrinyoku.png";
 import theEnglishRoomLogo from "@/assets/clients/the-english-room.svg";
 import rdaLogo from "@/assets/clients/rda-logo.png";
 import tabeiraLogo from "@/assets/clients/tabeira-de-leon.svg";
-import tarantoLogo from "@/assets/clients/taranto.svg";
 
 type Client = {
   name: string;
   url: string;
 } & (
-  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" }
+  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" | "2xl" }
   | { type: "wordmark" }
 );
 
@@ -61,15 +60,9 @@ const clients: Client[] = [
     name: "Tabeira de León & Asoc.",
     type: "logo",
     src: tabeiraLogo,
-    size: "xl",
+    size: "2xl",
+    invert: true,
     url: "https://tabeiradeleon.com/",
-  },
-  {
-    name: "Taranto Desarrollo Inmobiliario",
-    type: "logo",
-    src: tarantoLogo,
-    size: "xl",
-    url: "https://www.taranto.com.uy/",
   },
 ];
 
@@ -126,11 +119,13 @@ export const ClientsSection = () => {
                   alt={`Logo ${client.name}`}
                   loading="lazy"
                   className={`${
-                    client.size === "xl"
-                      ? "h-24 sm:h-32"
-                      : client.size === "lg"
-                        ? "h-20 sm:h-24"
-                        : "h-16 sm:h-20"
+                    client.size === "2xl"
+                      ? "h-32 sm:h-44"
+                      : client.size === "xl"
+                        ? "h-24 sm:h-32"
+                        : client.size === "lg"
+                          ? "h-20 sm:h-24"
+                          : "h-16 sm:h-20"
                   } object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
                     client.invert ? "[filter:brightness(0)_invert(1)]" : ""
                   }`}
