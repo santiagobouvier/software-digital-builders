@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { Monitor, Smartphone } from "lucide-react";
 import {
   Dialog,
   DialogContent,
