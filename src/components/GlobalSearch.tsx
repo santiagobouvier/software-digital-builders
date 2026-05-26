@@ -12,10 +12,8 @@ import {
 } from "@/components/ui/command";
 import {
   Building2,
-  Bot,
   Package,
   Globe,
-  MessageCircle,
   Search,
 } from "lucide-react";
 
@@ -31,8 +29,6 @@ export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [clients, setClients] = useState<SearchResult[]>([]);
-  const [bots, setBots] = useState<SearchResult[]>([]);
-  const [botInstances, setBotInstances] = useState<SearchResult[]>([]);
   const [webInstances, setWebInstances] = useState<SearchResult[]>([]);
   const [products, setProducts] = useState<SearchResult[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -58,13 +54,9 @@ export function GlobalSearch() {
   }, [open]);
 
   const loadAllData = async () => {
-    const [clientsRes, botsRes, botInstancesRes, webInstancesRes, productsRes] =
+    const [clientsRes, webInstancesRes, productsRes] =
       await Promise.all([
         supabase.from("clients").select("id, company_name, contact_name, status"),
-        supabase.from("bots").select("id, name, status"),
-        supabase
-          .from("bot_instances")
-          .select("id, status, notes, client:clients(company_name), product:products(name)"),
         supabase
           .from("web_instances")
           .select("id, domain, status, client:clients(company_name), product:products(name)"),
