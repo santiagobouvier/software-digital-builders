@@ -97,18 +97,10 @@ export const ClientsSection = () => {
 
       <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
         <DialogContent className="max-w-6xl w-[95vw] h-[85vh] p-0 gap-0 flex flex-col overflow-hidden">
-          <DialogHeader className="px-6 py-4 border-b border-border/50 flex-row items-center justify-between space-y-0">
+          <DialogHeader className="px-6 py-4 border-b border-border/50 flex-row items-center space-y-0">
             <DialogTitle className="text-base font-medium">
               {active?.name}
             </DialogTitle>
-            {active && (
-              <Button asChild variant="outline" size="sm" className="mr-8">
-                <a href={active.url} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-3.5 w-3.5 mr-2" />
-                  Abrir en nueva pestaña
-                </a>
-              </Button>
-            )}
           </DialogHeader>
           <div className="flex-1 bg-background overflow-hidden">
             {active && (
