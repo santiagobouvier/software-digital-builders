@@ -103,14 +103,6 @@ const App = () => (
             }
           />
           <Route
-            path="/bots-clientes"
-            element={
-              <ProtectedRoute>
-                <BotsClientes />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/webs-clientes"
             element={
               <ProtectedRoute>
