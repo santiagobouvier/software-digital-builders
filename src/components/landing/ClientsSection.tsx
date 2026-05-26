@@ -120,9 +120,9 @@ export const ClientsSection = () => {
                   loading="lazy"
                   className={`${
                   client.size === "3xl"
-                      ? "h-28 sm:h-80"
+                      ? "h-32 sm:h-40"
                       : client.size === "2xl"
-                        ? "h-48 sm:h-64"
+                        ? "h-28 sm:h-36"
                         : client.size === "xl"
                           ? "h-24 sm:h-32"
                           : client.size === "lg"
