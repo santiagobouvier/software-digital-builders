@@ -226,7 +226,7 @@ const Users = () => {
                     <ResponsiveTableHead>Email</ResponsiveTableHead>
                     <ResponsiveTableHead>Nombre</ResponsiveTableHead>
                     <ResponsiveTableHead>Rol</ResponsiveTableHead>
-                    <ResponsiveTableHead>Bot asignado</ResponsiveTableHead>
+                    
                     <ResponsiveTableHead className="w-[80px]"></ResponsiveTableHead>
                   </ResponsiveTableRow>
                 </ResponsiveTableHeader>
