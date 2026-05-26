@@ -115,15 +115,6 @@ const Users = () => {
       return;
     }
 
-    if (selectedRole === "client" && !selectedBotId) {
-      toast({
-        title: "Error",
-        description: "Selecciona un bot para el cliente",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSaving(true);
 
     try {
@@ -134,7 +125,6 @@ const Users = () => {
           password,
           name,
           role: selectedRole,
-          botId: selectedRole === "client" ? selectedBotId : null,
         },
       });
 
@@ -151,7 +141,6 @@ const Users = () => {
       setPassword("");
       setName("");
       setSelectedRole("client");
-      setSelectedBotId("");
       setIsDialogOpen(false);
 
       // Reload users
