@@ -41,19 +41,11 @@ interface User {
   email: string;
   name: string | null;
   role: "professional" | "client";
-  assigned_bot_id: string | null;
-  assigned_bot_name: string | null;
-}
-
-interface Bot {
-  id: string;
-  name: string;
 }
 
 const Users = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
   const [users, setUsers] = useState<User[]>([]);
-  const [bots, setBots] = useState<Bot[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -63,7 +55,7 @@ const Users = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [selectedRole, setSelectedRole] = useState<"professional" | "client">("client");
-  const [selectedBotId, setSelectedBotId] = useState<string>("");
+
 
   useEffect(() => {
     if (isProfessional) {
