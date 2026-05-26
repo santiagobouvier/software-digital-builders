@@ -12,6 +12,7 @@ import shinrinyokuLogo from "@/assets/clients/shinrinyoku.png";
 import theEnglishRoomLogo from "@/assets/clients/the-english-room.svg";
 import rdaLogo from "@/assets/clients/rda-logo.png";
 import tabeiraLogo from "@/assets/clients/tabeira-de-leon.webp";
+import tarantoLogo from "@/assets/clients/taranto.png";
 
 type Client = {
   name: string;
@@ -62,6 +63,13 @@ const clients: Client[] = [
     src: tabeiraLogo,
     size: "xl",
     url: "https://tabeiradeleon.com/",
+  },
+  {
+    name: "Taranto Desarrollo Inmobiliario",
+    type: "logo",
+    src: tarantoLogo,
+    size: "xl",
+    url: "https://www.taranto.com.uy/",
   },
 ];
 
