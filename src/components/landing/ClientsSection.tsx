@@ -54,6 +54,7 @@ const clients: Client[] = [
     type: "logo",
     src: rdaLogo,
     invert: true,
+    size: "sm",
     url: "https://rdayasociados.com/",
   },
   {
