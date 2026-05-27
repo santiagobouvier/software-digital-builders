@@ -56,7 +56,7 @@ export const HeroSection = () => {
               y: [0, -15, 0],
               x: [0, 8, 0],
             }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[60%] right-[5%] w-[150px] h-[150px] opacity-15"
@@ -67,7 +67,7 @@ export const HeroSection = () => {
               y: [0, 12, 0],
               x: [0, -6, 0],
             }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute bottom-[20%] left-[5%] w-[120px] h-[120px] opacity-10"
@@ -77,7 +77,7 @@ export const HeroSection = () => {
             animate={{ 
               y: [0, -10, 0],
             }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}
