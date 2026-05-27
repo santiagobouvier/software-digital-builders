@@ -108,10 +108,10 @@ export const SelfServiceSection = () => {
             {/* Visual */}
             <motion.div 
               className="relative"
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 25 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, ease: "easeOut", delay: 0.1 }}
             >
               {/* Glow behind */}
               <motion.div 
@@ -123,13 +123,13 @@ export const SelfServiceSection = () => {
                   scale: [1, 1.05, 1],
                   opacity: [0.2, 0.35, 0.2],
                 }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               />
               
               <motion.div 
                 className="relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6"
                 animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 {/* Mock interface elements */}
                 <div className="space-y-4">
