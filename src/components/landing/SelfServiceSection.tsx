@@ -39,14 +39,14 @@ export const SelfServiceSection = () => {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       />
       <motion.div 
         className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+        transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
       />
       
       {/* Corner element */}
@@ -55,7 +55,7 @@ export const SelfServiceSection = () => {
         initial={{ opacity: 0, scale: 0 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4, type: "spring" }}
+        transition={{ duration: 0.3, delay: 0.15, type: "spring" }}
       >
         <div className="w-12 h-12 border-l border-b border-border/30 rounded-bl-xl" />
       </motion.div>
