@@ -43,18 +43,18 @@ export const SecuritySection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.08,
-        delayChildren: 0.1,
+        staggerChildren: 0.04,
+        delayChildren: 0,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
+    hidden: { opacity: 0, x: -15 },
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.35, type: "tween" as const },
+      transition: { duration: 0.2, type: "tween" as const },
     },
   };
 
