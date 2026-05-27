@@ -85,7 +85,7 @@ export const AboutSection = () => {
                   opacity: [0.3, 0.5, 0.3],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 2.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
