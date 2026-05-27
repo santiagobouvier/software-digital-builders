@@ -15,18 +15,18 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2,
+      staggerChildren: 0.04,
+      delayChildren: 0.05,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
+  hidden: { opacity: 0, x: -15 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.4, type: "tween" as const },
+    transition: { duration: 0.25, type: "tween" as const },
   },
 };
 
