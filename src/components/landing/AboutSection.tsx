@@ -128,9 +128,9 @@ export const AboutSection = () => {
               {/* Logo with floating effect (kept on mobile) */}
               <motion.div
                 className="relative"
-                animate={{ y: [0, -15, 0] }}
+                animate={{ y: [0, -12, 0] }}
                 transition={{
-                  duration: 6,
+                  duration: 3.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
