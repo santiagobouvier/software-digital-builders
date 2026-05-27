@@ -151,10 +151,10 @@ export const SelfServiceSection = () => {
                     <motion.div
                       key={i}
                       className="flex items-center justify-between p-3 bg-secondary/40 rounded-lg border border-border/30 hover:border-primary/30 transition-colors duration-200 cursor-pointer"
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
+                      transition={{ duration: 0.25, delay: 0.15 + i * 0.05 }}
                       whileHover={{ scale: 1.02, x: 4 }}
                     >
                       <div className="flex items-center gap-3">
