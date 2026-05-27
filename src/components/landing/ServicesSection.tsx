@@ -77,7 +77,7 @@ export const ServicesSection = () => {
             y: ["-50%", "-45%", "-50%"],
             opacity: [0.1, 0.2, 0.1],
           }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
         />
       )}
 
