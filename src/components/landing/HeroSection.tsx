@@ -41,7 +41,7 @@ export const HeroSection = () => {
           y: [0, -20, 0],
           scale: [1, 1.02, 1],
         }}
-        transition={{ ...floatTransition, duration: reduceMotion ? 8 : 6 }}
+        transition={{ ...floatTransition, duration: reduceMotion ? 5 : 4 }}
       />
 
       {/* Floating orbs - only on desktop */}
