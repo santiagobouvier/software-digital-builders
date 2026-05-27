@@ -17,7 +17,7 @@ type Client = {
   name: string;
   url: string;
 } & (
-  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" | "2xl" | "3xl" }
+  | { type: "logo"; src: string; invert?: boolean; size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" }
   | { type: "wordmark" }
 );
 
@@ -54,6 +54,7 @@ const clients: Client[] = [
     type: "logo",
     src: rdaLogo,
     invert: true,
+    size: "sm",
     url: "https://rdayasociados.com/",
   },
   {
@@ -120,14 +121,16 @@ export const ClientsSection = () => {
                   loading="lazy"
                   className={`${
                   client.size === "3xl"
-                      ? "h-32 sm:h-40"
+                      ? "h-32 sm:h-48"
                       : client.size === "2xl"
                         ? "h-28 sm:h-36"
                         : client.size === "xl"
                           ? "h-24 sm:h-32"
                           : client.size === "lg"
                             ? "h-20 sm:h-24"
-                            : "h-16 sm:h-20"
+                            : client.size === "sm"
+                              ? "h-12 sm:h-16"
+                              : "h-16 sm:h-20"
                   } object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
                     client.invert ? "[filter:brightness(0)_invert(1)]" : ""
                   }`}
