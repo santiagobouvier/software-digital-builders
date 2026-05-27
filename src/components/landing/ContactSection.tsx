@@ -137,10 +137,10 @@ export const ContactSection = () => {
           {/* Contact Info */}
           <motion.div 
             className="flex flex-col gap-4"
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: 0.08 }}
           >
             {/* Email */}
             <motion.a
