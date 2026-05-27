@@ -70,8 +70,9 @@ export const PlatformSection = () => {
           x: [0, 30, 0],
           opacity: [0.15, 0.25, 0.15],
         }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
+      
       
       {/* Static grid */}
       <div 
