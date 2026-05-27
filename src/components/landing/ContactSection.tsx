@@ -175,7 +175,7 @@ export const ContactSection = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
             >
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Respondemos en menos de 24 horas hábiles. Contanos tu idea y te
