@@ -146,15 +146,15 @@ export const HeroSection = () => {
 
           <motion.h1 
             className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
             Soluciones{" "}
             <motion.span 
               className="text-primary relative inline-block"
               animate={reduceMotion ? {} : { y: [0, -4, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             >
               tecnológicas
               <span className="absolute -inset-1 bg-primary/20 rounded-lg -z-10" />
@@ -164,18 +164,18 @@ export const HeroSection = () => {
 
           <motion.p 
             className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.25, ease: "easeOut", delay: 0.05 }}
           >
             Páginas web, bots de atención automática y software a medida. Tecnología práctica que funciona.
           </motion.p>
 
           <motion.div 
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.25, ease: "easeOut", delay: 0.1 }}
           >
             <Button asChild size="lg" className="min-w-[180px] h-12 text-base font-semibold shadow-glow hover-scale">
               <Link to="/login">
