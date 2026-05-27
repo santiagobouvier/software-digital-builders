@@ -88,27 +88,27 @@ export const HeroSection = () => {
           <motion.div 
             className="absolute top-[25%] left-[20%] w-1.5 h-1.5 rounded-full bg-primary/60"
             animate={{ y: [0, -8, 0], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[40%] right-[25%] w-2 h-2 rounded-full bg-primary/40"
             animate={{ y: [0, 10, 0], opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute bottom-[30%] left-[35%] w-1 h-1 rounded-full bg-white/50"
             animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[50%] left-[8%] w-1 h-1 rounded-full bg-primary/50"
             animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[35%] right-[12%] w-1.5 h-1.5 rounded-full bg-white/30"
             animate={{ y: [0, 8, 0], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}
