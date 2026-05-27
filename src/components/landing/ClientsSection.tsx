@@ -107,52 +107,84 @@ export const ClientsSection = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex flex-wrap items-center justify-center gap-x-16 gap-y-12 sm:gap-x-24 max-w-5xl mx-auto"
         >
-          {clients.map((client, idx) => {
-            const pairStart = client.name === "RDA y Asociados";
-            const pairEnd = client.name === "Tabeira de León & Asoc.";
+          {clients.map((client) => {
+            const isPair = client.name === "RDA y Asociados" || client.name === "Tabeira de León & Asoc.";
             const button = (
-            <button
-              key={client.name}
-              onClick={() => setActive(client)}
-              aria-label={`Ver sitio de ${client.name}`}
-              className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg p-2"
-            >
-              {client.type === "logo" ? (
-                <img
-                  src={client.src}
-                  alt={`Logo ${client.name}`}
-                  loading="lazy"
-                  className={`${
-                  client.size === "3xl"
-                      ? "h-40 sm:h-48"
-                      : client.size === "2xl"
-                        ? "h-28 sm:h-36"
-                        : client.size === "xl"
-                          ? "h-24 sm:h-32"
-                          : client.size === "lg"
-                            ? "h-20 sm:h-24"
-                            : client.size === "sm"
-                              ? "h-12 sm:h-16"
-                              : "h-16 sm:h-20"
-                  } object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
-                    client.invert ? "[filter:brightness(0)_invert(1)]" : ""
-                  }`}
-                />
-              ) : (
-                <span
-                  className="block text-4xl sm:text-5xl text-foreground/50 group-hover:text-foreground group-hover:scale-105 transition-all duration-300"
-                  style={{
-                    fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                    fontStyle: "italic",
-                  }}
+              <button
+                key={client.name}
+                onClick={() => setActive(client)}
+                aria-label={`Ver sitio de ${client.name}`}
+                className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg p-2"
+              >
+                {client.type === "logo" ? (
+                  <img
+                    src={client.src}
+                    alt={`Logo ${client.name}`}
+                    loading="lazy"
+                    className={`${
+                      client.size === "3xl"
+                        ? "h-40 sm:h-48"
+                        : client.size === "2xl"
+                          ? "h-28 sm:h-36"
+                          : client.size === "xl"
+                            ? "h-24 sm:h-32"
+                            : client.size === "lg"
+                              ? "h-20 sm:h-24"
+                              : client.size === "sm"
+                                ? "h-12 sm:h-16"
+                                : "h-16 sm:h-20"
+                    } object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
+                      client.invert ? "[filter:brightness(0)_invert(1)]" : ""
+                    }`}
+                  />
+                ) : (
+                  <span
+                    className="block text-4xl sm:text-5xl text-foreground/50 group-hover:text-foreground group-hover:scale-105 transition-all duration-300"
+                    style={{
+                      fontFamily: "'Cormorant Garamond', 'Playfair Display', serif",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Quevedo
+                  </span>
+                )}
+              </button>
+            );
+
+            // Render RDA only as part of the pair wrapper to keep them on same mobile row
+            if (client.name === "RDA y Asociados") return null;
+            if (client.name === "Tabeira de León & Asoc.") {
+              const rda = clients.find((c) => c.name === "RDA y Asociados")!;
+              return (
+                <div
+                  key="rda-tabeira-pair"
+                  className="flex basis-full sm:basis-auto items-center justify-center gap-x-8 sm:gap-x-24 sm:contents"
                 >
-                  Quevedo
-                </span>
-              )}
-            </button>
-          ))}
+                  <button
+                    onClick={() => setActive(rda)}
+                    aria-label={`Ver sitio de ${rda.name}`}
+                    className="group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 rounded-lg p-2"
+                  >
+                    {rda.type === "logo" && (
+                      <img
+                        src={rda.src}
+                        alt={`Logo ${rda.name}`}
+                        loading="lazy"
+                        className={`h-12 sm:h-16 object-contain opacity-50 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300 ${
+                          rda.invert ? "[filter:brightness(0)_invert(1)]" : ""
+                        }`}
+                      />
+                    )}
+                  </button>
+                  {button}
+                </div>
+              );
+            }
+            return button;
+          })}
+
         </motion.div>
       </div>
 
