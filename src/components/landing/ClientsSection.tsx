@@ -17,7 +17,7 @@ type Client = {
   name: string;
   url: string;
 } & (
-  | { type: "logo"; src: string; invert?: boolean; size?: "md" | "lg" | "xl" | "2xl" | "3xl" }
+  | { type: "logo"; src: string; invert?: boolean; size?: "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" }
   | { type: "wordmark" }
 );
 
