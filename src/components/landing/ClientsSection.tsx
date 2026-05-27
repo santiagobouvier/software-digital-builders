@@ -107,7 +107,10 @@ export const ClientsSection = () => {
           transition={{ duration: 0.6, ease: "easeOut" }}
           className="flex flex-wrap items-center justify-center gap-x-16 gap-y-12 sm:gap-x-24 max-w-5xl mx-auto"
         >
-          {clients.map((client) => (
+          {clients.map((client, idx) => {
+            const pairStart = client.name === "RDA y Asociados";
+            const pairEnd = client.name === "Tabeira de León & Asoc.";
+            const button = (
             <button
               key={client.name}
               onClick={() => setActive(client)}
@@ -121,7 +124,7 @@ export const ClientsSection = () => {
                   loading="lazy"
                   className={`${
                   client.size === "3xl"
-                      ? "h-32 sm:h-48"
+                      ? "h-40 sm:h-48"
                       : client.size === "2xl"
                         ? "h-28 sm:h-36"
                         : client.size === "xl"
