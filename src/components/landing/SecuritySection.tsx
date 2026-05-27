@@ -120,10 +120,10 @@ export const SecuritySection = () => {
         ) : (
           <motion.div 
             className="max-w-3xl mx-auto text-center mb-12 sm:mb-16"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
             <motion.div
               className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 border border-primary/30 mb-6"
