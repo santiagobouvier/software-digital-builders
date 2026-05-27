@@ -45,19 +45,19 @@ export const ServicesSection = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
-        delayChildren: 0.05,
+        staggerChildren: 0.03,
+        delayChildren: 0,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.98 },
+    hidden: { opacity: 0, y: 15, scale: 0.99 },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.35, type: "tween" as const },
+      transition: { duration: 0.2, type: "tween" as const },
     },
   };
 
