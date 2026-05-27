@@ -104,20 +104,20 @@ export const ClientsSection = () => {
     <section id="clientes" className="py-24 sm:py-32 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <motion.h2
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.3 }}
           className="text-center text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-foreground/90 mb-16"
         >
           Empresas que <span className="gradient-text">confían en nosotros</span>
         </motion.h2>
 
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
           className="flex flex-wrap items-center justify-center gap-x-16 gap-y-12 sm:gap-x-24 max-w-5xl mx-auto"
         >
           {clients.map((client) => {
