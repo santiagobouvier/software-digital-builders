@@ -65,10 +65,10 @@ export const SelfServiceSection = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
+              initial={{ opacity: 0, x: -25 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
             >
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 Autogestión
