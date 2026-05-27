@@ -106,7 +106,7 @@ export const AboutSection = () => {
                     className="absolute w-2 h-2 rounded-full bg-primary/60"
                     animate={{ rotate: 360 }}
                     transition={{
-                      duration: 8,
+                      duration: 5,
                       repeat: Infinity,
                       ease: "linear",
                     }}
@@ -116,7 +116,7 @@ export const AboutSection = () => {
                     className="absolute w-1.5 h-1.5 rounded-full bg-white/40"
                     animate={{ rotate: -360 }}
                     transition={{
-                      duration: 12,
+                      duration: 7,
                       repeat: Infinity,
                       ease: "linear",
                     }}
