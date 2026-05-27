@@ -7,9 +7,9 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 export const HeroSection = () => {
   const reduceMotion = useReducedMotion();
 
-  // Faster animations for PC
+  // Faster animations
   const floatTransition = {
-    duration: reduceMotion ? 6 : 5,
+    duration: reduceMotion ? 4 : 3,
     repeat: Infinity,
     ease: "easeInOut" as const,
   };
