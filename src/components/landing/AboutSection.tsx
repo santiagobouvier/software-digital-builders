@@ -19,16 +19,16 @@ export const AboutSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: reduceMotion ? 0 : 0.1, delayChildren: 0.1 },
+      transition: { staggerChildren: reduceMotion ? 0 : 0.05, delayChildren: 0 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: reduceMotion ? 0 : 30 },
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 15 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, type: "tween" as const, ease: "easeOut" as const },
+      transition: { duration: 0.25, type: "tween" as const, ease: "easeOut" as const },
     },
   };
 
