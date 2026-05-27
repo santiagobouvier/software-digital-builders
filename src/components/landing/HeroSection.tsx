@@ -7,9 +7,9 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 export const HeroSection = () => {
   const reduceMotion = useReducedMotion();
 
-  // Faster animations for PC
+  // Faster animations
   const floatTransition = {
-    duration: reduceMotion ? 6 : 5,
+    duration: reduceMotion ? 4 : 3,
     repeat: Infinity,
     ease: "easeInOut" as const,
   };
@@ -41,7 +41,7 @@ export const HeroSection = () => {
           y: [0, -20, 0],
           scale: [1, 1.02, 1],
         }}
-        transition={{ ...floatTransition, duration: reduceMotion ? 8 : 6 }}
+        transition={{ ...floatTransition, duration: reduceMotion ? 5 : 4 }}
       />
 
       {/* Floating orbs - only on desktop */}
@@ -56,7 +56,7 @@ export const HeroSection = () => {
               y: [0, -15, 0],
               x: [0, 8, 0],
             }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[60%] right-[5%] w-[150px] h-[150px] opacity-15"
@@ -67,7 +67,7 @@ export const HeroSection = () => {
               y: [0, 12, 0],
               x: [0, -6, 0],
             }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute bottom-[20%] left-[5%] w-[120px] h-[120px] opacity-10"
@@ -77,7 +77,7 @@ export const HeroSection = () => {
             animate={{ 
               y: [0, -10, 0],
             }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}
@@ -88,27 +88,27 @@ export const HeroSection = () => {
           <motion.div 
             className="absolute top-[25%] left-[20%] w-1.5 h-1.5 rounded-full bg-primary/60"
             animate={{ y: [0, -8, 0], opacity: [0.6, 1, 0.6] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[40%] right-[25%] w-2 h-2 rounded-full bg-primary/40"
             animate={{ y: [0, 10, 0], opacity: [0.4, 0.8, 0.4] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute bottom-[30%] left-[35%] w-1 h-1 rounded-full bg-white/50"
             animate={{ y: [0, -6, 0], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[50%] left-[8%] w-1 h-1 rounded-full bg-primary/50"
             animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[35%] right-[12%] w-1.5 h-1.5 rounded-full bg-white/30"
             animate={{ y: [0, 8, 0], opacity: [0.3, 0.6, 0.3] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}
@@ -119,12 +119,12 @@ export const HeroSection = () => {
           <motion.div 
             className="absolute top-[30%] left-0 w-32 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent"
             animate={{ x: [0, 20, 0], opacity: [0.2, 0.4, 0.2] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div 
             className="absolute top-[60%] right-0 w-40 h-px bg-gradient-to-r from-transparent via-primary/15 to-transparent"
             animate={{ x: [0, -20, 0], opacity: [0.15, 0.3, 0.15] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           />
         </>
       )}
@@ -146,15 +146,15 @@ export const HeroSection = () => {
 
           <motion.h1 
             className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6 leading-tight"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut" }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
             Soluciones{" "}
             <motion.span 
               className="text-primary relative inline-block"
               animate={reduceMotion ? {} : { y: [0, -4, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             >
               tecnológicas
               <span className="absolute -inset-1 bg-primary/20 rounded-lg -z-10" />
@@ -164,18 +164,18 @@ export const HeroSection = () => {
 
           <motion.p 
             className="text-base sm:text-lg lg:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
+            transition={{ duration: 0.25, ease: "easeOut", delay: 0.05 }}
           >
             Páginas web, bots de atención automática y software a medida. Tecnología práctica que funciona.
           </motion.p>
 
           <motion.div 
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: "easeOut", delay: 0.2 }}
+            transition={{ duration: 0.25, ease: "easeOut", delay: 0.1 }}
           >
             <Button asChild size="lg" className="min-w-[180px] h-12 text-base font-semibold shadow-glow hover-scale">
               <Link to="/login">

@@ -15,18 +15,18 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.2,
+      staggerChildren: 0.04,
+      delayChildren: 0.05,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, x: -20 },
+  hidden: { opacity: 0, x: -15 },
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.4, type: "tween" as const },
+    transition: { duration: 0.25, type: "tween" as const },
   },
 };
 
@@ -39,14 +39,14 @@ export const SelfServiceSection = () => {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       />
       <motion.div 
         className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border/40 to-transparent"
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+        transition={{ duration: 0.4, ease: "easeOut", delay: 0.1 }}
       />
       
       {/* Corner element */}
@@ -55,7 +55,7 @@ export const SelfServiceSection = () => {
         initial={{ opacity: 0, scale: 0 }}
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.4, type: "spring" }}
+        transition={{ duration: 0.3, delay: 0.15, type: "spring" }}
       >
         <div className="w-12 h-12 border-l border-b border-border/30 rounded-bl-xl" />
       </motion.div>
@@ -65,10 +65,10 @@ export const SelfServiceSection = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
+              initial={{ opacity: 0, x: -25 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
             >
               <h2 className="text-3xl sm:text-4xl font-bold mb-4">
                 Autogestión
@@ -108,10 +108,10 @@ export const SelfServiceSection = () => {
             {/* Visual */}
             <motion.div 
               className="relative"
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 25 }}
               whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.35, ease: "easeOut", delay: 0.1 }}
             >
               {/* Glow behind */}
               <motion.div 
@@ -123,13 +123,13 @@ export const SelfServiceSection = () => {
                   scale: [1, 1.05, 1],
                   opacity: [0.2, 0.35, 0.2],
                 }}
-                transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               />
               
               <motion.div 
                 className="relative bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6"
                 animate={{ y: [0, -5, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 {/* Mock interface elements */}
                 <div className="space-y-4">
@@ -151,10 +151,10 @@ export const SelfServiceSection = () => {
                     <motion.div
                       key={i}
                       className="flex items-center justify-between p-3 bg-secondary/40 rounded-lg border border-border/30 hover:border-primary/30 transition-colors duration-200 cursor-pointer"
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
+                      transition={{ duration: 0.25, delay: 0.15 + i * 0.05 }}
                       whileHover={{ scale: 1.02, x: 4 }}
                     >
                       <div className="flex items-center gap-3">

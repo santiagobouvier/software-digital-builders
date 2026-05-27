@@ -42,7 +42,7 @@ export const ContactSection = () => {
           scale: [1, 1.1, 1],
           opacity: [0.1, 0.2, 0.1],
         }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
 
       {/* Top line */}
@@ -51,16 +51,16 @@ export const ContactSection = () => {
         initial={{ scaleX: 0 }}
         whileInView={{ scaleX: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
           className="max-w-3xl mx-auto text-center mb-12"
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <h2 className="text-3xl sm:text-4xl font-bold mb-4">
             Contacto
@@ -73,10 +73,10 @@ export const ContactSection = () => {
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
           {/* Contact Form */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
+            initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
           >
             <Card className="bg-card/60 backdrop-blur-sm border-border/40 hover:border-border/60 transition-colors duration-300">
               <CardContent className="p-6">
@@ -137,10 +137,10 @@ export const ContactSection = () => {
           {/* Contact Info */}
           <motion.div 
             className="flex flex-col gap-4"
-            initial={{ opacity: 0, x: 30 }}
+            initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.35, ease: "easeOut", delay: 0.08 }}
           >
             {/* Email */}
             <motion.a
@@ -175,7 +175,7 @@ export const ContactSection = () => {
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
+              transition={{ duration: 0.3, delay: 0.2 }}
             >
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Respondemos en menos de 24 horas hábiles. Contanos tu idea y te

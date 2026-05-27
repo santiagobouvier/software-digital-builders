@@ -19,16 +19,16 @@ export const AboutSection = () => {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: reduceMotion ? 0 : 0.1, delayChildren: 0.1 },
+      transition: { staggerChildren: reduceMotion ? 0 : 0.05, delayChildren: 0 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: reduceMotion ? 0 : 30 },
+    hidden: { opacity: 0, y: reduceMotion ? 0 : 15 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4, type: "tween" as const, ease: "easeOut" as const },
+      transition: { duration: 0.25, type: "tween" as const, ease: "easeOut" as const },
     },
   };
 
@@ -85,7 +85,7 @@ export const AboutSection = () => {
                   opacity: [0.3, 0.5, 0.3],
                 }}
                 transition={{
-                  duration: 4,
+                  duration: 2.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
@@ -106,7 +106,7 @@ export const AboutSection = () => {
                     className="absolute w-2 h-2 rounded-full bg-primary/60"
                     animate={{ rotate: 360 }}
                     transition={{
-                      duration: 8,
+                      duration: 5,
                       repeat: Infinity,
                       ease: "linear",
                     }}
@@ -116,7 +116,7 @@ export const AboutSection = () => {
                     className="absolute w-1.5 h-1.5 rounded-full bg-white/40"
                     animate={{ rotate: -360 }}
                     transition={{
-                      duration: 12,
+                      duration: 7,
                       repeat: Infinity,
                       ease: "linear",
                     }}
@@ -128,9 +128,9 @@ export const AboutSection = () => {
               {/* Logo with floating effect (kept on mobile) */}
               <motion.div
                 className="relative"
-                animate={{ y: [0, -15, 0] }}
+                animate={{ y: [0, -12, 0] }}
                 transition={{
-                  duration: 6,
+                  duration: 3.5,
                   repeat: Infinity,
                   ease: "easeInOut",
                 }}
