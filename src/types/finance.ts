@@ -47,11 +47,74 @@ export interface ClientPlan {
   status: PlanStatus;
   start_date: string;
   next_due_date: string;
+  /** Plan anual: mes de renovación (1-12), ej. 6 = "todos los junios" */
+  renewal_month: number | null;
+  /** Plan mensual: día de cobro del mes (1-28) */
+  renewal_day: number | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
   // Join opcional
   client?: { company_name: string } | null;
+}
+
+export const MONTH_LABELS = [
+  "Enero",
+  "Febrero",
+  "Marzo",
+  "Abril",
+  "Mayo",
+  "Junio",
+  "Julio",
+  "Agosto",
+  "Septiembre",
+  "Octubre",
+  "Noviembre",
+  "Diciembre",
+];
+
+/**
+ * Próximo vencimiento según el ciclo:
+ * - anual: el día 1 del mes de renovación (este año si todavía no pasó, si no el próximo)
+ * - mensual: el día de cobro elegido (este mes si todavía no pasó, si no el próximo)
+ */
+export function computeNextDueDate(
+  cycle: PlanBillingCycle,
+  renewalMonth: number | null,
+  renewalDay: number | null,
+  from: Date = new Date()
+): string {
+  const today = new Date(from.getFullYear(), from.getMonth(), from.getDate());
+  let candidate: Date;
+
+  if (cycle === "yearly") {
+    const month = (renewalMonth ?? today.getMonth() + 1) - 1;
+    candidate = new Date(today.getFullYear(), month, 1);
+    if (candidate < today) {
+      candidate = new Date(today.getFullYear() + 1, month, 1);
+    }
+  } else {
+    const day = renewalDay ?? today.getDate();
+    candidate = new Date(today.getFullYear(), today.getMonth(), day);
+    if (candidate < today) {
+      candidate = new Date(today.getFullYear(), today.getMonth() + 1, day);
+    }
+  }
+
+  const y = candidate.getFullYear();
+  const m = String(candidate.getMonth() + 1).padStart(2, "0");
+  const d = String(candidate.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+/** Descripción humana del ciclo: "todos los junios" / "todos los 5 de cada mes" */
+export function planScheduleLabel(plan: ClientPlan): string {
+  if (plan.billing_cycle === "yearly") {
+    return plan.renewal_month
+      ? `renueva en ${MONTH_LABELS[plan.renewal_month - 1].toLowerCase()} de cada año`
+      : "anual";
+  }
+  return plan.renewal_day ? `todos los ${plan.renewal_day} de cada mes` : "mensual";
 }
 
 /** Aporte mensual de un plan (anual se prorratea /12) en su propia moneda */

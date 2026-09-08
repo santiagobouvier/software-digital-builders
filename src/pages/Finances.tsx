@@ -32,7 +32,7 @@ import {
   TransactionType,
   ClientPlan,
   planMonthlyAmount,
-  BILLING_CYCLE_LABELS,
+  planScheduleLabel,
   PAYMENT_METHOD_LABELS,
 } from "@/types/finance";
 
@@ -362,7 +362,7 @@ const Finances = () => {
                             {plan.client?.company_name || "Cliente"} · {plan.name}
                           </p>
                           <p className="text-xs text-muted-foreground truncate">
-                            {BILLING_CYCLE_LABELS[plan.billing_cycle]} ·{" "}
+                            {planScheduleLabel(plan)} ·{" "}
                             {PAYMENT_METHOD_LABELS[plan.payment_method]}
                             {plan.status === "active" &&
                               ` · próximo: ${format(parseISO(plan.next_due_date), "dd MMM yyyy", { locale: es })}`}

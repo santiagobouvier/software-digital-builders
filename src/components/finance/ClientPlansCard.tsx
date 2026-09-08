@@ -28,10 +28,11 @@ import { es } from "date-fns/locale";
 import { PlanFormDialog } from "./PlanFormDialog";
 import {
   ClientPlan,
-  BILLING_CYCLE_LABELS,
   PLAN_STATUS_LABELS,
   PLAN_STATUS_COLORS,
   PAYMENT_METHOD_LABELS,
+  planScheduleLabel,
+  computeNextDueDate,
 } from "@/types/finance";
 
 interface ClientPlansCardProps {
@@ -98,7 +99,11 @@ export const ClientPlansCard = ({ clientId, clientName, onChanged }: ClientPlans
           .limit(1);
 
         if (!pending || pending.length === 0) {
-          const today = new Date().toISOString().split("T")[0];
+          const nextDue = computeNextDueDate(
+            plan.billing_cycle,
+            plan.renewal_month,
+            plan.renewal_day
+          );
           const { error: txError } = await supabase.from("transactions").insert({
             type: "income",
             status: "pending",
@@ -106,12 +111,16 @@ export const ClientPlansCard = ({ clientId, clientName, onChanged }: ClientPlans
             category: "Mantenimiento",
             amount: plan.amount,
             currency: plan.currency,
-            due_date: today,
+            due_date: nextDue,
             recurrence: plan.billing_cycle,
             client_id: plan.client_id,
             plan_id: plan.id,
           });
           if (txError) throw txError;
+          await supabase
+            .from("client_plans")
+            .update({ next_due_date: nextDue })
+            .eq("id", plan.id);
         }
         toast({ title: "Plan reactivado", description: "Se generó el próximo cobro pendiente." });
       }
@@ -181,9 +190,9 @@ export const ClientPlansCard = ({ clientId, clientName, onChanged }: ClientPlans
                     </div>
                     <p className="text-xs text-muted-foreground truncate">
                       <RefreshCw className="inline h-2.5 w-2.5 mr-1" />
-                      {BILLING_CYCLE_LABELS[plan.billing_cycle]} ·{" "}
-                      {PAYMENT_METHOD_LABELS[plan.payment_method]} · desde{" "}
-                      {format(parseISO(plan.start_date), "dd MMM yyyy", { locale: es })}
+                      {planScheduleLabel(plan)} · {PAYMENT_METHOD_LABELS[plan.payment_method]}
+                      {plan.status === "active" &&
+                        ` · próximo: ${format(parseISO(plan.next_due_date), "dd MMM yyyy", { locale: es })}`}
                     </p>
                   </div>
                   <p className="font-mono font-semibold text-success flex-shrink-0">
