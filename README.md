@@ -1,148 +1,51 @@
 # Digital Builders Software
 
-PROYECTO: “Digital Builders Bots”
-OBJETIVO MVP:
-Crear un panel web multi-empresa para conectar bots (BuilderBot) mediante BOT_ID + TOKEN y mostrar estadísticas básicas por día. Debe ser simple, escalable y con UI moderna tecnológica (fondo negro/gris). No guardar conversaciones ni texto; solo contadores agregados.
+Sistema personal de gestión para Digital Builders: clientes, finanzas y calendario, con landing pública de la agencia.
 
-DISEÑO / UI (CRÍTICO):
-- Estilo ultra moderno, tecnológico, “software enterprise”.
-- Fondo SIEMPRE negro o gris oscuro (#0B0B0F / #121217 aprox). Textos en blanco/grises. Acentos sutiles (cyan/azul) solo para highlights.
-- Animación sutil en el hero/login: “onda/partículas” o “grid futurista” (NO pesado). Debe sentirse premium.
-- Tipografía moderna (sans). Mucho aire, tarjetas con bordes suaves, sombras sutiles.
-- Layout responsive (desktop primero, pero funcional en mobile).
+## Qué incluye
 
-AUTENTICACIÓN Y ROLES:
-- Autenticación con email/password.
-- Roles por empresa: owner y viewer.
-- Un usuario puede pertenecer a varias empresas.
-- RLS / permisos: cada usuario SOLO ve datos de sus empresas.
+- **Landing pública** (`/`): página de marketing de la agencia (no forma parte del panel).
+- **Dashboard** (`/dashboard`): resumen del mes (cobrado, gastado, balance), próximos cobros, próximos pagos y próximos eventos.
+- **Clientes** (`/clientes`): fichas de empresas cliente (contacto, estado, notas, logo) con sus finanzas y eventos asociados.
+- **Finanzas** (`/finanzas`): cobros y gastos en USD/UYU, únicos o recurrentes (mensual/anual), con estados pendiente/pagado/cancelado, vencimientos e historial. Al marcar como pagado un movimiento recurrente se genera automáticamente la próxima cuota.
+- **Calendario** (`/calendario`): reuniones, entregas, pagos y recordatorios, con vista mensual y lista de próximos eventos.
+- **Usuarios** (`/users`): alta y baja de usuarios del sistema (roles `professional` / `client`).
 
-BASE DE DATOS (TABLAS):
-1) companies
-- id (uuid, pk)
-- name (text)
-- created_at (timestamp)
+## Stack
 
-2) users (si la plataforma ya trae auth users, usar su tabla; sino crear users)
-- id (uuid)
-- email
-- name
-- created_at
+- React 18 + TypeScript + Vite (PWA instalable)
+- Tailwind CSS + shadcn/ui
+- Supabase: Postgres con RLS, Auth (email/password), Storage y Edge Functions (`create-user`, `delete-user`)
+- Multi-moneda USD/UYU con cotización manual guardada en `system_settings`
 
-3) company_users
-- id (uuid)
-- company_id (fk companies)
-- user_id (fk users/auth)
-- role (text: 'owner' | 'viewer')
-- created_at
+## Modelo de datos activo
 
-4) bots
-- id (uuid, pk)
-- company_id (fk companies)
-- name (text)
-- token (text, secreto)
-- created_at
-- last_event_at (timestamp nullable)
-- status (text: 'active' | 'paused', default 'active')
+- `clients` — fichas de empresas cliente
+- `transactions` — cobros y gastos (tipo, estado, monto, moneda, vencimiento, recurrencia, cliente opcional)
+- `calendar_events` — eventos del calendario (fecha, hora, tipo, cliente opcional)
+- `profiles`, `user_roles` — usuarios y roles (`professional` gestiona todo; `client` reservado para un futuro portal)
+- `system_settings` — configuración (cotización USD→UYU)
 
-5) events_daily
-- id (uuid, pk)
-- company_id (fk companies)
-- bot_id (fk bots)
-- date (date)
-- msg_in_count (int default 0)
-- msg_out_count (int default 0)
-- handoff_count (int default 0)
-- lead_count (int default 0)
-- error_count (int default 0)
-- updated_at (timestamp)
+Las tablas del sistema anterior (catálogo, packs, suscripciones, bots, empresas) siguen en la base por seguridad pero ya no se usan desde la aplicación.
 
-REGLAS DE PERMISOS (CRÍTICO):
-- company_users: solo owners pueden invitar/gestionar.
-- bots/events_daily: solo accesibles si el usuario pertenece a la company_id.
-- No exponer tokens a viewers (solo owners pueden ver/copiar token).
+## Migraciones
 
-API / ENDPOINT DE TRACKING (CRÍTICO):
-Crear un endpoint HTTP:
-POST /api/track
-Body JSON:
-{
-  "bot_id": "uuid",
-  "token": "string",
-  "type": "msg_in" | "msg_out" | "handoff" | "lead" | "error",
-  "date": "YYYY-MM-DD" (opcional)
-}
+Las migraciones viven en `supabase/migrations/`. La migración `20260908000000_personal_finance_calendar.sql` crea `transactions` y `calendar_events`; debe aplicarse en el proyecto Supabase para que los módulos de Finanzas y Calendario funcionen.
 
-Comportamiento:
-- Validar bot_id existe y token coincide.
-- Validar bot status = active (si paused, responder 403).
-- Resolver date: si no viene, usar fecha actual del servidor.
-- Upsert en events_daily por (company_id, bot_id, date).
-- Incrementar el contador según type.
-- Actualizar bots.last_event_at = now().
-- Respuesta JSON: { "ok": true }
+## Desarrollo local
 
-SEGURIDAD:
-- El endpoint NO requiere login, pero SI requiere bot_id+token válidos.
-- Rate limit básico por bot (si existe posibilidad). Si no, al menos validación y respuesta rápida.
+```sh
+npm i        # o bun install
+npm run dev
+npm run build
+npm run lint
+npm test
+```
 
-PANTALLAS (MVP):
-1) Login
-- Fondo negro/gris, con animación sutil futurista.
-- Logo arriba (cuando lo suba, usarlo).
-- Formulario centrado, minimal.
-
-2) Dashboard (por empresa)
-- Selector de empresa si el usuario tiene más de una.
-- KPIs en cards: Mensajes recibidos, Mensajes enviados, Derivaciones, Leads, Errores.
-- Filtros: Hoy / 7 días / 30 días.
-- Gráfico simple de línea o barras con últimos 14/30 días (sumando bots).
-- “Estado del sistema”: última actividad (máximo last_event_at entre bots).
-
-3) Bots (por empresa)
-- Tabla/lista: nombre, estado, última actividad.
-- Botón “Crear bot” (solo owner): name -> genera token automáticamente.
-- Para cada bot (solo owner): botón “Copiar BOT_ID”, “Copiar TOKEN”, “Copiar ejemplo de payload”, “Copiar URL del endpoint”.
-- Viewer solo ve nombre/estado/última actividad, NO token.
-
-4) Gestión de usuarios (solo owner)
-- Invitar usuario por email como viewer (simple).
-- Listar miembros y rol.
-- (Opcional) Cambiar rol / eliminar.
-
-DATOS DE DEMO / SEED (para probar):
-- Crear una empresa demo “Digital Builders (Demo)”.
-- Crear un owner demo (mi usuario) como owner.
-- Crear un bot demo y mostrar cómo enviar /api/track desde un ejemplo.
-
-COPYS (TEXTOS):
-- Nombre del producto: “Digital Builders Bots”
-- Slogan corto en login: “Panel de métricas y control para tus bots.”
-- En Bots: “Conectá BuilderBot enviando eventos a /api/track.”
-
-ENTREGABLE:
-- App funcionando end-to-end: login, multiempresa, bots, dashboard, endpoint track.
-- UI moderna y tecnológica en fondo oscuro con animación sutil.
+---
 
 This project was built with [Lovable](https://lovable.dev).
 
 **Live app**: https://digitalbuilders.lovable.app
 
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/045ee3b2-bca9-4526-acac-03117ecded7a).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/045ee3b2-bca9-4526-acac-03117ecded7a). Every change made in Lovable is committed straight to this repository, and pushes to `main` sync back into Lovable.

@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/command";
 import {
   Building2,
-  Package,
-  Globe,
+  Wallet,
+  CalendarDays,
   Search,
 } from "lucide-react";
 
@@ -29,8 +29,8 @@ export function GlobalSearch() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [clients, setClients] = useState<SearchResult[]>([]);
-  const [webInstances, setWebInstances] = useState<SearchResult[]>([]);
-  const [products, setProducts] = useState<SearchResult[]>([]);
+  const [transactions, setTransactions] = useState<SearchResult[]>([]);
+  const [events, setEvents] = useState<SearchResult[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
 
@@ -54,14 +54,19 @@ export function GlobalSearch() {
   }, [open]);
 
   const loadAllData = async () => {
-    const [clientsRes, webInstancesRes, productsRes] =
-      await Promise.all([
-        supabase.from("clients").select("id, company_name, contact_name, status"),
-        supabase
-          .from("web_instances")
-          .select("id, domain, status, client:clients(company_name), product:products(name)"),
-        supabase.from("products").select("id, name, category, is_active"),
-      ]);
+    const [clientsRes, txRes, eventsRes] = await Promise.all([
+      supabase.from("clients").select("id, company_name, contact_name, status"),
+      supabase
+        .from("transactions")
+        .select("id, description, type, status, due_date, client:clients(company_name)")
+        .order("due_date", { ascending: false })
+        .limit(100),
+      supabase
+        .from("calendar_events")
+        .select("id, title, event_date, client:clients(company_name)")
+        .order("event_date", { ascending: false })
+        .limit(100),
+    ]);
 
     if (clientsRes.data) {
       setClients(
@@ -75,26 +80,44 @@ export function GlobalSearch() {
       );
     }
 
-    if (webInstancesRes.data) {
-      setWebInstances(
-        (webInstancesRes.data as any[]).map((wi) => ({
-          id: wi.id,
-          label: `${wi.product?.name || "Web"} → ${wi.client?.company_name || "Cliente"}`,
-          sublabel: wi.domain || wi.status,
-          icon: <Globe className="h-4 w-4 text-cyan-500" />,
-          path: `/webs-clientes`,
+    if (txRes.data) {
+      type TxRow = {
+        id: string;
+        description: string;
+        type: string;
+        status: string;
+        due_date: string;
+        client: { company_name: string } | null;
+      };
+      setTransactions(
+        (txRes.data as unknown as TxRow[]).map((tx) => ({
+          id: tx.id,
+          label: tx.description,
+          sublabel: `${tx.type === "income" ? "Cobro" : "Gasto"} · ${tx.due_date}${
+            tx.client?.company_name ? ` · ${tx.client.company_name}` : ""
+          }`,
+          icon: <Wallet className="h-4 w-4 text-success" />,
+          path: `/finanzas`,
         }))
       );
     }
 
-    if (productsRes.data) {
-      setProducts(
-        productsRes.data.map((p) => ({
-          id: p.id,
-          label: p.name,
-          sublabel: p.is_active ? "Activo" : "Inactivo",
-          icon: <Package className="h-4 w-4 text-muted-foreground" />,
-          path: `/catalogo`,
+    if (eventsRes.data) {
+      type EventRow = {
+        id: string;
+        title: string;
+        event_date: string;
+        client: { company_name: string } | null;
+      };
+      setEvents(
+        (eventsRes.data as unknown as EventRow[]).map((ev) => ({
+          id: ev.id,
+          label: ev.title,
+          sublabel: `${ev.event_date}${
+            ev.client?.company_name ? ` · ${ev.client.company_name}` : ""
+          }`,
+          icon: <CalendarDays className="h-4 w-4 text-muted-foreground" />,
+          path: `/calendario`,
         }))
       );
     }
@@ -122,14 +145,8 @@ export function GlobalSearch() {
   };
 
   const filteredClients = filterResults(clients);
-  const filteredWebInstances = filterResults(webInstances);
-  const filteredProducts = filterResults(products);
-
-  const hasResults =
-    filteredClients.length +
-      filteredWebInstances.length +
-      filteredProducts.length >
-    0;
+  const filteredTransactions = filterResults(transactions);
+  const filteredEvents = filterResults(events);
 
   return (
     <>
@@ -147,7 +164,7 @@ export function GlobalSearch() {
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
-          placeholder="Buscar clientes, webs, productos..."
+          placeholder="Buscar clientes, movimientos, eventos..."
           value={query}
           onValueChange={setQuery}
         />
@@ -177,14 +194,14 @@ export function GlobalSearch() {
             </CommandGroup>
           )}
 
-          {filteredWebInstances.length > 0 && (
+          {filteredTransactions.length > 0 && (
             <>
               <CommandSeparator />
-              <CommandGroup heading="Instancias de webs">
-                {filteredWebInstances.slice(0, 5).map((item) => (
+              <CommandGroup heading="Movimientos">
+                {filteredTransactions.slice(0, 5).map((item) => (
                   <CommandItem
                     key={item.id}
-                    value={item.label}
+                    value={`${item.label} ${item.id}`}
                     onSelect={() => handleSelect(item.path)}
                     className="gap-3"
                   >
@@ -203,14 +220,14 @@ export function GlobalSearch() {
             </>
           )}
 
-          {filteredProducts.length > 0 && (
+          {filteredEvents.length > 0 && (
             <>
               <CommandSeparator />
-              <CommandGroup heading="Productos">
-                {filteredProducts.slice(0, 5).map((item) => (
+              <CommandGroup heading="Eventos">
+                {filteredEvents.slice(0, 5).map((item) => (
                   <CommandItem
                     key={item.id}
-                    value={item.label}
+                    value={`${item.label} ${item.id}`}
                     onSelect={() => handleSelect(item.path)}
                     className="gap-3"
                   >

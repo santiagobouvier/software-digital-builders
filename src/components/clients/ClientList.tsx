@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Loader2, Pencil, Building2 } from "lucide-react";
-import type { Client, CLIENT_STATUS_LABELS, CLIENT_STATUS_COLORS } from "@/types/catalog";
+import type { Client } from "@/types/client";
 import { cn } from "@/lib/utils";
 import { ClientAvatar } from "./ClientAvatar";
 

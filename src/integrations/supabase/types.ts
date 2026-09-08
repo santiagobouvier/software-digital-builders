@@ -238,6 +238,53 @@ export type Database = {
           },
         ]
       }
+      calendar_events: {
+        Row: {
+          client_id: string | null
+          completed: boolean
+          created_at: string
+          description: string | null
+          event_date: string
+          event_time: string | null
+          id: string
+          title: string
+          type: Database["public"]["Enums"]["calendar_event_type"]
+          updated_at: string
+        }
+        Insert: {
+          client_id?: string | null
+          completed?: boolean
+          created_at?: string
+          description?: string | null
+          event_date: string
+          event_time?: string | null
+          id?: string
+          title: string
+          type?: Database["public"]["Enums"]["calendar_event_type"]
+          updated_at?: string
+        }
+        Update: {
+          client_id?: string | null
+          completed?: boolean
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_time?: string | null
+          id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["calendar_event_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_subscriptions: {
         Row: {
           client_id: string
@@ -682,6 +729,65 @@ export type Database = {
         }
         Relationships: []
       }
+      transactions: {
+        Row: {
+          amount: number
+          category: string | null
+          client_id: string | null
+          created_at: string
+          currency: string
+          description: string
+          due_date: string
+          id: string
+          notes: string | null
+          paid_date: string | null
+          recurrence: Database["public"]["Enums"]["transaction_recurrence"]
+          status: Database["public"]["Enums"]["transaction_status"]
+          type: Database["public"]["Enums"]["transaction_type"]
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          category?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          description: string
+          due_date?: string
+          id?: string
+          notes?: string | null
+          paid_date?: string | null
+          recurrence?: Database["public"]["Enums"]["transaction_recurrence"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          type: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          category?: string | null
+          client_id?: string | null
+          created_at?: string
+          currency?: string
+          description?: string
+          due_date?: string
+          id?: string
+          notes?: string | null
+          paid_date?: string | null
+          recurrence?: Database["public"]["Enums"]["transaction_recurrence"]
+          status?: Database["public"]["Enums"]["transaction_status"]
+          type?: Database["public"]["Enums"]["transaction_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "transactions_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_bot_access: {
         Row: {
           bot_id: string
@@ -827,6 +933,7 @@ export type Database = {
       billing_event_type: "charge" | "refund" | "adjustment"
       billing_type: "one_time" | "recurring"
       bot_status: "active" | "paused"
+      calendar_event_type: "meeting" | "payment" | "delivery" | "reminder" | "other"
       client_status: "lead" | "active" | "paused" | "cancelled"
       company_role: "owner" | "viewer"
       discount_type: "none" | "percent" | "fixed"
@@ -839,6 +946,9 @@ export type Database = {
         | "otro"
       subscription_item_type: "product" | "pack"
       subscription_plan: "monthly" | "annual"
+      transaction_recurrence: "none" | "monthly" | "yearly"
+      transaction_status: "pending" | "paid" | "cancelled"
+      transaction_type: "income" | "expense"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -970,6 +1080,7 @@ export const Constants = {
       billing_event_type: ["charge", "refund", "adjustment"],
       billing_type: ["one_time", "recurring"],
       bot_status: ["active", "paused"],
+      calendar_event_type: ["meeting", "payment", "delivery", "reminder", "other"],
       client_status: ["lead", "active", "paused", "cancelled"],
       company_role: ["owner", "viewer"],
       discount_type: ["none", "percent", "fixed"],
@@ -983,6 +1094,9 @@ export const Constants = {
       ],
       subscription_item_type: ["product", "pack"],
       subscription_plan: ["monthly", "annual"],
+      transaction_recurrence: ["none", "monthly", "yearly"],
+      transaction_status: ["pending", "paid", "cancelled"],
+      transaction_type: ["income", "expense"],
     },
   },
 } as const

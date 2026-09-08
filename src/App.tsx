@@ -8,11 +8,10 @@ import { supabase } from "@/integrations/supabase/client";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Team from "./pages/Team";
 import Users from "./pages/Users";
-import Catalog from "./pages/Catalog";
 import Clients from "./pages/Clients";
-import WebsClientes from "./pages/WebsClientes";
+import Finances from "./pages/Finances";
+import CalendarPage from "./pages/CalendarPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -70,27 +69,10 @@ const App = () => (
             }
           />
           <Route
-            path="/team"
-            element={
-              <ProtectedRoute>
-                <Team />
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path="/users"
             element={
               <ProtectedRoute>
                 <Users />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/catalogo"
-            element={
-              <ProtectedRoute>
-                <Catalog />
               </ProtectedRoute>
             }
           />
@@ -103,10 +85,18 @@ const App = () => (
             }
           />
           <Route
-            path="/webs-clientes"
+            path="/finanzas"
             element={
               <ProtectedRoute>
-                <WebsClientes />
+                <Finances />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/calendario"
+            element={
+              <ProtectedRoute>
+                <CalendarPage />
               </ProtectedRoute>
             }
           />

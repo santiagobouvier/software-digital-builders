@@ -22,7 +22,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Upload, X } from "lucide-react";
 import { ClientAvatar } from "./ClientAvatar";
-import type { Client, ClientStatus, ClientFormData } from "@/types/catalog";
+import type { Client, ClientStatus, ClientFormData } from "@/types/client";
 
 interface ClientFormDialogProps {
   open: boolean;

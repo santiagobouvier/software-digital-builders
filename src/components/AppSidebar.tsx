@@ -4,11 +4,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   LayoutDashboard,
-  Users,
   UserCog,
-  Package,
   Building2,
-  Globe,
+  Wallet,
+  CalendarDays,
   Download,
   Check,
   LogOut,
@@ -37,25 +36,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { usePWAInstall } from "@/hooks/usePWAInstall";
 import { ProfileEditDialog } from "@/components/ProfileEditDialog";
 import { cn } from "@/lib/utils";
-
-interface Company {
-  id: string;
-  name: string;
-  role: string;
-}
 
 interface Profile {
   name: string | null;
@@ -65,22 +51,14 @@ interface Profile {
 
 interface AppSidebarProps {
   user: any;
-  companies: Company[];
-  selectedCompanyId: string;
-  onCompanyChange: (companyId: string) => void;
   onLogout: () => void;
   isProfessional: boolean;
-  isOwner: boolean;
 }
 
 export function AppSidebar({
   user,
-  companies,
-  selectedCompanyId,
-  onCompanyChange,
   onLogout,
   isProfessional,
-  isOwner,
 }: AppSidebarProps) {
   const location = useLocation();
   const { state } = useSidebar();
@@ -110,13 +88,12 @@ export function AppSidebar({
 
   const navItems = [
     { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    ...(isOwner ? [{ path: "/team", label: "Equipo", icon: Users }] : []),
     ...(isProfessional
       ? [
-          { path: "/users", label: "Usuarios", icon: UserCog },
-          { path: "/catalogo", label: "Catálogo", icon: Package },
           { path: "/clientes", label: "Clientes", icon: Building2 },
-          { path: "/webs-clientes", label: "Webs Clientes", icon: Globe },
+          { path: "/finanzas", label: "Finanzas", icon: Wallet },
+          { path: "/calendario", label: "Calendario", icon: CalendarDays },
+          { path: "/users", label: "Usuarios", icon: UserCog },
         ]
       : []),
   ];
@@ -153,24 +130,6 @@ export function AppSidebar({
               <Link to="/dashboard" className="block">
                 <Logo size="lg" className="h-16 w-auto" />
               </Link>
-            </SidebarGroup>
-          )}
-
-          {/* Company Selector - only when expanded */}
-          {companies.length > 1 && showFullContent && (
-            <SidebarGroup className="px-3">
-              <Select value={selectedCompanyId} onValueChange={onCompanyChange}>
-                <SelectTrigger className="w-full bg-sidebar-accent/30 border-sidebar-border/50 text-sm h-10">
-                  <SelectValue placeholder="Empresa" />
-                </SelectTrigger>
-                <SelectContent>
-                  {companies.map((company) => (
-                    <SelectItem key={company.id} value={company.id}>
-                      {company.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </SidebarGroup>
           )}
 
