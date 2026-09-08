@@ -21,16 +21,29 @@ import {
   ArrowRight,
   Loader2,
   Sparkles,
+  RefreshCw,
 } from "lucide-react";
-import type { Transaction, CalendarEvent } from "@/types/finance";
-import { EVENT_TYPE_COLORS, EVENT_TYPE_LABELS } from "@/types/finance";
+import type { Transaction, CalendarEvent, ClientPlan } from "@/types/finance";
+import { EVENT_TYPE_COLORS, EVENT_TYPE_LABELS, planMonthlyAmount } from "@/types/finance";
+
+const DualAmount = ({ usd, rate }: { usd: number; rate: number }) => (
+  <div className="min-w-0">
+    <p className="text-lg sm:text-xl font-bold font-mono truncate">
+      {formatCurrency(usd, "USD")}
+    </p>
+    <p className="text-[11px] font-mono text-muted-foreground truncate">
+      {formatCurrency(usd * rate, "UYU")}
+    </p>
+  </div>
+);
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { isProfessional, isClient, isLoading: roleLoading } = useUserRole();
-  const { convert } = useExchangeRate();
+  const { convert, rate } = useExchangeRate();
   const [userName, setUserName] = useState<string>("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [plans, setPlans] = useState<ClientPlan[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [clientCount, setClientCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -47,11 +60,15 @@ const Dashboard = () => {
     setUserName(profileData?.name || user.user_metadata?.name || "Usuario");
 
     const today = format(startOfDay(new Date()), "yyyy-MM-dd");
-    const [txRes, evRes, clientsRes] = await Promise.all([
+    const [txRes, plansRes, evRes, clientsRes] = await Promise.all([
       supabase
         .from("transactions")
         .select("*, client:clients(company_name)")
         .order("due_date", { ascending: true }),
+      supabase
+        .from("client_plans")
+        .select("*")
+        .eq("status", "active"),
       supabase
         .from("calendar_events")
         .select("*, client:clients(company_name)")
@@ -63,6 +80,7 @@ const Dashboard = () => {
     ]);
 
     if (txRes.data) setTransactions(txRes.data as unknown as Transaction[]);
+    if (plansRes.data) setPlans(plansRes.data as unknown as ClientPlan[]);
     if (evRes.data) setEvents(evRes.data as unknown as CalendarEvent[]);
     setClientCount(clientsRes.count || 0);
     setIsLoading(false);
@@ -105,6 +123,11 @@ const Dashboard = () => {
       }
     }
 
+    const mrrUSD = plans.reduce(
+      (sum, p) => sum + convert(planMonthlyAmount(p), p.currency, "USD"),
+      0
+    );
+
     return {
       incomeMonth,
       expenseMonth,
@@ -114,8 +137,9 @@ const Dashboard = () => {
       upcomingIncomes,
       upcomingExpenses,
       overdue,
+      mrrUSD,
     };
-  }, [transactions, convert]);
+  }, [transactions, plans, convert]);
 
   if (roleLoading || (isProfessional && isLoading)) {
     return (
@@ -184,19 +208,30 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* KPIs financieros (en USD) */}
-        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+        {/* KPIs financieros (USD y UYU) */}
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
+          <Card variant="elevated">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={summary.mrrUSD} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Ingreso mensual (planes)</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           <Card variant="elevated">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-success/10">
                   <TrendingUp className="h-5 w-5 text-success" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(summary.incomeMonth, "USD")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Cobrado este mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={summary.incomeMonth} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Cobrado este mes</p>
                 </div>
               </div>
             </CardContent>
@@ -207,11 +242,9 @@ const Dashboard = () => {
                 <div className="p-2 rounded-lg bg-destructive/10">
                   <TrendingDown className="h-5 w-5 text-destructive" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(summary.expenseMonth, "USD")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Gastado este mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={summary.expenseMonth} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Gastado este mes</p>
                 </div>
               </div>
             </CardContent>
@@ -222,11 +255,9 @@ const Dashboard = () => {
                 <div className="p-2 rounded-lg bg-primary/10">
                   <Wallet className="h-5 w-5 text-primary" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(summary.balance, "USD")}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Balance del mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={summary.balance} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Balance del mes</p>
                 </div>
               </div>
             </CardContent>

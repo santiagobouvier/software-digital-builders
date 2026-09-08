@@ -3,14 +3,8 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Loader2,
   Plus,
@@ -19,6 +13,8 @@ import {
   Wallet,
   CalendarClock,
   AlertTriangle,
+  RefreshCw,
+  CreditCard,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
@@ -27,29 +23,52 @@ import { ExchangeRateEditor } from "@/components/ExchangeRateEditor";
 import { TransactionFormDialog } from "@/components/finance/TransactionFormDialog";
 import { TransactionList } from "@/components/finance/TransactionList";
 import { formatCurrency } from "@/lib/money";
-import { isSameMonth, parseISO, isBefore, startOfDay } from "date-fns";
+import { cn } from "@/lib/utils";
+import { format, isSameMonth, parseISO, isBefore, startOfDay } from "date-fns";
+import { es } from "date-fns/locale";
 import type { Client } from "@/types/client";
-import type { Transaction, TransactionType } from "@/types/finance";
+import {
+  Transaction,
+  TransactionType,
+  ClientPlan,
+  planMonthlyAmount,
+  BILLING_CYCLE_LABELS,
+  PAYMENT_METHOD_LABELS,
+} from "@/types/finance";
 
-type DisplayCurrency = "USD" | "UYU";
+/** Valor en USD mostrado grande, con su equivalente en pesos abajo */
+const DualAmount = ({ usd, rate, className }: { usd: number; rate: number; className?: string }) => (
+  <div className="min-w-0">
+    <p className={cn("text-lg sm:text-xl font-bold font-mono truncate", className)}>
+      {formatCurrency(usd, "USD")}
+    </p>
+    <p className="text-[11px] font-mono text-muted-foreground truncate">
+      {formatCurrency(usd * rate, "UYU")}
+    </p>
+  </div>
+);
 
 const Finances = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
   const { rate, updateExchangeRate, convert } = useExchangeRate();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [plans, setPlans] = useState<ClientPlan[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
   const [newType, setNewType] = useState<TransactionType>("income");
-  const [displayCurrency, setDisplayCurrency] = useState<DisplayCurrency>("USD");
 
   const loadData = useCallback(async () => {
-    const [txRes, clientsRes] = await Promise.all([
+    const [txRes, plansRes, clientsRes] = await Promise.all([
       supabase
         .from("transactions")
         .select("*, client:clients(company_name)")
         .order("due_date", { ascending: true }),
+      supabase
+        .from("client_plans")
+        .select("*, client:clients(company_name)")
+        .order("next_due_date", { ascending: true }),
       supabase
         .from("clients")
         .select("*")
@@ -57,6 +76,7 @@ const Finances = () => {
     ]);
 
     if (txRes.data) setTransactions(txRes.data as unknown as Transaction[]);
+    if (plansRes.data) setPlans(plansRes.data as unknown as ClientPlan[]);
     if (clientsRes.data) setClients(clientsRes.data as Client[]);
     setIsLoading(false);
   }, []);
@@ -67,9 +87,9 @@ const Finances = () => {
     }
   }, [isProfessional, loadData]);
 
-  const inDisplay = useCallback(
-    (tx: Transaction) => convert(tx.amount, tx.currency, displayCurrency),
-    [convert, displayCurrency]
+  const toUSD = useCallback(
+    (amount: number, currency: string) => convert(amount, currency, "USD"),
+    [convert]
   );
 
   const {
@@ -95,18 +115,19 @@ const Finances = () => {
     const history: Transaction[] = [];
 
     for (const tx of transactions) {
+      const usd = toUSD(tx.amount, tx.currency);
       if (tx.status === "paid") {
         history.push(tx);
         if (tx.paid_date && isSameMonth(parseISO(tx.paid_date), now)) {
-          if (tx.type === "income") paidIncomeMonth += inDisplay(tx);
-          else paidExpenseMonth += inDisplay(tx);
+          if (tx.type === "income") paidIncomeMonth += usd;
+          else paidExpenseMonth += usd;
         }
       } else if (tx.status === "pending") {
         if (tx.type === "income") {
-          pendingIncome += inDisplay(tx);
+          pendingIncome += usd;
           upcomingIncomes.push(tx);
         } else {
-          pendingExpense += inDisplay(tx);
+          pendingExpense += usd;
           upcomingExpenses.push(tx);
         }
         if (isBefore(parseISO(tx.due_date), today)) overdueCount += 1;
@@ -115,7 +136,6 @@ const Finances = () => {
       }
     }
 
-    // Historial: más recientes primero
     history.sort((a, b) => (b.paid_date || b.due_date).localeCompare(a.paid_date || a.due_date));
 
     return {
@@ -128,7 +148,16 @@ const Finances = () => {
       upcomingExpenses,
       history,
     };
-  }, [transactions, inDisplay]);
+  }, [transactions, toUSD]);
+
+  const { activePlans, mrrUSD } = useMemo(() => {
+    const activePlans = plans.filter((p) => p.status === "active");
+    const mrrUSD = activePlans.reduce(
+      (sum, p) => sum + toUSD(planMonthlyAmount(p), p.currency),
+      0
+    );
+    return { activePlans, mrrUSD };
+  }, [plans, toUSD]);
 
   const balanceMonth = paidIncomeMonth - paidExpenseMonth;
 
@@ -164,22 +193,12 @@ const Finances = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Finanzas</h1>
-            <p className="text-muted-foreground">Cobros, gastos y próximos vencimientos</p>
+            <p className="text-muted-foreground">
+              Cobros, gastos y planes recurrentes · todo en USD y pesos
+            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ExchangeRateEditor rate={rate} onUpdate={updateExchangeRate} />
-            <Select
-              value={displayCurrency}
-              onValueChange={(v) => setDisplayCurrency(v as DisplayCurrency)}
-            >
-              <SelectTrigger className="w-[90px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="USD">USD</SelectItem>
-                <SelectItem value="UYU">UYU</SelectItem>
-              </SelectContent>
-            </Select>
             <Button variant="outline" onClick={() => openNew("expense")} className="gap-2">
               <TrendingDown className="h-4 w-4 text-destructive" />
               Nuevo gasto
@@ -191,7 +210,54 @@ const Finances = () => {
           </div>
         </div>
 
-        {/* KPIs */}
+        {/* Recurrente: MRR / ARR de planes activos */}
+        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-3">
+          <Card variant="elevated">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <RefreshCw className="h-5 w-5 text-primary" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={mrrUSD} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Ingreso mensual (planes activos)
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="elevated">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-success/10">
+                  <TrendingUp className="h-5 w-5 text-success" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={mrrUSD * 12} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Proyección anual</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card variant="elevated" className="col-span-2 lg:col-span-1">
+            <CardContent className="pt-4 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-cyan-500/10">
+                  <CreditCard className="h-5 w-5 text-cyan-500" />
+                </div>
+                <div>
+                  <p className="text-lg sm:text-xl font-bold">{activePlans.length}</p>
+                  <p className="text-xs text-muted-foreground">Planes activos</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Movimiento real del mes */}
         <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
           <Card variant="elevated">
             <CardContent className="pt-4 pb-4">
@@ -199,11 +265,9 @@ const Finances = () => {
                 <div className="p-2 rounded-lg bg-success/10">
                   <TrendingUp className="h-5 w-5 text-success" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(paidIncomeMonth, displayCurrency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Cobrado este mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={paidIncomeMonth} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Cobrado este mes</p>
                 </div>
               </div>
             </CardContent>
@@ -215,11 +279,9 @@ const Finances = () => {
                 <div className="p-2 rounded-lg bg-destructive/10">
                   <TrendingDown className="h-5 w-5 text-destructive" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(paidExpenseMonth, displayCurrency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Gastado este mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={paidExpenseMonth} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Gastado este mes</p>
                 </div>
               </div>
             </CardContent>
@@ -231,11 +293,9 @@ const Finances = () => {
                 <div className="p-2 rounded-lg bg-primary/10">
                   <Wallet className="h-5 w-5 text-primary" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(balanceMonth, displayCurrency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Balance del mes</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={balanceMonth} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Balance del mes</p>
                 </div>
               </div>
             </CardContent>
@@ -247,11 +307,9 @@ const Finances = () => {
                 <div className="p-2 rounded-lg bg-warning/10">
                   <CalendarClock className="h-5 w-5 text-warning" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(pendingIncome, displayCurrency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">Por cobrar</p>
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={pendingIncome} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">Por cobrar</p>
                 </div>
               </div>
             </CardContent>
@@ -263,11 +321,9 @@ const Finances = () => {
                 <div className="p-2 rounded-lg bg-destructive/10">
                   <AlertTriangle className="h-5 w-5 text-destructive" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-lg sm:text-xl font-bold font-mono truncate">
-                    {formatCurrency(pendingExpense, displayCurrency)}
-                  </p>
-                  <p className="text-xs text-muted-foreground">
+                <div className="min-w-0 flex-1">
+                  <DualAmount usd={pendingExpense} rate={rate} />
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Por pagar{overdueCount > 0 ? ` · ${overdueCount} vencidos` : ""}
                   </p>
                 </div>
@@ -276,7 +332,6 @@ const Finances = () => {
           </Card>
         </div>
 
-        {/* Listas */}
         {isLoading ? (
           <Card variant="elevated">
             <CardContent className="py-12 flex items-center justify-center">
@@ -285,6 +340,68 @@ const Finances = () => {
           </Card>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2">
+            {/* Planes activos */}
+            <Card variant="elevated" className="lg:col-span-2">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-primary" />
+                  Planes de clientes
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {plans.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Sin planes. Se crean desde la ficha de cada cliente.
+                  </p>
+                ) : (
+                  <div className="divide-y divide-border/50">
+                    {plans.map((plan) => (
+                      <div key={plan.id} className="flex items-center gap-3 py-2.5">
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">
+                            {plan.client?.company_name || "Cliente"} · {plan.name}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {BILLING_CYCLE_LABELS[plan.billing_cycle]} ·{" "}
+                            {PAYMENT_METHOD_LABELS[plan.payment_method]}
+                            {plan.status === "active" &&
+                              ` · próximo: ${format(parseISO(plan.next_due_date), "dd MMM yyyy", { locale: es })}`}
+                          </p>
+                        </div>
+                        <div className="text-right flex-shrink-0">
+                          <p className="font-mono font-semibold">
+                            {formatCurrency(plan.amount, plan.currency)}
+                            <span className="text-[10px] text-muted-foreground ml-1">
+                              /{plan.billing_cycle === "monthly" ? "mes" : "año"}
+                            </span>
+                          </p>
+                          <p className="text-[10px] font-mono text-muted-foreground">
+                            ≈ {formatCurrency(toUSD(planMonthlyAmount(plan), plan.currency), "USD")}/mes
+                          </p>
+                        </div>
+                        <Badge
+                          className={cn(
+                            "text-[10px] px-1.5 py-0 flex-shrink-0",
+                            plan.status === "active"
+                              ? "bg-success/20 text-success"
+                              : plan.status === "paused"
+                                ? "bg-warning/20 text-warning"
+                                : "bg-destructive/20 text-destructive"
+                          )}
+                        >
+                          {plan.status === "active"
+                            ? "Activo"
+                            : plan.status === "paused"
+                              ? "Pausado"
+                              : "Cancelado"}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             <Card variant="elevated">
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">

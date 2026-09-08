@@ -285,6 +285,65 @@ export type Database = {
           },
         ]
       }
+      client_plans: {
+        Row: {
+          amount: number
+          billing_cycle: Database["public"]["Enums"]["plan_billing_cycle"]
+          client_id: string
+          created_at: string
+          currency: string
+          id: string
+          name: string
+          next_due_date: string
+          notes: string | null
+          payment_details: string | null
+          payment_method: Database["public"]["Enums"]["payment_method"]
+          start_date: string
+          status: Database["public"]["Enums"]["plan_status"]
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          billing_cycle?: Database["public"]["Enums"]["plan_billing_cycle"]
+          client_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          name: string
+          next_due_date?: string
+          notes?: string | null
+          payment_details?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          start_date?: string
+          status?: Database["public"]["Enums"]["plan_status"]
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          billing_cycle?: Database["public"]["Enums"]["plan_billing_cycle"]
+          client_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          name?: string
+          next_due_date?: string
+          notes?: string | null
+          payment_details?: string | null
+          payment_method?: Database["public"]["Enums"]["payment_method"]
+          start_date?: string
+          status?: Database["public"]["Enums"]["plan_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_plans_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       client_subscriptions: {
         Row: {
           client_id: string
@@ -741,6 +800,7 @@ export type Database = {
           id: string
           notes: string | null
           paid_date: string | null
+          plan_id: string | null
           recurrence: Database["public"]["Enums"]["transaction_recurrence"]
           status: Database["public"]["Enums"]["transaction_status"]
           type: Database["public"]["Enums"]["transaction_type"]
@@ -757,6 +817,7 @@ export type Database = {
           id?: string
           notes?: string | null
           paid_date?: string | null
+          plan_id?: string | null
           recurrence?: Database["public"]["Enums"]["transaction_recurrence"]
           status?: Database["public"]["Enums"]["transaction_status"]
           type: Database["public"]["Enums"]["transaction_type"]
@@ -773,6 +834,7 @@ export type Database = {
           id?: string
           notes?: string | null
           paid_date?: string | null
+          plan_id?: string | null
           recurrence?: Database["public"]["Enums"]["transaction_recurrence"]
           status?: Database["public"]["Enums"]["transaction_status"]
           type?: Database["public"]["Enums"]["transaction_type"]
@@ -784,6 +846,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "transactions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "client_plans"
             referencedColumns: ["id"]
           },
         ]
@@ -937,6 +1006,16 @@ export type Database = {
       client_status: "lead" | "active" | "paused" | "cancelled"
       company_role: "owner" | "viewer"
       discount_type: "none" | "percent" | "fixed"
+      payment_method:
+        | "transferencia"
+        | "efectivo"
+        | "tarjeta"
+        | "mercadopago"
+        | "paypal"
+        | "crypto"
+        | "otro"
+      plan_billing_cycle: "monthly" | "yearly"
+      plan_status: "active" | "paused" | "cancelled"
       pricing_mode: "catalog" | "custom"
       product_category:
         | "bot_whatsapp"
@@ -1084,6 +1163,17 @@ export const Constants = {
       client_status: ["lead", "active", "paused", "cancelled"],
       company_role: ["owner", "viewer"],
       discount_type: ["none", "percent", "fixed"],
+      payment_method: [
+        "transferencia",
+        "efectivo",
+        "tarjeta",
+        "mercadopago",
+        "paypal",
+        "crypto",
+        "otro",
+      ],
+      plan_billing_cycle: ["monthly", "yearly"],
+      plan_status: ["active", "paused", "cancelled"],
       pricing_mode: ["catalog", "custom"],
       product_category: [
         "bot_whatsapp",

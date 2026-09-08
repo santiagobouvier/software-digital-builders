@@ -69,6 +69,7 @@ export const TransactionList = ({
         const base = parseISO(tx.due_date);
         const nextDue =
           tx.recurrence === "monthly" ? addMonths(base, 1) : addYears(base, 1);
+        const nextDueStr = format(nextDue, "yyyy-MM-dd");
         const { error: nextError } = await supabase.from("transactions").insert({
           type: tx.type,
           status: "pending",
@@ -76,12 +77,21 @@ export const TransactionList = ({
           category: tx.category,
           amount: tx.amount,
           currency: tx.currency,
-          due_date: format(nextDue, "yyyy-MM-dd"),
+          due_date: nextDueStr,
           recurrence: tx.recurrence,
           client_id: tx.client_id,
+          plan_id: tx.plan_id,
           notes: tx.notes,
         });
         if (nextError) throw nextError;
+
+        // Mantener actualizado el próximo vencimiento del plan
+        if (tx.plan_id) {
+          await supabase
+            .from("client_plans")
+            .update({ next_due_date: nextDueStr })
+            .eq("id", tx.plan_id);
+        }
         toast({
           title: "Marcado como pagado",
           description: `Se generó la próxima cuota para el ${format(nextDue, "dd MMM yyyy", { locale: es })}.`,

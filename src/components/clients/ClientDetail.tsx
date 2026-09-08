@@ -23,6 +23,7 @@ import { es } from "date-fns/locale";
 import { ClientAvatar } from "./ClientAvatar";
 import { TransactionList } from "@/components/finance/TransactionList";
 import { TransactionFormDialog } from "@/components/finance/TransactionFormDialog";
+import { ClientPlansCard } from "@/components/finance/ClientPlansCard";
 import { EventFormDialog } from "@/components/calendar/EventFormDialog";
 import type { Client } from "@/types/client";
 import { CLIENT_STATUS_LABELS, CLIENT_STATUS_COLORS } from "@/types/client";
@@ -165,6 +166,13 @@ export const ClientDetail = ({
           )}
         </CardContent>
       </Card>
+
+      {/* Plan de pago recurrente */}
+      <ClientPlansCard
+        clientId={client.id}
+        clientName={client.company_name}
+        onChanged={loadClientData}
+      />
 
       {/* Resumen financiero del cliente */}
       <Card variant="elevated">

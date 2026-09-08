@@ -4,6 +4,16 @@ export type TransactionType = "income" | "expense";
 export type TransactionStatus = "pending" | "paid" | "cancelled";
 export type TransactionRecurrence = "none" | "monthly" | "yearly";
 export type CalendarEventType = "meeting" | "payment" | "delivery" | "reminder" | "other";
+export type PlanBillingCycle = "monthly" | "yearly";
+export type PlanStatus = "active" | "paused" | "cancelled";
+export type PaymentMethod =
+  | "transferencia"
+  | "efectivo"
+  | "tarjeta"
+  | "mercadopago"
+  | "paypal"
+  | "crypto"
+  | "otro";
 
 export interface Transaction {
   id: string;
@@ -17,11 +27,36 @@ export interface Transaction {
   due_date: string;
   paid_date: string | null;
   recurrence: TransactionRecurrence;
+  plan_id: string | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
   // Join opcional
   client?: { company_name: string } | null;
+}
+
+export interface ClientPlan {
+  id: string;
+  client_id: string;
+  name: string;
+  amount: number;
+  currency: string;
+  billing_cycle: PlanBillingCycle;
+  payment_method: PaymentMethod;
+  payment_details: string | null;
+  status: PlanStatus;
+  start_date: string;
+  next_due_date: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+  // Join opcional
+  client?: { company_name: string } | null;
+}
+
+/** Aporte mensual de un plan (anual se prorratea /12) en su propia moneda */
+export function planMonthlyAmount(plan: ClientPlan): number {
+  return plan.billing_cycle === "monthly" ? plan.amount : plan.amount / 12;
 }
 
 export interface CalendarEvent {
@@ -54,6 +89,33 @@ export const RECURRENCE_LABELS: Record<TransactionRecurrence, string> = {
   none: "Único",
   monthly: "Mensual",
   yearly: "Anual",
+};
+
+export const BILLING_CYCLE_LABELS: Record<PlanBillingCycle, string> = {
+  monthly: "Mensual",
+  yearly: "Anual",
+};
+
+export const PLAN_STATUS_LABELS: Record<PlanStatus, string> = {
+  active: "Activo",
+  paused: "Pausado",
+  cancelled: "Cancelado",
+};
+
+export const PLAN_STATUS_COLORS: Record<PlanStatus, string> = {
+  active: "bg-success/20 text-success",
+  paused: "bg-warning/20 text-warning",
+  cancelled: "bg-destructive/20 text-destructive",
+};
+
+export const PAYMENT_METHOD_LABELS: Record<PaymentMethod, string> = {
+  transferencia: "Transferencia",
+  efectivo: "Efectivo",
+  tarjeta: "Tarjeta",
+  mercadopago: "Mercado Pago",
+  paypal: "PayPal",
+  crypto: "Crypto",
+  otro: "Otro",
 };
 
 export const EVENT_TYPE_LABELS: Record<CalendarEventType, string> = {
