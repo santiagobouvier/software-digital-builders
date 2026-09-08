@@ -25,22 +25,14 @@ import {
 } from "lucide-react";
 import type { Transaction, CalendarEvent, ClientPlan } from "@/types/finance";
 import { EVENT_TYPE_COLORS, EVENT_TYPE_LABELS, planMonthlyAmount } from "@/types/finance";
-
-const DualAmount = ({ usd, rate }: { usd: number; rate: number }) => (
-  <div className="min-w-0">
-    <p className="text-lg sm:text-xl font-bold font-mono truncate">
-      {formatCurrency(usd, "USD")}
-    </p>
-    <p className="text-[11px] font-mono text-muted-foreground truncate">
-      {formatCurrency(usd * rate, "UYU")}
-    </p>
-  </div>
-);
+import { useDisplayCurrency } from "@/hooks/useDisplayCurrency";
+import { DualAmount } from "@/components/finance/DualAmount";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const { isProfessional, isClient, isLoading: roleLoading } = useUserRole();
   const { convert, rate } = useExchangeRate();
+  const [displayCurrency] = useDisplayCurrency();
   const [userName, setUserName] = useState<string>("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [plans, setPlans] = useState<ClientPlan[]>([]);
@@ -217,7 +209,7 @@ const Dashboard = () => {
                   <RefreshCw className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={summary.mrrUSD} rate={rate} />
+                  <DualAmount usd={summary.mrrUSD} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Ingreso mensual (planes)</p>
                 </div>
               </div>
@@ -230,7 +222,7 @@ const Dashboard = () => {
                   <TrendingUp className="h-5 w-5 text-success" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={summary.incomeMonth} rate={rate} />
+                  <DualAmount usd={summary.incomeMonth} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Cobrado este mes</p>
                 </div>
               </div>
@@ -243,7 +235,7 @@ const Dashboard = () => {
                   <TrendingDown className="h-5 w-5 text-destructive" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={summary.expenseMonth} rate={rate} />
+                  <DualAmount usd={summary.expenseMonth} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Gastado este mes</p>
                 </div>
               </div>
@@ -256,7 +248,7 @@ const Dashboard = () => {
                   <Wallet className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={summary.balance} rate={rate} />
+                  <DualAmount usd={summary.balance} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Balance del mes</p>
                 </div>
               </div>

@@ -19,11 +19,21 @@ import {
 import { Navigate } from "react-router-dom";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useExchangeRate } from "@/hooks/useExchangeRate";
+import { useDisplayCurrency, DisplayCurrency } from "@/hooks/useDisplayCurrency";
 import { ExchangeRateEditor } from "@/components/ExchangeRateEditor";
 import { TransactionFormDialog } from "@/components/finance/TransactionFormDialog";
 import { TransactionList } from "@/components/finance/TransactionList";
+import { DualAmount } from "@/components/finance/DualAmount";
+import { YearProjection } from "@/components/finance/YearProjection";
 import { formatCurrency } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { format, isSameMonth, parseISO, isBefore, startOfDay } from "date-fns";
 import { es } from "date-fns/locale";
 import type { Client } from "@/types/client";
@@ -36,21 +46,10 @@ import {
   PAYMENT_METHOD_LABELS,
 } from "@/types/finance";
 
-/** Valor en USD mostrado grande, con su equivalente en pesos abajo */
-const DualAmount = ({ usd, rate, className }: { usd: number; rate: number; className?: string }) => (
-  <div className="min-w-0">
-    <p className={cn("text-lg sm:text-xl font-bold font-mono truncate", className)}>
-      {formatCurrency(usd, "USD")}
-    </p>
-    <p className="text-[11px] font-mono text-muted-foreground truncate">
-      {formatCurrency(usd * rate, "UYU")}
-    </p>
-  </div>
-);
-
 const Finances = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
   const { rate, updateExchangeRate, convert } = useExchangeRate();
+  const [displayCurrency, setDisplayCurrency] = useDisplayCurrency();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [plans, setPlans] = useState<ClientPlan[]>([]);
   const [clients, setClients] = useState<Client[]>([]);
@@ -199,6 +198,18 @@ const Finances = () => {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <ExchangeRateEditor rate={rate} onUpdate={updateExchangeRate} />
+            <Select
+              value={displayCurrency}
+              onValueChange={(v) => setDisplayCurrency(v as DisplayCurrency)}
+            >
+              <SelectTrigger className="w-[110px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="USD">Ver en USD</SelectItem>
+                <SelectItem value="UYU">Ver en UYU</SelectItem>
+              </SelectContent>
+            </Select>
             <Button variant="outline" onClick={() => openNew("expense")} className="gap-2">
               <TrendingDown className="h-4 w-4 text-destructive" />
               Nuevo gasto
@@ -219,7 +230,7 @@ const Finances = () => {
                   <RefreshCw className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={mrrUSD} rate={rate} />
+                  <DualAmount usd={mrrUSD} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Ingreso mensual (planes activos)
                   </p>
@@ -235,7 +246,7 @@ const Finances = () => {
                   <TrendingUp className="h-5 w-5 text-success" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={mrrUSD * 12} rate={rate} />
+                  <DualAmount usd={mrrUSD * 12} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Proyección anual</p>
                 </div>
               </div>
@@ -257,6 +268,15 @@ const Finances = () => {
           </Card>
         </div>
 
+        {/* Proyección anual mes a mes */}
+        <YearProjection
+          transactions={transactions}
+          plans={plans}
+          rate={rate}
+          displayCurrency={displayCurrency}
+          toUSD={toUSD}
+        />
+
         {/* Movimiento real del mes */}
         <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-5">
           <Card variant="elevated">
@@ -266,7 +286,7 @@ const Finances = () => {
                   <TrendingUp className="h-5 w-5 text-success" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={paidIncomeMonth} rate={rate} />
+                  <DualAmount usd={paidIncomeMonth} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Cobrado este mes</p>
                 </div>
               </div>
@@ -280,7 +300,7 @@ const Finances = () => {
                   <TrendingDown className="h-5 w-5 text-destructive" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={paidExpenseMonth} rate={rate} />
+                  <DualAmount usd={paidExpenseMonth} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Gastado este mes</p>
                 </div>
               </div>
@@ -294,7 +314,7 @@ const Finances = () => {
                   <Wallet className="h-5 w-5 text-primary" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={balanceMonth} rate={rate} />
+                  <DualAmount usd={balanceMonth} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Balance del mes</p>
                 </div>
               </div>
@@ -308,7 +328,7 @@ const Finances = () => {
                   <CalendarClock className="h-5 w-5 text-warning" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={pendingIncome} rate={rate} />
+                  <DualAmount usd={pendingIncome} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">Por cobrar</p>
                 </div>
               </div>
@@ -322,7 +342,7 @@ const Finances = () => {
                   <AlertTriangle className="h-5 w-5 text-destructive" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <DualAmount usd={pendingExpense} rate={rate} />
+                  <DualAmount usd={pendingExpense} rate={rate} displayCurrency={displayCurrency} />
                   <p className="text-xs text-muted-foreground mt-0.5">
                     Por pagar{overdueCount > 0 ? ` · ${overdueCount} vencidos` : ""}
                   </p>
