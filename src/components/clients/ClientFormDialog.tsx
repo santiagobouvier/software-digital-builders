@@ -197,7 +197,7 @@ export const ClientFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-[calc(100vw-2rem)] rounded-lg sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{client ? "Editar cliente" : "Nuevo cliente"}</DialogTitle>
           <DialogDescription>

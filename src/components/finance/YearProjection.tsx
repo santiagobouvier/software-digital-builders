@@ -158,8 +158,9 @@ export const YearProjection = ({
           </span>
         </div>
 
-        <div className="h-[240px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
+        <div className="overflow-x-auto -mx-2 px-2">
+          <div className="h-[240px] w-full min-w-[520px]">
+            <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }} barCategoryGap="25%">
               <CartesianGrid
                 vertical={false}
@@ -236,7 +237,8 @@ export const YearProjection = ({
                 isAnimationActive={false}
               />
             </BarChart>
-          </ResponsiveContainer>
+            </ResponsiveContainer>
+          </div>
         </div>
 
         {/* Lectura de meses */}

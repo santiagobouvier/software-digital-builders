@@ -11,9 +11,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Plus, Search, Users, TrendingUp } from "lucide-react";
+import { Loader2, Plus, Search, Users, TrendingUp, ArrowLeft } from "lucide-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useExchangeRate } from "@/hooks/useExchangeRate";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Navigate } from "react-router-dom";
 import { ClientList } from "@/components/clients/ClientList";
 import { ClientDetail } from "@/components/clients/ClientDetail";
@@ -25,6 +26,7 @@ type DisplayCurrency = "USD" | "UYU";
 const Clients = () => {
   const { isProfessional, isLoading: roleLoading } = useUserRole();
   const { convert } = useExchangeRate();
+  const isMobile = useIsMobile();
   const [clients, setClients] = useState<Client[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
@@ -187,9 +189,37 @@ const Clients = () => {
           </Select>
         </div>
 
-        {/* Contenido principal */}
-        <div className="grid gap-4 lg:grid-cols-[1fr,420px]">
-          <div className="order-2 lg:order-1">
+        {/* Contenido principal: en móvil, lista → ficha con "volver"; en desktop, dos columnas */}
+        {isMobile ? (
+          selectedClient ? (
+            <div className="space-y-3">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 -ml-2"
+                onClick={() => setSelectedClient(null)}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Volver a la lista
+              </Button>
+              <ClientDetail
+                client={selectedClient}
+                onEdit={() => handleEditClient(selectedClient)}
+                convert={convert}
+                displayCurrency={displayCurrency}
+              />
+            </div>
+          ) : (
+            <ClientList
+              clients={filteredClients}
+              isLoading={isLoading}
+              selectedId={undefined}
+              onSelect={(client) => setSelectedClient(client)}
+              onEdit={handleEditClient}
+            />
+          )
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-[1fr,420px]">
             <ClientList
               clients={filteredClients}
               isLoading={isLoading}
@@ -197,9 +227,6 @@ const Clients = () => {
               onSelect={(client) => setSelectedClient(client)}
               onEdit={handleEditClient}
             />
-          </div>
-
-          <div className="order-1 lg:order-2">
             <ClientDetail
               client={selectedClient}
               onEdit={() => selectedClient && handleEditClient(selectedClient)}
@@ -207,7 +234,7 @@ const Clients = () => {
               displayCurrency={displayCurrency}
             />
           </div>
-        </div>
+        )}
 
         <ClientFormDialog
           open={isFormOpen}

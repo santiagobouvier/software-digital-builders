@@ -199,7 +199,7 @@ export const PlanFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[calc(100vw-2rem)] rounded-lg sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{plan ? "Editar plan" : "Nuevo plan de pago"}</DialogTitle>
           <DialogDescription>

@@ -195,7 +195,7 @@ export const ClientPlansCard = ({ clientId, clientName, onChanged }: ClientPlans
                         ` · próximo: ${format(parseISO(plan.next_due_date), "dd MMM yyyy", { locale: es })}`}
                     </p>
                   </div>
-                  <p className="font-mono font-semibold text-success flex-shrink-0">
+                  <p className="font-mono font-semibold text-success flex-shrink-0 text-sm sm:text-base">
                     {formatCurrency(plan.amount, plan.currency)}
                     <span className="text-[10px] text-muted-foreground ml-1">
                       /{plan.billing_cycle === "monthly" ? "mes" : "año"}

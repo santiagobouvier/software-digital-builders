@@ -126,11 +126,11 @@ export const TransactionList = ({
   return (
     <div className="divide-y divide-border/50">
       {transactions.map((tx) => (
-        <div key={tx.id} className="flex items-center gap-3 py-3">
+        <div key={tx.id} className="flex items-center gap-2 sm:gap-3 py-3">
           {tx.type === "income" ? (
-            <ArrowUpCircle className="h-5 w-5 text-success flex-shrink-0" />
+            <ArrowUpCircle className="h-5 w-5 text-success flex-shrink-0 hidden sm:block" />
           ) : (
-            <ArrowDownCircle className="h-5 w-5 text-destructive flex-shrink-0" />
+            <ArrowDownCircle className="h-5 w-5 text-destructive flex-shrink-0 hidden sm:block" />
           )}
 
           <div className="flex-1 min-w-0">
@@ -153,7 +153,7 @@ export const TransactionList = ({
           <div className="text-right flex-shrink-0">
             <p
               className={cn(
-                "font-mono font-semibold",
+                "font-mono font-semibold text-sm sm:text-base",
                 tx.type === "income" ? "text-success" : "text-destructive"
               )}
             >

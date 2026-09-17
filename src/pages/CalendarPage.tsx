@@ -251,7 +251,7 @@ const CalendarPage = () => {
                     {WEEKDAYS.map((d) => (
                       <div
                         key={d}
-                        className="text-center text-xs font-medium text-muted-foreground py-1"
+                        className="text-center text-[10px] sm:text-xs font-medium text-muted-foreground py-1"
                       >
                         {d}
                       </div>
@@ -267,7 +267,7 @@ const CalendarPage = () => {
                           key={day.toISOString()}
                           onClick={() => setSelectedDate(day)}
                           className={cn(
-                            "min-h-[64px] sm:min-h-[80px] p-1.5 rounded-lg border text-left transition-colors flex flex-col",
+                            "min-h-[48px] p-1 sm:min-h-[80px] sm:p-1.5 rounded-lg border text-left transition-colors flex flex-col",
                             inMonth ? "border-border/50" : "border-transparent opacity-40",
                             selected
                               ? "bg-primary/10 border-primary/50"
@@ -283,7 +283,24 @@ const CalendarPage = () => {
                           >
                             {format(day, "d")}
                           </span>
-                          <div className="mt-auto space-y-0.5">
+                          {/* Móvil: puntos por evento; desktop: chips con título */}
+                          <div className="mt-auto flex flex-wrap gap-0.5 sm:hidden">
+                            {dayEvents.slice(0, 4).map((ev) => (
+                              <span
+                                key={ev.id}
+                                className={cn(
+                                  "inline-block h-1.5 w-1.5 rounded-full",
+                                  ev.completed ? "bg-muted-foreground/40" : "bg-primary"
+                                )}
+                              />
+                            ))}
+                            {dayEvents.length > 4 && (
+                              <span className="text-[8px] leading-none text-muted-foreground">
+                                +{dayEvents.length - 4}
+                              </span>
+                            )}
+                          </div>
+                          <div className="mt-auto space-y-0.5 hidden sm:block">
                             {dayEvents.slice(0, 2).map((ev) => (
                               <div
                                 key={ev.id}

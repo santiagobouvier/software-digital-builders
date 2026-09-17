@@ -254,7 +254,7 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
-          <Card variant="elevated">
+          <Card variant="elevated" className="col-span-2 lg:col-span-1">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-warning/10">

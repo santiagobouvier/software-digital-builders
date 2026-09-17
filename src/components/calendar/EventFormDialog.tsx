@@ -122,7 +122,7 @@ export const EventFormDialog = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-[calc(100vw-2rem)] rounded-lg sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{event ? "Editar evento" : "Nuevo evento"}</DialogTitle>
           <DialogDescription>Agendá reuniones, entregas y recordatorios.</DialogDescription>

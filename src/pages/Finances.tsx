@@ -210,11 +210,15 @@ const Finances = () => {
                 <SelectItem value="UYU">Ver en UYU</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" onClick={() => openNew("expense")} className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => openNew("expense")}
+              className="gap-2 flex-1 sm:flex-none"
+            >
               <TrendingDown className="h-4 w-4 text-destructive" />
               Nuevo gasto
             </Button>
-            <Button onClick={() => openNew("income")} className="gap-2">
+            <Button onClick={() => openNew("income")} className="gap-2 flex-1 sm:flex-none">
               <Plus className="h-4 w-4" />
               Nuevo cobro
             </Button>
@@ -335,7 +339,7 @@ const Finances = () => {
             </CardContent>
           </Card>
 
-          <Card variant="elevated">
+          <Card variant="elevated" className="col-span-2 lg:col-span-1">
             <CardContent className="pt-4 pb-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-destructive/10">
@@ -389,7 +393,7 @@ const Finances = () => {
                           </p>
                         </div>
                         <div className="text-right flex-shrink-0">
-                          <p className="font-mono font-semibold">
+                          <p className="font-mono font-semibold text-sm sm:text-base">
                             {formatCurrency(plan.amount, plan.currency)}
                             <span className="text-[10px] text-muted-foreground ml-1">
                               /{plan.billing_cycle === "monthly" ? "mes" : "año"}
