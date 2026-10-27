@@ -14,3 +14,32 @@
 
 @media(min-width:701px) and (max-height:850px){.db-demo-pin{min-height:640px;padding-top:35px;padding-bottom:25px;gap:15px 5%}.db-demo-theatre{min-height:350px}.db-demo-heading h2{font-size:clamp(38px,4vw,60px);margin:20px 0}.db-demo-stages p{font-size:12px}.db-demo-stages h3{font-size:19px}}
 @media(max-width:700px){.db-demo-story{height:auto}.db-demo-pin{position:relative}.db-demo-stages article{opacity:1!important;transform:none!important}}
+/* Mobile keeps one scene in view while its three explanatory stages advance. */
+@media(max-width:700px){
+ .db-demo-story{height:330svh}
+ .db-demo-pin{position:sticky;height:100svh;min-height:0;padding:28px 7% 55px;gap:14px;justify-content:space-between}
+ .db-demo-heading h2{font-size:clamp(28px,8vw,38px);margin:12px 0}
+ .db-demo-heading>p{font-size:12px;line-height:1.5}
+ .db-demo-theatre{min-height:0;flex:1;max-height:390px}
+ .db-demo-sources>div{font-size:9px;padding:9px;gap:6px}
+ .db-demo-sources small{font-size:7px}
+ .db-demo-engine{min-height:78px;margin:18px 0;gap:7px}
+ .db-demo-result{padding:12px 16px}
+ .db-demo-stages{position:relative;display:block;flex:0 0 116px}
+ .db-demo-stages article{position:absolute;inset:0;opacity:var(--phase-opacity,1)!important;transform:none!important}
+ .db-demo-stages article>span{top:13px}
+ .db-demo-note{font-size:6px;line-height:1.5}
+ .db-demo-still{height:auto}
+ .db-demo-still .db-demo-pin{position:relative;height:auto;min-height:0}
+ .db-demo-still .db-demo-theatre{min-height:340px}
+ .db-demo-still .db-demo-stages{display:grid;flex:auto;gap:18px}
+ .db-demo-still .db-demo-stages article{position:relative;opacity:1!important}
+}
+@media(max-width:700px) and (max-height:700px){
+ .db-demo-pin{padding-top:18px;padding-bottom:40px;gap:8px}
+ .db-demo-heading h2{font-size:27px;margin:8px 0}.db-demo-heading>p{font-size:11px}
+ .db-demo-theatre{max-height:265px}.db-demo-engine{min-height:62px;margin:11px 0}.db-demo-engine>svg{display:none}
+ .db-demo-result>strong{font-size:14px;margin:8px 0}.db-demo-result>p{font-size:10px}.db-demo-result>div{margin-top:8px;padding-top:7px}
+ .db-demo-stages{flex-basis:105px}.db-demo-stages p{font-size:11px}
+}
+@media(max-width:700px){.db-demo-sources>div{transform:translateX(var(--mobile-x,0px)) rotate(-5deg)!important;min-width:0}.db-demo-sources>div+div{transform:translateX(var(--mobile-x,0px)) rotate(5deg)!important}.db-demo-note{padding:0 44px;text-align:center}.db-demo-pin{padding-bottom:70px}}

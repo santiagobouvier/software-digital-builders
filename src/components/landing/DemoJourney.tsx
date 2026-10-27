@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionStyle } from 'framer-motion';
 import { ArrowUpRight, Check, FileText, Mail, Sparkles } from 'lucide-react';
 import './DemoJourney.css';
 
@@ -25,6 +25,8 @@ function DemoScene({ example }: { example: typeof examples[number] }) {
   const scale = useTransform(progress, [0, .4, .8, 1], [.82, 1, 1.08, 1.08]);
   const spread = useTransform(progress, [0, .45], [90, 0]);
   const left = useTransform(spread, value => -value);
+  const mobileLeft = useTransform(left, value => `${value * .22}px`);
+  const mobileRight = useTransform(spread, value => `${value * .22}px`);
   const output = useTransform(progress, [.52, .75], [0, 1]);
   const rise = useTransform(progress, [.52, .75], [45, 0]);
   const scan = useTransform(progress, [.1, .6], ['0%', '100%']);
@@ -35,8 +37,8 @@ function DemoScene({ example }: { example: typeof examples[number] }) {
       <div className="db-demo-theatre" aria-hidden="true">
         <motion.div className="db-demo-orbit" style={reduced ? {} : { rotate, scale }}><div/><div/></motion.div>
         <div className="db-demo-sources">
-          <motion.div style={reduced ? {} : { x: left, rotate: -7 }}><Mail size={19}/><span>{isAgent ? 'Consulta del equipo' : 'Nuevo pedido'}<small>{isAgent ? '¿Qué falta para avanzar?' : 'Documento recibido'}</small></span></motion.div>
-          <motion.div style={reduced ? {} : { x: spread, rotate: 7 }}><FileText size={19}/><span>{isAgent ? 'Fuentes autorizadas' : 'Datos del pedido'}<small>{isAgent ? 'Minuta · documento · historial' : 'Detalle · responsable · fecha'}</small></span></motion.div>
+          <motion.div style={reduced ? {} : { x: left, rotate: -7, '--mobile-x': mobileLeft } as MotionStyle}><Mail size={19}/><span>{isAgent ? 'Consulta del equipo' : 'Nuevo pedido'}<small>{isAgent ? '¿Qué falta para avanzar?' : 'Documento recibido'}</small></span></motion.div>
+          <motion.div style={reduced ? {} : { x: spread, rotate: 7, '--mobile-x': mobileRight } as MotionStyle}><FileText size={19}/><span>{isAgent ? 'Fuentes autorizadas' : 'Datos del pedido'}<small>{isAgent ? 'Minuta · documento · historial' : 'Detalle · responsable · fecha'}</small></span></motion.div>
         </div>
         <motion.div className="db-demo-engine" style={reduced ? {} : { scale }}><Sparkles/><strong>{isAgent ? 'Contexto conectado' : 'Información organizada'}</strong><span>{isAgent ? 'BUSCAR → RELACIONAR → PREPARAR' : 'LEER → VALIDAR → ORGANIZAR'}</span><motion.div className="db-demo-scan" style={reduced ? { display: 'none' } : { top: scan }}/></motion.div>
         <motion.div className="db-demo-result" style={reduced ? {} : { opacity: output, y: rise }}><span><Check size={17}/>{isAgent ? 'BORRADOR PARA REVISIÓN' : 'LISTO PARA EL EQUIPO'}</span><strong>{isAgent ? 'Lo importante, a mano.' : 'Cada pedido tiene un próximo paso.'}</strong><p>{isAgent ? 'Resumen con fuentes y pendientes por confirmar. Nada se envía automáticamente.' : 'Responsable asignado, información reunida y seguimiento visible.'}</p><div>{isAgent ? 'Revisión humana' : 'Estado: preparado'}<ArrowUpRight size={18}/></div></motion.div>
@@ -51,7 +53,8 @@ function DemoScene({ example }: { example: typeof examples[number] }) {
 function DemoStage({ step, index, progress, reduced }: { step: { name: string; detail: string }; index: number; progress: import('framer-motion').MotionValue<number>; reduced: boolean }) {
   const opacity = useTransform(progress, [index * .26, index * .26 + .15], [.38, 1]);
   const y = useTransform(progress, [index * .26, index * .26 + .15], [15, 0]);
-  return <motion.article style={reduced ? {} : { opacity, y }}><span>0{index + 1}</span><h3>{step.name}</h3><p>{step.detail}</p></motion.article>;
+  const phase = useTransform(progress, index === 0 ? [0, .24, .32] : index === 1 ? [.24, .32, .57, .65] : [.57, .65, 1], index === 0 ? [1, 1, 0] : index === 1 ? [0, 1, 1, 0] : [0, 1, 1]);
+  return <motion.article style={reduced ? {} : { opacity, y, '--phase-opacity': phase } as MotionStyle}><span>0{index + 1}</span><h3>{step.name}</h3><p>{step.detail}</p></motion.article>;
 }
 
 export function DemoJourney() { return <div className="db-demo-collection">{examples.map(example => <DemoScene key={example.number} example={example}/>)}</div>; }
