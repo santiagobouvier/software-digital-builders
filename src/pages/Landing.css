@@ -70,3 +70,5 @@ html:has(.db-site){scroll-behavior:smooth}
 @media(prefers-reduced-motion:reduce){.db-menu-immersive[data-state=open] .db-menu-halo{animation:none}}
 
 @media(max-width:700px){.db-nav>.db-nav-cta{display:none}}
+
+@media(max-width:700px){.db-nav>.db-mobile-menu{margin-left:auto;flex-shrink:0}}
