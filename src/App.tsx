@@ -2,17 +2,17 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { lazy, Suspense, useEffect, useState } from "react";
+
 import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Users from "./pages/Users";
-import Clients from "./pages/Clients";
-import Finances from "./pages/Finances";
-import CalendarPage from "./pages/CalendarPage";
-import NotFound from "./pages/NotFound";
+const Login = lazy(() => import("./pages/Login"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Users = lazy(() => import("./pages/Users"));
+const Clients = lazy(() => import("./pages/Clients"));
+const Finances = lazy(() => import("./pages/Finances"));
+const CalendarPage = lazy(() => import("./pages/CalendarPage"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
@@ -21,19 +21,19 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsAuthenticated(!!session);
-        setIsLoading(false);
-      }
-    );
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsAuthenticated(!!session);
-      setIsLoading(false);
+    let active = true;
+    let unsubscribe: (() => void) | undefined;
+    import('@/integrations/supabase/client').then(({ supabase }) => {
+      if (!active) return;
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (active) { setIsAuthenticated(!!session); setIsLoading(false); }
+      });
+      unsubscribe = () => subscription.unsubscribe();
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (active) { setIsAuthenticated(!!session); setIsLoading(false); }
+      });
     });
-
-    return () => subscription.unsubscribe();
+    return () => { active = false; unsubscribe?.(); };
   }, []);
 
   if (isLoading) {
@@ -51,12 +51,25 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   return <>{children}</>;
 };
 
+const RouteMetadata = () => {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const robots = document.querySelector('meta[name="robots"]');
+    robots?.setAttribute('content', pathname === '/' ? 'index, follow, max-image-preview:large' : 'noindex, follow');
+    const canonical = document.querySelector('link[rel="canonical"]');
+    canonical?.setAttribute('href', new URL(pathname, 'https://www.digitalbuilders.net').href);
+  }, [pathname]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RouteMetadata />
+        <Suspense fallback={<div role="status" aria-label="Cargando" />}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -102,6 +115,7 @@ const App = () => (
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
