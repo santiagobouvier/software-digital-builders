@@ -6,6 +6,7 @@ import { FlowSculpture } from '@/components/landing/FlowSculpture';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { VisionJourney, FlowJourney, ServicesJourney, ProcessJourney, ContactJourney } from '@/components/landing/ScrollJourney';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
+import { DemoJourney } from '@/components/landing/DemoJourney';
 import './Landing.css';
 
 const services = [
@@ -59,6 +60,7 @@ export default function Landing() {
         </div>
       </section>
       <ServicesJourney services={services}/>
+      <DemoJourney/>
       <ProcessJourney/>
       <ContactJourney/>
     </main>
