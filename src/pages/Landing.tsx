@@ -7,6 +7,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/com
 import { VisionJourney, FlowJourney, ServicesJourney, ProcessJourney, ContactJourney } from '@/components/landing/ScrollJourney';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { DemoJourney } from '@/components/landing/DemoJourney';
+import { CriterionJourney } from '@/components/landing/CriterionJourney';
 import './Landing.css';
 
 const services = [
@@ -48,6 +49,7 @@ export default function Landing() {
         {!reduced && <motion.div className="db-hero-chapter" style={{opacity:nextOpacity,y:nextY}} aria-hidden="true"><span>LA PRÓXIMA VERSIÓN DE TU NEGOCIO</span><p>Menos fricción.<br/>Más <em>evolución.</em></p><small>Conectamos lo que hoy trabaja separado.</small></motion.div>}
         <div className="db-hero-bottom"><a href="#vision"><ArrowDown size={18}/> EXPLORÁ LO QUE PODEMOS HACER</a><button onClick={()=>setPaused(!paused)} aria-label={paused?'Reanudar animación':'Pausar animación'}>{paused?<Play size={16}/>:<Pause size={16}/>}<span>{paused?'Reanudar':'Pausar'}</span></button><span>DISEÑADO PARA AVANZAR ↗</span></div>
       </div></section>
+      <CriterionJourney/>
       <VisionJourney/>
       <FlowJourney/>
       <section className="db-operating-steps db-section" aria-labelledby="operating-title">
