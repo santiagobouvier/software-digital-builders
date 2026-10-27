@@ -4,7 +4,7 @@ import { ArrowUpRight, ArrowUp, ArrowDown, Pause, Play, Menu } from 'lucide-reac
 import { Logo } from '@/components/Logo';
 import { FlowSculpture } from '@/components/landing/FlowSculpture';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
-import { VisionJourney, FlowJourney, ServicesJourney, ProcessJourney, ExperienceJourney, ContactJourney } from '@/components/landing/ScrollJourney';
+import { VisionJourney, FlowJourney, ServicesJourney, ProcessJourney, ContactJourney } from '@/components/landing/ScrollJourney';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import './Landing.css';
 
@@ -14,8 +14,7 @@ const services = [
   {n:'03',title:'Agentes de inteligencia artificial',tag:'IA CON UN TRABAJO CONCRETO',text:'Implementamos inteligencia artificial para empresas: agentes que consultan información, organizan documentos y asisten a tu equipo. Con permisos definidos y revisión humana donde corresponde.',items:['Asistentes internos','Clasificación de información','Acciones conectadas a tus sistemas']},
   {n:'04',title:'Diseño y desarrollo web',tag:'UNA PRESENCIA A TU ALTURA',text:'Creamos páginas web para empresas, sitios institucionales y landing pages. Diseño a medida, navegación clara y una experiencia responsive para mostrar tu negocio en cada pantalla.',items:['Sitios institucionales','Landing pages','Experiencias interactivas']},
 ];
-const clients = [ ['Consteel','https://www.consteelconstrucciones.com/'], ['Shinrin-yoku','https://shinrinyoku.uy'], ['Quevedo Arte','https://quevedoarte.com'], ['The English Room','https://theenglishroom.edu.uy/'], ['Tabeira de León','https://tabeiradeleon.com/'] ];
-const links=[['Soluciones','#soluciones'],['Cómo trabajamos','#proceso'],['Experiencia','#experiencia']];
+const links=[['Soluciones','#soluciones'],['Cómo trabajamos','#proceso']];
 export default function Landing() {
   const [paused,setPaused]=useState(false);
   const reduced=useReducedMotion();
@@ -61,7 +60,6 @@ export default function Landing() {
       </section>
       <ServicesJourney services={services}/>
       <ProcessJourney/>
-      <ExperienceJourney clients={clients}/>
       <ContactJourney/>
     </main>
     <footer className="db-footer"><Logo size="md"/><span>SOFTWARE CON PROPÓSITO.</span><div><a href="https://www.instagram.com/digitalbuilders_oficial/" target="_blank" rel="noopener noreferrer">Instagram <ArrowUpRight size={14}/></a><span>© {new Date().getFullYear()} Digital Builders</span></div><a href="#inicio" aria-label="Volver al inicio"><ArrowUpRight/></a></footer>
