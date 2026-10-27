@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { ArrowUpRight, ArrowUp, ArrowDown, Pause, Play, Menu } from 'lucide-react';
+import { ArrowUpRight, ArrowUp, ArrowDown, Pause, Play, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/Logo';
 import { FlowSculpture } from '@/components/landing/FlowSculpture';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
@@ -39,7 +39,13 @@ export default function Landing() {
       <a href="#inicio" aria-label="Digital Builders, inicio"><Logo size="md" /></a>
       <nav aria-label="Navegación principal">{links.map(([label,href])=><a key={href} href={href}>{label}</a>)}</nav>
       <a className="db-nav-cta" href="#contacto">Hablemos <ArrowUpRight size={17}/></a>
-      <Sheet><SheetTrigger className="db-mobile-menu" aria-label="Abrir menú"><Menu/></SheetTrigger><SheetContent className="db-mobile-sheet"><SheetTitle>Digital Builders</SheetTitle>{[...links,['Hablemos','#contacto']].map(([label,href])=><SheetClose asChild key={href}><a href={href}>{label}<ArrowUpRight/></a></SheetClose>)}</SheetContent></Sheet>
+      <Sheet><SheetTrigger className="db-mobile-menu" aria-label="Abrir menú"><Menu/></SheetTrigger><SheetContent className="db-mobile-sheet db-menu-immersive" aria-describedby={undefined}>
+        <SheetTitle className="sr-only">Menú de Digital Builders</SheetTitle>
+        <div className="db-menu-halo" aria-hidden="true"><i/><i/><i/><i/></div>
+        <div className="db-menu-top"><Logo size="md"/><SheetClose className="db-menu-close" aria-label="Cerrar menú"><X size={22}/></SheetClose></div>
+        <nav className="db-menu-links" aria-label="Navegación móvil">{[['Inicio','#inicio'],...links,['Hablemos','#contacto']].map(([label,href],index)=><SheetClose asChild key={href}><a href={href} style={{'--menu-order':index} as React.CSSProperties}><span className="db-menu-number">0{index+1}</span><span className="db-menu-label">{label}</span><ArrowUpRight size={25}/></a></SheetClose>)}</nav>
+        <div className="db-menu-footer"><span>MENOS LÍMITES.<br/><strong>MÁS POSIBILIDADES.</strong></span><a href="mailto:info@digitalbuilders.net">Conversemos <ArrowUpRight size={16}/></a></div>
+      </SheetContent></Sheet>
     </header>
     <main id="contenido">
       <section id="inicio" className={`db-hero ${reduced?'db-no-motion':''}`} ref={hero}><div className="db-hero-sticky">
