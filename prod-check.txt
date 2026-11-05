@@ -1,0 +1,30 @@
+Verificación de producción — https://www.digitalbuilders.net/
+Fecha: 2026-11-05 (UTC)
+
+1) Bundles encontrados en el HTML:
+   - /assets/index-DnEtr7mm.css (126918 bytes)
+   - /assets/index-Il1zxm-o.js  (500122 bytes)
+
+2) Verificaciones de cadenas:
+   (a) CSS contiene "db-criterion-field": SÍ
+   (b) JS contiene "db-mobile-sheet":     SÍ
+   (d) JS contiene "selfDestroying":      NO
+       sw.js es self-destroying:          SÍ (contiene self.registration.unregister() y borra todas las caches con self.caches.delete)
+
+3) sw.js:
+   (c) Código HTTP de https://www.digitalbuilders.net/sw.js: 200
+   Tamaño: 608 bytes
+
+   Primeras 5 líneas de sw.js:
+   ----------------------------------------
+   (línea 1 vacía)
+   self.addEventListener('install', (e) => {
+     self.skipWaiting();
+   });
+   self.addEventListener('activate', (e) => {
+   ----------------------------------------
+
+Conclusión: los bundles de producción incluyen las cadenas esperadas
+(db-criterion-field en CSS, db-mobile-sheet en JS). El sw.js responde 200
+y es el service worker self-destroying (se desregistra a sí mismo y
+limpia las caches en el evento activate).
