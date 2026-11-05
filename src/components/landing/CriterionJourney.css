@@ -9,3 +9,13 @@
  .db-criterion-pin{background:radial-gradient(ellipse at 65% 45%,#0b2b31 0%,var(--db-night,#081419) 70%)}
  .db-criterion-art{z-index:0}.db-criterion-messages{z-index:2}
 }
+
+/* Fade only the artwork at the actual sticky viewport, independent of canvas scale. */
+.db-criterion-field {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 80%, transparent 100%);
+}

@@ -79,7 +79,7 @@ export function CriterionJourney() {
   return <section ref={ref} className={`db-criterion ${reduced ? 'db-criterion-still' : ''}`} aria-labelledby="criterion-title">
     <div className="db-criterion-pin">
       <div className="db-criterion-top"><span>INTELIGENCIA CON DIRECCIÓN</span><button onClick={() => setPaused(value => !value)} aria-label={paused ? 'Reanudar figura de IA' : 'Pausar figura de IA'}>{paused ? <Play size={14}/> : <Pause size={14}/>} {paused ? 'Reanudar' : 'Pausar'}</button></div>
-      <motion.div className="db-criterion-art" style={reduced ? {} : { scale }}><CriterionField progress={progress} paused={paused} reduced={!!reduced}/></motion.div>
+      <div className="db-criterion-field"><motion.div className="db-criterion-art" style={reduced ? {} : { scale }}><CriterionField progress={progress} paused={paused} reduced={!!reduced}/></motion.div></div>
       <h2 id="criterion-title" className="sr-only">La IA sin criterio es humo. La IA con criterio es productividad.</h2>
       <div className="db-criterion-messages" aria-hidden="true">
         <motion.p className="db-criterion-first" style={reduced ? {} : { opacity: firstOpacity, y: firstY }}>La IA sin criterio<br/>es <em>humo.</em></motion.p>
