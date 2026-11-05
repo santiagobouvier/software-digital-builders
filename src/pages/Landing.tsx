@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight, ArrowUp, ArrowDown, Pause, Play, Menu, X } from 'lucide-react';
 import { Logo } from '@/components/Logo';
@@ -19,6 +19,30 @@ const services = [
 const links=[['Soluciones','#soluciones'],['Cómo trabajamos','#proceso']];
 export default function Landing() {
   const [paused,setPaused]=useState(false);
+  // Navegación por anclas robusta en cualquier entorno (iframe de preview,
+  // producción, PWA): scroll programático al elemento real en vez de depender
+  // del salto nativo, que puede caer mal antes de que el layout asiente.
+  useEffect(()=>{
+    const scrollToHash=(hash:string,smooth:boolean)=>{
+      const el=document.querySelector(hash);
+      if(el) el.scrollIntoView({behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto',block:'start'});
+    };
+    const onClick=(e:MouseEvent)=>{
+      const a=(e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement|null;
+      if(!a) return;
+      const hash=a.getAttribute('href')||'';
+      if(hash.length<2||!document.querySelector(hash)) return;
+      e.preventDefault();
+      history.pushState(null,'',hash);
+      // Si el link vive en el menú móvil, esperar a que el sheet suelte el scroll.
+      const delay=a.closest('.db-mobile-sheet')?380:0;
+      setTimeout(()=>scrollToHash(hash,true),delay);
+    };
+    document.addEventListener('click',onClick);
+    // Doble pasada: el alto de las escenas asienta tras fuentes y canvas.
+    if(location.hash) requestAnimationFrame(()=>{setTimeout(()=>scrollToHash(location.hash,false),150);setTimeout(()=>scrollToHash(location.hash,false),700);});
+    return ()=>document.removeEventListener('click',onClick);
+  },[]);
   const reduced=useReducedMotion();
   const hero=useRef<HTMLElement>(null);
   const {scrollYProgress}=useScroll({target:hero,offset:['start start','end end']});
