@@ -34,9 +34,27 @@ export default function Landing() {
       if(hash.length<2||!document.querySelector(hash)) return;
       e.preventDefault();
       history.pushState(null,'',hash);
-      // Si el link vive en el menú móvil, esperar a que el sheet suelte el scroll.
-      const delay=a.closest('.db-mobile-sheet')?380:0;
-      setTimeout(()=>scrollToHash(hash,true),delay);
+      if(a.closest('.db-mobile-sheet')){
+        // El sheet bloquea el scroll del body y al cerrarse RESTAURA la posición
+        // previa, pisando cualquier desplazamiento hecho antes. Esperar a que
+        // suelte el bloqueo y verificar una vez que el destino quedó en pantalla.
+        const t0=Date.now();
+        const tick=()=>{
+          const locked=document.body.style.overflow==='hidden'||document.body.hasAttribute('data-scroll-locked');
+          if(!locked||Date.now()-t0>2500){
+            requestAnimationFrame(()=>{
+              scrollToHash(hash,true);
+              setTimeout(()=>{
+                const el=document.querySelector(hash);
+                if(el&&Math.abs(el.getBoundingClientRect().top)>150) el.scrollIntoView({behavior:'auto'});
+              },900);
+            });
+          } else setTimeout(tick,60);
+        };
+        setTimeout(tick,120);
+      } else {
+        scrollToHash(hash,true);
+      }
     };
     document.addEventListener('click',onClick);
     // Doble pasada: el alto de las escenas asienta tras fuentes y canvas.

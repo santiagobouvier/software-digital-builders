@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       // Retire the legacy offline cache while keeping its existing worker URL.
       selfDestroying: true,
-      includeAssets: ["favicon.webp", "robots.txt"],
+      includeAssets: ["favicon.ico", "favicon-32.png", "apple-touch-icon.png", "robots.txt"],
       manifest: {
         name: "Digital Builders Oficial",
         short_name: "Digital Builders",
