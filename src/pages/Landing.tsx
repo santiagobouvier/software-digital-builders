@@ -20,47 +20,90 @@ const links=[['Soluciones','#soluciones'],['Cómo trabajamos','#proceso']];
 export default function Landing() {
   const [paused,setPaused]=useState(false);
   // Navegación por anclas robusta en cualquier entorno (iframe de preview,
-  // producción, PWA): scroll programático al elemento real en vez de depender
-  // del salto nativo, que puede caer mal antes de que el layout asiente.
+  // producción, PWA): desplazamiento con animador propio por frames, inmune a
+  // bloqueos/restauraciones de scroll de terceros (data-navgo=v3).
+  const pendingHash=useRef<string|null>(null);
+  const navClosing=useRef(false);
+  const [menuOpen,setMenuOpen]=useState(false);
   useEffect(()=>{
-    const scrollToHash=(hash:string,smooth:boolean)=>{
-      const el=document.querySelector(hash);
-      if(el) el.scrollIntoView({behavior:smooth&&!matchMedia('(prefers-reduced-motion: reduce)').matches?'smooth':'auto',block:'start'});
+    let raf=0;
+    // El CSS global pone scroll-behavior:smooth en html: cada scrollTo se vuelve
+    // asíncrono y rompe sondeo y animación por frames. Escribir siempre en modo
+    // instantáneo anulando ese comportamiento durante el write.
+    const put=(y:number)=>{
+      const r=document.documentElement;
+      const prev=r.style.scrollBehavior;
+      r.style.scrollBehavior='auto';
+      window.scrollTo(0,y);
+      r.style.scrollBehavior=prev;
     };
+    const targetYOf=(hash:string)=>{
+      const el=document.querySelector(hash);
+      if(!el) return null;
+      const margin=hash==='#inicio'?0:25;
+      const max=document.documentElement.scrollHeight-window.innerHeight;
+      return Math.max(0,Math.min(max,el.getBoundingClientRect().top+window.scrollY-margin));
+    };
+    const animateTo=(hash:string)=>{
+      cancelAnimationFrame(raf);
+      const to0=targetYOf(hash); if(to0==null) return;
+      if(matchMedia('(prefers-reduced-motion: reduce)').matches){put(to0);return;}
+      const from=window.scrollY;
+      const dur=Math.min(1100,450+Math.abs(to0-from)*0.04);
+      const t0=performance.now();
+      const ease=(t:number)=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+      const step=(now:number)=>{
+        const k=Math.min(1,(now-t0)/dur);
+        const to=targetYOf(hash)??to0; // el layout puede asentar en vuelo
+        put(from+(to-from)*ease(k));
+        if(k<1) raf=requestAnimationFrame(step);
+        else {
+          const tf=targetYOf(hash); if(tf!=null) put(tf);
+          const el=document.querySelector(hash) as HTMLElement|null;
+          if(el){ if(!el.hasAttribute('tabindex')) el.setAttribute('tabindex','-1'); el.focus({preventScroll:true}); }
+        }
+      };
+      raf=requestAnimationFrame(step);
+    };
+    // El lock de scroll del menú deja window.scrollTo inerte un tiempo después
+    // de cerrarse (y resetea scrollY). Sondear hasta que la página responda.
+    const whenScrollable=(cb:()=>void)=>{
+      const t0=performance.now();
+      const probe=()=>{
+        const y=window.scrollY;
+        const max=document.documentElement.scrollHeight-window.innerHeight;
+        const test=y<max?y+1:Math.max(0,y-1);
+        put(test);
+        const moved=Math.abs(window.scrollY-test)<=1&&window.scrollY!==y;
+        put(y);
+        if(moved||max<=0||performance.now()-t0>3500) cb();
+        else setTimeout(probe,80);
+      };
+      probe();
+    };
+    const go=(hash:string)=>{history.pushState(null,'',hash);whenScrollable(()=>animateTo(hash));};
+    (window as unknown as {__dbNavGo?:(h:string)=>void}).__dbNavGo=go;
     const onClick=(e:MouseEvent)=>{
       const a=(e.target as HTMLElement).closest('a[href^="#"]') as HTMLAnchorElement|null;
-      if(!a) return;
+      if(!a||a.closest('.db-mobile-sheet')) return; // los del menú móvil tienen su propio camino
       const hash=a.getAttribute('href')||'';
       if(hash.length<2||!document.querySelector(hash)) return;
       e.preventDefault();
-      history.pushState(null,'',hash);
-      if(a.closest('.db-mobile-sheet')){
-        // El sheet bloquea el scroll del body y al cerrarse RESTAURA la posición
-        // previa, pisando cualquier desplazamiento hecho antes. Esperar a que
-        // suelte el bloqueo y verificar una vez que el destino quedó en pantalla.
-        const t0=Date.now();
-        const tick=()=>{
-          const locked=document.body.style.overflow==='hidden'||document.body.hasAttribute('data-scroll-locked');
-          if(!locked||Date.now()-t0>2500){
-            requestAnimationFrame(()=>{
-              scrollToHash(hash,true);
-              setTimeout(()=>{
-                const el=document.querySelector(hash);
-                if(el&&Math.abs(el.getBoundingClientRect().top)>150) el.scrollIntoView({behavior:'auto'});
-              },900);
-            });
-          } else setTimeout(tick,60);
-        };
-        setTimeout(tick,120);
-      } else {
-        scrollToHash(hash,true);
-      }
+      go(hash);
     };
     document.addEventListener('click',onClick);
-    // Doble pasada: el alto de las escenas asienta tras fuentes y canvas.
-    if(location.hash) requestAnimationFrame(()=>{setTimeout(()=>scrollToHash(location.hash,false),150);setTimeout(()=>scrollToHash(location.hash,false),700);});
-    return ()=>document.removeEventListener('click',onClick);
+    // Hash inicial: doble pasada, el alto de las escenas asienta tras fuentes y canvas.
+    if(location.hash){const h=location.hash;requestAnimationFrame(()=>{setTimeout(()=>{const y=targetYOf(h);if(y!=null)put(y);},150);setTimeout(()=>{const y=targetYOf(h);if(y!=null)put(y);},700);});}
+    return ()=>{document.removeEventListener('click',onClick);cancelAnimationFrame(raf);};
   },[]);
+  // Al cerrarse el menú móvil con un destino pendiente, desplazar cuando el
+  // sheet ya soltó la página (tras su animación de salida).
+  useEffect(()=>{
+    if(menuOpen||!pendingHash.current) return;
+    const hash=pendingHash.current; pendingHash.current=null;
+    const t=setTimeout(()=>{(window as unknown as {__dbNavGo?:(h:string)=>void}).__dbNavGo?.(hash);},150);
+    return ()=>clearTimeout(t);
+  },[menuOpen]);
   const reduced=useReducedMotion();
   const hero=useRef<HTMLElement>(null);
   const {scrollYProgress}=useScroll({target:hero,offset:['start start','end end']});
@@ -81,11 +124,11 @@ export default function Landing() {
       <a href="#inicio" aria-label="Digital Builders, inicio"><Logo size="md" /></a>
       <nav aria-label="Navegación principal">{links.map(([label,href])=><a key={href} href={href}>{label}</a>)}</nav>
       <a className="db-nav-cta" href="#contacto">Hablemos <ArrowUpRight size={17}/></a>
-      <Sheet><SheetTrigger className="db-mobile-menu" aria-label="Abrir menú"><Menu/></SheetTrigger><SheetContent className="db-mobile-sheet db-menu-immersive" aria-describedby={undefined}>
+      <Sheet open={menuOpen} onOpenChange={setMenuOpen} modal={false}><SheetTrigger className="db-mobile-menu" aria-label="Abrir menú"><Menu/></SheetTrigger><SheetContent className="db-mobile-sheet db-menu-immersive" aria-describedby={undefined} onCloseAutoFocus={(e)=>{if(navClosing.current){e.preventDefault();navClosing.current=false;}}}>
         <SheetTitle className="sr-only">Menú de Digital Builders</SheetTitle>
         <div className="db-menu-halo" aria-hidden="true"><i/><i/><i/><i/></div>
         <div className="db-menu-top"><Logo size="md"/><SheetClose className="db-menu-close" aria-label="Cerrar menú"><X size={22}/></SheetClose></div>
-        <nav className="db-menu-links" aria-label="Navegación móvil">{[['Inicio','#inicio'],...links,['Hablemos','#contacto']].map(([label,href],index)=><SheetClose asChild key={href}><a href={href} style={{'--menu-order':index} as React.CSSProperties}><span className="db-menu-number">0{index+1}</span><span className="db-menu-label">{label}</span><ArrowUpRight size={25}/></a></SheetClose>)}</nav>
+        <nav className="db-menu-links" aria-label="Navegación móvil">{[['Inicio','#inicio'],...links,['Hablemos','#contacto']].map(([label,href],index)=><a key={href} href={href} data-navgo="v3" style={{'--menu-order':index} as React.CSSProperties} onClick={(e)=>{e.preventDefault();pendingHash.current=href;navClosing.current=true;setMenuOpen(false);}}><span className="db-menu-number">0{index+1}</span><span className="db-menu-label">{label}</span><ArrowUpRight size={25}/></a>)}</nav>
         <div className="db-menu-footer"><span>MENOS LÍMITES.<br/><strong>MÁS POSIBILIDADES.</strong></span><a href="mailto:info@digitalbuilders.net">Conversemos <ArrowUpRight size={16}/></a></div>
       </SheetContent></Sheet>
     </header>
