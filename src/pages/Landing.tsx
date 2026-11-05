@@ -4,7 +4,7 @@ import { ArrowUpRight, ArrowUp, ArrowDown, Pause, Play, Menu, X } from 'lucide-r
 import { Logo } from '@/components/Logo';
 import { FlowSculpture } from '@/components/landing/FlowSculpture';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from '@/components/ui/sheet';
-import { VisionJourney, FlowJourney, ServicesJourney, ProcessJourney, ContactJourney } from '@/components/landing/ScrollJourney';
+import { VisionJourney, FlowJourney, OperatingJourney, ServicesJourney, ProcessJourney, ContactJourney } from '@/components/landing/ScrollJourney';
 import { WhatsAppButton } from '@/components/WhatsAppButton';
 import { DemoJourney } from '@/components/landing/DemoJourney';
 import { CriterionJourney } from '@/components/landing/CriterionJourney';
@@ -28,8 +28,8 @@ export default function Landing() {
   const artX=useTransform(scrollYProgress,[0,.65],['0%','-27%']);
   const copyOpacity=useTransform(scrollYProgress,[0,.12,.32],[1,1,0]);
   const copyY=useTransform(scrollYProgress,[0,.35],[0,-130]);
-  const artOpacity=useTransform(scrollYProgress,[0,.4,.75,1],[1,1,.22,.08]);
-  const nextOpacity=useTransform(scrollYProgress,[0,.3,.43,.76,.9],[0,0,1,1,0]);
+  const artOpacity=useTransform(scrollYProgress,[0,.4,.78,.97],[1,1,.2,0]);
+  const nextOpacity=useTransform(scrollYProgress,[0,.3,.43,.84,.985],[0,0,1,1,0]);
   const nextY=useTransform(scrollYProgress,[.3,.5], [90,0]);
   return <div className="db-site">
     <WhatsAppButton/>
@@ -58,15 +58,7 @@ export default function Landing() {
       <CriterionJourney/>
       <VisionJourney/>
       <FlowJourney/>
-      <section className="db-operating-steps db-section" aria-labelledby="operating-title">
-        <div className="db-eyebrow">DEL EFECTO VISUAL AL CAMBIO REAL</div>
-        <h2 id="operating-title">Así cambia tu día a día.</h2>
-        <div className="db-operating-grid">
-          <article><span>01 / CENTRALIZAR</span><h3>La información deja de estar dispersa.</h3><p>Pedidos, documentos y tareas reunidos en un mismo flujo. Menos búsquedas entre mensajes y planillas.</p></article>
-          <article><span>02 / SIMPLIFICAR</span><h3>Lo repetitivo deja de ocupar tu tiempo.</h3><p>Los datos pasan de una herramienta a otra sin volver a cargarlos. Tu equipo revisa las excepciones y conserva el control.</p></article>
-          <article><span>03 / ENTENDER</span><h3>Sabés qué pasó y qué sigue.</h3><p>Estados claros, responsables y próximos pasos visibles. Una operación que podés seguir y mejorar.</p></article>
-        </div>
-      </section>
+      <OperatingJourney/>
       <ServicesJourney services={services}/>
       <DemoJourney/>
       <ProcessJourney/>

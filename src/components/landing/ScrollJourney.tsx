@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useSpring, useTransform, type MotionValue, type MotionStyle } from 'framer-motion';
 import { ArrowUpRight, ArrowRight, Check, Files, Workflow, Sparkles } from 'lucide-react';
 
 function useChapter() {
@@ -52,15 +52,44 @@ function ServiceCard({service,index}:{service:Service;index:number}){
 export function ServicesJourney({services}:{services:Service[]}){
   return <section id="soluciones" className="db-services db-section db-services-journey"><div className="db-section-heading"><div className="db-eyebrow">02 / LO QUE CONSTRUIMOS</div><h2>Un problema real.<br/><span>La solución correcta.</span></h2><p>Desde Montevideo, desarrollamos sitios web, software y soluciones de automatización e IA para empresas de Uruguay. Elegimos la tecnología después de entender el desafío.</p></div><div className="db-service-deck">{services.map((service,index)=><ServiceCard key={service.n} service={service} index={index}/>)}</div></section>;
 }
+
+const operating=[['01 / CENTRALIZAR','La información deja de estar dispersa.','Pedidos, documentos y tareas reunidos en un mismo flujo. Menos búsquedas entre mensajes y planillas.'],['02 / SIMPLIFICAR','Lo repetitivo deja de ocupar tu tiempo.','Los datos pasan de una herramienta a otra sin volver a cargarlos. Tu equipo revisa las excepciones y conserva el control.'],['03 / ENTENDER','Sabés qué pasó y qué sigue.','Estados claros, responsables y próximos pasos visibles. Una operación que podés seguir y mejorar.']];
+function OperatingStep({step,index,progress,reduced}:{step:string[];index:number;progress:MotionValue<number>;reduced:boolean}){
+  const start=.16+index*.24, end=start+.2;
+  const ink=useTransform(progress,[start,end],['#7fa29d','#101719']);
+  const tag=useTransform(progress,[start,end],['#9ab7b2','#1f6360']);
+  const y=useTransform(progress,[start,end],[26,0]);
+  return <motion.article style={reduced?{}:{y}}><motion.span style={reduced?{}:{color:tag}}>{step[0]}</motion.span><motion.h3 style={reduced?{}:{color:ink}}>{step[1]}</motion.h3><p>{step[2]}</p></motion.article>;
+}
+export function OperatingJourney(){
+  const ref=useRef<HTMLElement>(null); const reduced=useReducedMotion();
+  const {scrollYProgress}=useScroll({target:ref,offset:['start .88','end .68']});
+  const progress=useSpring(scrollYProgress,{stiffness:70,damping:26,mass:.9});
+  return <section ref={ref} className="db-operating-steps db-section" aria-labelledby="operating-title">
+    <div className="db-eyebrow">DEL EFECTO VISUAL AL CAMBIO REAL</div>
+    <h2 id="operating-title">Así cambia tu día a día.</h2>
+    <motion.div className="db-operating-grid db-operating-journey" style={reduced?{}:{'--thread':progress} as MotionStyle}>
+      <i className="db-operating-thread" aria-hidden="true"/>
+      {operating.map((step,index)=><OperatingStep key={step[0]} step={step} index={index} progress={progress} reduced={!!reduced}/>)}
+    </motion.div>
+  </section>;
+}
 const steps=[['01','Entender.','Primero, tu negocio.','Conversamos sobre tu operación, detectamos el problema y definimos qué debería mejorar.'],['02','Construir.','Algo concreto para probar.','Diseñamos y desarrollamos una solución con alcance claro. La ves, la probás y la ajustamos.'],['03','Evolucionar.','Una solución en marcha.','Implementamos, acompañamos a tu equipo y revisamos el resultado. El desarrollo no termina en una entrega.']];
 function ProcessStep({step,index}:{step:string[];index:number}){
   const ref=useRef<HTMLDivElement>(null),reduced=useReducedMotion();
-  const {scrollYProgress}=useScroll({target:ref,offset:['start end','end start']});
-  const x=useTransform(scrollYProgress,[0,.4,.8],[60,0,-20]);
-  const opacity=useTransform(scrollYProgress,[0,.25,.75,1],[.2,1,1,.3]);
-  return <motion.div ref={ref} className="db-process-chapter" style={reduced?{}:{x,opacity}}><span className="db-eyebrow">ETAPA {step[0]} / 03</span><h3>{step[1]}</h3><h4>{step[2]}</h4><p>{step[3]}</p><span className="db-process-orbit" aria-hidden="true">{index===0?<Files/>:index===1?<Workflow/>:<Sparkles/>}</span></motion.div>;
+  const {scrollYProgress}=useScroll({target:ref,offset:['start .92','center .42']});
+  const progress=useSpring(scrollYProgress,{stiffness:70,damping:26,mass:.9});
+  const clip=useTransform(progress,[.08,.62],['inset(-5% 100% -8% 0)','inset(-5% 0% -8% 0)']);
+  const x=useTransform(progress,[.1,.6],[34,0]);
+  const spin=useTransform(progress,[0,1],[-85,40]);
+  return <div ref={ref} className="db-process-chapter"><span className="db-eyebrow">ETAPA {step[0]} / 03</span><motion.h3 style={reduced?{}:{clipPath:clip}}>{step[1]}</motion.h3><motion.div style={reduced?{}:{x}}><h4>{step[2]}</h4><p>{step[3]}</p></motion.div><motion.span className="db-process-orbit" style={reduced?{}:{rotate:spin}} aria-hidden="true">{index===0?<Files/>:index===1?<Workflow/>:<Sparkles/>}</motion.span></div>;
 }
-export function ProcessJourney(){return <section id="proceso" className="db-process db-section db-process-journey"><div className="db-process-fixed"><div className="db-eyebrow">03 / DEL PROBLEMA A LA SOLUCIÓN</div><h2>Una idea.<br/>Un recorrido.<br/><span>Un cambio real.</span></h2><a href="#contacto">Empecemos por tu desafío <ArrowRight size={18}/></a></div><div>{steps.map((step,index)=><ProcessStep key={step[0]} step={step} index={index}/>)}</div></section>}
+export function ProcessJourney(){
+  const col=useRef<HTMLDivElement>(null); const reduced=useReducedMotion();
+  const {scrollYProgress}=useScroll({target:col,offset:['start .8','end .5']});
+  const spine=useSpring(scrollYProgress,{stiffness:70,damping:26,mass:.9});
+  return <section id="proceso" className="db-process db-section db-process-journey"><div className="db-process-fixed"><div className="db-eyebrow">03 / DEL PROBLEMA A LA SOLUCIÓN</div><h2>Una idea.<br/>Un recorrido.<br/><span>Un cambio real.</span></h2><a href="#contacto">Empecemos por tu desafío <ArrowRight size={18}/></a></div><motion.div ref={col} className="db-process-steps-col" style={reduced?{}:{'--spine':spine} as MotionStyle}><i className="db-process-spine" aria-hidden="true"/>{steps.map((step,index)=><ProcessStep key={step[0]} step={step} index={index}/>)}</motion.div></section>;
+}
 export function ExperienceJourney({clients}:{clients:string[][]}){
   const {ref,progress,reduced}=useChapter();
   const x=useTransform(progress,[0,1],['0%','-18%']);
@@ -71,5 +100,7 @@ export function ContactJourney(){
   const {scrollYProgress}=useScroll({target:ref,offset:['start end','end end']});
   const scale=useTransform(scrollYProgress,[0,.8],[.8,1]);
   const radius=useTransform(scrollYProgress,[0,1],[110,0]);
-  return <section id="contacto" ref={ref} className="db-contact-shell"><motion.div className="db-contact db-section" style={reduced?{}:{scale,borderRadius:radius}}><div className="db-eyebrow"><span>EL PRÓXIMO PASO EMPIEZA CON UNA CONVERSACIÓN.</span><span>↙</span></div><motion.h2>¿Qué podemos<br/><em>simplificar?</em></motion.h2><div className="db-contact-bottom"><p>Contanos qué tarea te consume tiempo,<br/>qué proceso se traba o qué idea querés construir.</p><a className="db-button db-button-dark" href="mailto:info@digitalbuilders.net?subject=Hablemos%20de%20mi%20proyecto">Hablemos de tu proyecto <ArrowUpRight size={22}/></a></div><a className="db-mail" href="mailto:info@digitalbuilders.net">info@digitalbuilders.net</a></motion.div></section>;
+  const track=useTransform(scrollYProgress,[0,.85],['-.005em','-.065em']);
+  const hx=useTransform(scrollYProgress,[0,.85],[44,0]);
+  return <section id="contacto" ref={ref} className="db-contact-shell"><motion.div className="db-contact db-section" style={reduced?{}:{scale,borderRadius:radius}}><div className="db-eyebrow"><span>EL PRÓXIMO PASO EMPIEZA CON UNA CONVERSACIÓN.</span><span>↙</span></div><motion.h2 style={reduced?{}:{letterSpacing:track,x:hx}}>¿Qué podemos<br/><em>simplificar?</em></motion.h2><div className="db-contact-bottom"><p>Contanos qué tarea te consume tiempo,<br/>qué proceso se traba o qué idea querés construir.</p><a className="db-button db-button-dark" href="mailto:info@digitalbuilders.net?subject=Hablemos%20de%20mi%20proyecto">Hablemos de tu proyecto <ArrowUpRight size={22}/></a></div><a className="db-mail" href="mailto:info@digitalbuilders.net">info@digitalbuilders.net</a></motion.div></section>;
 }
