@@ -18,6 +18,8 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
+      // Retire the legacy offline cache while keeping its existing worker URL.
+      selfDestroying: true,
       includeAssets: ["favicon.webp", "robots.txt"],
       manifest: {
         name: "Digital Builders Oficial",
@@ -27,7 +29,7 @@ export default defineConfig(({ mode }) => ({
         background_color: "#0B0B0F",
         display: "standalone",
         orientation: "portrait",
-        start_url: "/login",
+        start_url: "/",
         icons: [
           {
             src: "/pwa-192x192.png",
