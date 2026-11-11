@@ -1,0 +1,106 @@
+AUDITORÍA DE NAVEGACIÓN DEL MENÚ MÓVIL EN PRODUCCIÓN
+Sitio: https://www.digitalbuilders.net
+Fecha: 2026-11-11 (UTC)
+
+====================================================================
+PARTE A — QUÉ BUILD SIRVE PRODUCCIÓN
+====================================================================
+
+curl https://www.digitalbuilders.net/ → HTTP 200
+
+Assets referenciados en el HTML:
+  /assets/index-DnEtr7mm.css
+  /assets/index-Il1zxm-o.js
+
+JS principal descargado: /assets/index-Il1zxm-o.js
+  HTTP 200, 500122 bytes
+  etag: "f2021af00dd9bf472fb4eff463bad996"
+  cache-control: public, max-age=31536000, immutable
+  servidor: cloudflare
+  x-deployment-id: psr2.95e5e53d-92d7-4354-9cd7-fdc6bf3c695a.1795012467.JDKG7R6yzv5cdpaNb8pENdepsM2yMSHiu4NTICEyocc
+
+Búsqueda de marcadores del fix en el JS principal:
+  data-navgo      → NO (0 ocurrencias)
+  __dbNavGo       → NO (0 ocurrencias)
+  scrollBehavior  → NO (0 ocurrencias)
+
+También se verificó el HTML (index): sin data-navgo, __dbNavGo ni
+scrollBehavior inline.
+
+Referencias sí presentes en el JS de producción (build viejo):
+  db-mobile-menu  → 1 ocurrencia
+  db-menu-links   → 1 ocurrencia
+  scrollIntoView  → 0 ocurrencias
+
+CONCLUSIÓN PARTE A: producción está sirviendo un build ANTERIOR que
+NO contiene el fix de navegación (animador propio / data-navgo /
+__dbNavGo). El deploy del fix no llegó a producción.
+
+====================================================================
+PARTE B — FLUJO REAL DEL MENÚ MÓVIL (Playwright, iPhone 13)
+====================================================================
+
+Chromium preinstalado, contexto devices['iPhone 13'],
+goto https://www.digitalbuilders.net/ con waitUntil: networkidle → OK
+(lanzado con el proxy del entorno por defecto; no hizo falta
+configurar proxy explícito).
+
+Estado inicial tras la carga:
+  window.__dbNavGo presente ....... false
+  a[data-navgo] en el DOM ......... 0
+  IDs presentes:
+    #inicio ....... true
+    #vision ....... true
+    #soluciones ... true
+    #proceso ...... true
+    #contacto ..... true
+
+Flujo por cada hash (scroll a 0 instant → tap .db-mobile-menu →
+800ms → screenshot menu-*.png → tap .db-menu-links a[href="<hash>"]
+→ 2500ms → medición + screenshot land-*.png):
+
+-- #soluciones --
+  window.scrollY tras el tap ............................ 0
+  #soluciones getBoundingClientRect().top ............... 9139.75
+  Screenshots: menu-soluciones.png, land-soluciones.png
+
+-- #proceso --
+  window.scrollY tras el tap ............................ 0
+  #proceso getBoundingClientRect().top .................. 16266.515625
+  Screenshots: menu-proceso.png, land-proceso.png
+
+-- #contacto --
+  window.scrollY tras el tap ............................ 0
+  #contacto getBoundingClientRect().top ................. 18100.96875
+  Screenshots: menu-contacto.png, land-contacto.png
+
+Service worker:
+  navigator.serviceWorker.getRegistrations() → 0 registraciones
+  (no hay service worker cacheando un build viejo en el cliente; el
+  build viejo viene directo del servidor/CDN)
+
+Errores capturados:
+  page.on('pageerror') ......... 0 errores
+  page.on('console') error ..... 0
+  page.on('console') warning ... 0
+
+CONCLUSIÓN PARTE B: el bug se REPRODUCE en producción. En los tres
+casos (#soluciones, #proceso, #contacto) el tap en el link del menú
+móvil no desplaza la página: window.scrollY queda en 0 y la sección
+destino sigue a 9.139 / 16.266 / 18.100 px por debajo del viewport,
+2,5 segundos después del tap. No hay errores de JS: el build servido
+simplemente no tiene la lógica de navegación corregida.
+
+====================================================================
+DIAGNÓSTICO GLOBAL
+====================================================================
+
+1. El fix de navegación móvil (commits "Navegación del menú móvil:
+   causa raíz resuelta con animador propio", con data-navgo /
+   __dbNavGo) está mergeado en el repo pero NO está desplegado:
+   el bundle de producción (index-Il1zxm-o.js) no contiene ninguno
+   de sus marcadores.
+2. No es un problema de caché del cliente: no hay service worker
+   registrado y el HTML servido referencia directamente ese bundle.
+3. Acción pendiente: redeployar producción con el build actual de
+   main (y/o purgar el caché del CDN tras el deploy).
