@@ -1,0 +1,32 @@
+RE-VERIFICACIÓN NAVEGACIÓN MENÚ MÓVIL — PRODUCCIÓN (post re-publish)
+Fecha: 2026-11-11
+URL: https://www.digitalbuilders.net/
+
+PARTE A — BUILD SERVIDO
+- Bundle JS principal: /assets/index-Dp5gp_H0.js
+- Tamaño: 502275 bytes
+- Contiene "data-navgo": SÍ (1 ocurrencia)
+- Contiene "__dbNavGo": SÍ (2 ocurrencias)
+
+PARTE B — FLUJO MENÚ MÓVIL (Playwright, iPhone 13, waitUntil: networkidle)
+- window.__dbNavGo presente: true
+- Cantidad de a[data-navgo] en el DOM: 0
+  (nota: el handler __dbNavGo está activo y la navegación por .db-menu-links a[href] funcionó igualmente)
+
+Mediciones por hash (tap .db-mobile-menu → 800ms → tap link → 2500ms):
+  #soluciones : scrollY=9115   top=25px   → OK   (criterio: -5 ≤ top ≤ 120)
+  #proceso    : scrollY=16242  top=25px   → OK   (criterio: -5 ≤ top ≤ 120)
+  #contacto   : scrollY=18076  top=25px   → OK   (criterio: -5 ≤ top ≤ 120)
+  #inicio     : scrollY=0      top=0px    → OK   (criterio: scrollY < 60; se scrolleó a 3000 antes del tap)
+
+VEREDICTO GLOBAL: 4/4 OK — las tres secciones aterrizan con el margen de diseño de 25px y #inicio vuelve al tope exacto.
+
+ERRORES
+- Errores de consola: ninguno
+- pageerror: ninguno
+
+SCREENSHOTS
+- land3-soluciones.png
+- land3-proceso.png
+- land3-contacto.png
+- land3-inicio.png
